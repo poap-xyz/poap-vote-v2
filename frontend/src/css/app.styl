@@ -1,1 +1,23 @@
 // app global css in Stylus form
+.body--light, .dark-toggle
+  color $dark
+
+  .hyperlink
+    color $primary
+    text-decoration underline
+    cursor pointer
+    // Without this, the underline extends into the space for some reason
+    // solution source: https://stackoverflow.com/questions/23182904/css-underline-text-but-ignore-the-spaces
+    display inline-block
+
+.body--dark
+  .dark-toggle
+    color $light
+
+  .hyperlink
+    color $darkprimary
+    text-decoration underline
+    cursor pointer
+    // Without this, the underline extends into the space for some reason
+    // solution source: https://stackoverflow.com/questions/23182904/css-underline-text-but-ignore-the-spaces
+    display inline-block

@@ -9,6 +9,7 @@
   "private": true,
   "scripts": {
     "dev": "npx quasar dev",
+    "build": "npx quasar build",
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0"
   },
