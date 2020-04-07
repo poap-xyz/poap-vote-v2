@@ -3,12 +3,14 @@
 node_modules
 
 # env files
-# local env files
 .env.local
 .env.*.local
 .env
 .env.dev
 .env.prod
+
+# Cypress test videos
+*.mp4
 
 # Quasar core related directories
 .quasar

@@ -23,7 +23,14 @@ npm run lint
 ### Run tests
 
 ```bash
-TODO
+# Start the app
+npm run dev
+
+# Run tests in a new terminal window, with browser hidden
+npm run test
+
+# OR run tests in a browser to watch execution
+npm run test:visual # once window launches, click "Run all specs"
 ```
 
 ### Build the app for production

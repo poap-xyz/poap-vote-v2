@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "plugin:cypress/recommended", // https://github.com/cypress-io/eslint-plugin-cypress#recommended-configuration
+    "plugin:chai-friendly/recommended", // https://github.com/cypress-io/eslint-plugin-cypress#chai-and-no-unused-expressions
+  ]
+}
