@@ -5,25 +5,31 @@ Polling based on POAP token ownership
 ## Install the dependencies
 
 ```bash
-yarn
+npm install
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 
 ```bash
-yarn run dev
+npm run dev
 ```
 
 ### Lint the files
 
 ```bash
-yarn run lint
+npm run lint
+```
+
+### Run tests
+
+```bash
+TODO
 ```
 
 ### Build the app for production
 
 ```bash
-yarn run build
+npm run build
 ```
 
 ### Customize the configuration
