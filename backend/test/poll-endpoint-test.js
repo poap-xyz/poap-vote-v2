@@ -12,6 +12,12 @@ describe('Testing the /polls endpoint', () => {
     it('should create a poll', (done) => {
         const poll = {
             title: 'The first cool poll',
+            fancy_id: 'the-first-cool-poll',
+            polltaker_account: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+            description: 'This could be a very, very long amount of text if we wanted it to be I guess',
+            start_date: (new Date()),
+            end_date: (new Date()),
+            valid_event_ids: [1, 3, 5,],
         };
 
         chai.request(app)
@@ -22,7 +28,10 @@ describe('Testing the /polls endpoint', () => {
                 expect(result.status).to.equal(201);
                 expect(result.body).to.include({
                     id: 1,
-                    ...poll
+                    title: 'The first cool poll',
+                    fancy_id: 'the-first-cool-poll',
+                    polltaker_account: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+                    description: 'This could be a very, very long amount of text if we wanted it to be I guess',
                 });
 
                 done();
