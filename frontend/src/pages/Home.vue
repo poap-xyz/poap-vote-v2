@@ -8,8 +8,8 @@
         Use your POAP NFTs to vote on polls
       </h2>
     </div>
-    <div class="row justify-center">
-      <q-btn
+    <div class="row justify-center q-mt-xl">
+      <base-button
         color="primary"
         label="Create Poll"
         @click="$router.push({name: 'create'})"

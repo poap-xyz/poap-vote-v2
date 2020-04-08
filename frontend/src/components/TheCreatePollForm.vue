@@ -23,6 +23,7 @@
         Poll Options
       </h5>
 
+      <!-- Options list -->
       <div
         v-for="(option, index) in options"
         :key="index"
@@ -30,6 +31,17 @@
         <base-input
           v-model="options[index]"
           :label="`Option ${index + 1}`"
+        />
+      </div>
+
+      <!-- Add new option -->
+      <div class="text-left">
+        <base-button
+          color="primary"
+          :dense="true"
+          label="Add option"
+          :flat="true"
+          @click="addOption"
         />
       </div>
 
@@ -98,11 +110,14 @@
         </q-input>
       </div>
 
-      <q-btn
-        color="primary"
-        label="Create"
-        @click="createPoll"
-      />
+      <div>
+        <base-button
+          color="primary"
+          :full-width="true"
+          label="Create"
+          @click="createPoll"
+        />
+      </div>
     </q-form>
   </div>
 </template>
@@ -137,6 +152,10 @@ export default {
   },
 
   methods: {
+    addOption() {
+      this.options.push(undefined);
+    },
+
     async createPoll() {
       const pollData = {
         title: this.title,
