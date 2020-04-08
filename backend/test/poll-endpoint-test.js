@@ -18,6 +18,14 @@ describe('Testing the /polls endpoint', () => {
             start_date: (new Date()),
             end_date: (new Date()),
             valid_event_ids: [1, 3, 5,],
+            poll_options: [
+                {
+                    contents: 'The first cool option',
+                },
+                {
+                    contents: 'The second cool option',
+                },
+            ]
         };
 
         chai.request(app)
@@ -33,6 +41,7 @@ describe('Testing the /polls endpoint', () => {
                     polltaker_account: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
                     description: 'This could be a very, very long amount of text if we wanted it to be I guess',
                 });
+                expect(result.body.poll_options.length).to.equal(2);
 
                 done();
             });
