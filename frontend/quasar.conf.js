@@ -80,6 +80,19 @@ module.exports = function (ctx) {
           },
         });
       },
+      env: ctx.dev
+        ? { // so on dev we'll have these environment variables
+          BLOCKNATIVE_API_KEY: JSON.stringify(process.env.BLOCKNATIVE_API_KEY),
+          FORTMATIC_API_KEY: JSON.stringify(process.env.FORTMATIC_API_KEY),
+          PORTIS_API_KEY: JSON.stringify(process.env.PORTIS_API_KEY),
+          INFURA_ID: JSON.stringify(process.env.INFURA_ID),
+        }
+        : { // and on build (production) we'll have these:
+          BLOCKNATIVE_API_KEY: JSON.stringify(process.env.BLOCKNATIVE_API_KEY),
+          FORTMATIC_API_KEY: JSON.stringify(process.env.BLOCKNATIVE_API_KEY),
+          PORTIS_API_KEY: JSON.stringify(process.env.PORTIS_API_KEY),
+          INFURA_ID: JSON.stringify(process.env.INFURA_ID),
+        },
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer

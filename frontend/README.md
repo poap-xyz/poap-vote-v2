@@ -1,24 +1,24 @@
 # POAP Vote
 
-Polling based on POAP token ownership
+Polling based on POAP token ownership.
 
-## Install the dependencies
+## Development
 
-```bash
-npm install
-```
-
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+Create a file called `.env.dev` in the `frontend` folder with the following content:
 
 ```bash
-npm run dev
+export BLOCKNATIVE_API_KEY=yourBlocknativeApiKey
+export PORTIS_API_KEY=yourPortisApiKey
+export FORTMATIC_API_KEY=yourFortmaticApiKey
+export INFURA_ID=yourInfuraId
 ```
 
-### Lint the files
+Blocknative's [onboard.js](https://www.blocknative.com/onboard) package is
+used and requires the three API keys listed above.
 
-```bash
-npm run lint
-```
+Once that is setup, install dependencies with `npm install`.
+
+Finally, start the app in development mode using `npm run dev`.
 
 ### Run tests
 

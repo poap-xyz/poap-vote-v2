@@ -7,6 +7,7 @@
       :dense="dense"
       :flat="flat"
       :label="label"
+      :loading="loading"
       :outline="outline"
       @click="handleClick"
     />
@@ -46,6 +47,12 @@ export default {
       type: String,
       required: true,
       default: undefined,
+    },
+
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
 
     outline: {

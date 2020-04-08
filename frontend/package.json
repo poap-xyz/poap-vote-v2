@@ -8,14 +8,16 @@
   "author": "mds <17163988+mds1@users.noreply.github.com>",
   "private": true,
   "scripts": {
-    "dev": "npx quasar dev",
-    "build": "npx quasar build",
+    "dev": "source .env.dev && npx quasar dev",
+    "build": "source .env.prod && npx quasar build",
     "lint": "eslint --ext .js,.vue src",
     "test": "cypress run",
     "test:visual": "cypress open"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "bnc-onboard": "^1.7.1",
+    "ethers": "^4.0.46",
     "quasar": "^1.0.0"
   },
   "devDependencies": {

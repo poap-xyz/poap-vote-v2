@@ -1,6 +1,13 @@
 export default function () {
   return {
-    userAddress: undefined,
+    // User settings
     isDark: undefined,
+    // Wallet info
+    signer: undefined,
+    provider: undefined,
+    ethersProvider: undefined,
+    userAddress: undefined,
+    // POAP tokens
+    // TODO
   };
 }
