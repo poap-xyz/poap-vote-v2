@@ -10,7 +10,14 @@ app.unsubscribe(bodyParser.urlencoded({extended: false}));
 const port = process.env.POAP_VOTE_PORT || 3000;
 
 app.get('/api/polls', async (_request, result) => {
-    let polls = await db.Poll.findAll();
+    let polls = await db.Poll.findAll({
+        include: {
+            model: db.PollOption,
+            as: 'poll_options',
+            attributes: {exclude: ['createdAt', 'updatedAt']}
+        },
+        attributes: {exclude: ['createdAt', 'updatedAt']},
+    });
     result.status(200).send(polls);
 });
 
@@ -23,8 +30,26 @@ app.post('/api/polls', async (request, result) => {
         return;
     }
 
-    let poll = await db.Poll.create(request.body);
-    result.status(201).send(poll);
+    const poll = await db.Poll.create(request.body, {
+        include: [
+            {
+                model: db.PollOption,
+                as: 'poll_options',
+            }
+        ],
+    });
+
+    let pollJSON = poll.toJSON();
+
+    delete pollJSON.createdAt;
+    delete pollJSON.updatedAt;
+
+    pollJSON.poll_options.forEach(option => {
+        delete option.createdAt;
+        delete option.updatedAt;
+    });
+
+    result.status(201).send(pollJSON);
 });
 
 app.get('*', (_request, result) => {
