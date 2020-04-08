@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec babel-node ./src/index.js",
-    "test": "export NODE_ENV=test && sequelize db:migrate:undo:all && sequelize db:migrate && mocha ./test/*-test.js --exit --require @babel/register",
+    "test": "export NODE_ENV=test && export POAP_VOTE_PORT=3001 && sequelize db:migrate:undo:all && sequelize db:migrate && mocha ./test/*-test.js --exit --require @babel/register",
     "init-dev-db": "createuser poapu && createdb poapvote --owner=poapu && createdb poapvote_test --owner=poapu",
     "migrate": "sequelize db:migrate"
   },
