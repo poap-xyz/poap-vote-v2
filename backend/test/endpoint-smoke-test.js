@@ -7,7 +7,7 @@ chai.use(chatHttp);
 
 const { expect } = chai;
 
-describe('Testing the /polls endpoint', () => {
+describe('Smoke Testing Endpoints', () => {
 
     it('should create a poll', (done) => {
         const poll = {
@@ -55,6 +55,43 @@ describe('Testing the /polls endpoint', () => {
                 expect(result.status).to.equal(200);
                 expect(result.body.length).to.equal(1);
                 expect(result.body[0].title).to.equal('The first cool poll');
+                expect(result.body[0].poll_options.length).to.equal(2);
+
+                done();
+            });
+    });
+
+    it('should create a vote', (done) => {
+        const vote = {
+            voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
+            token_ids: [10, 2, 27],
+            date_cast: 1585773069000,
+            poll_option_id: 1,
+        };
+
+        chai.request(app)
+            .post('/api/votes/the-first-cool-poll')
+            .set('Accept', 'application/json')
+            .send(vote)
+            .end( (_error, result) => {
+                expect(result.status).to.equal(201);
+                expect(result.body).to.include({
+                    id: 1,
+                    poll_option_id: 1,
+                });
+
+                done();
+            });
+    });
+
+    it('should return votes', (done) => {
+        chai.request(app)
+            .get('/api/votes/the-first-cool-poll')
+            .set('Accept', 'application/json')
+            .end( (_error, result) => {
+                expect(result.status).to.equal(200);
+                expect(result.body.length).to.equal(1);
+                expect(result.body[0].poll_option_id).to.equal(1);
 
                 done();
             });
