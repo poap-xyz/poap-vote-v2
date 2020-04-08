@@ -52,6 +52,48 @@ app.post('/api/polls', async (request, result) => {
     result.status(201).send(pollJSON);
 });
 
+app.get('/api/votes/:poll_fancy_id', async (request, result) => {
+    const poll = await db.Poll.findOne({
+        where: {fancy_id: request.params.poll_fancy_id},
+        include: {
+            model: db.PollOption,
+            as: 'poll_options',
+            attributes: {exclude: ['createdAt', 'updatedAt']}
+        },
+    });
+
+    let votes = [];
+
+    for (let index = 0; index < poll.poll_options.length; index++) {
+        const poll_option = poll.poll_options[index];
+        const option_votes = await poll_option.getVotes();
+        votes.push(...option_votes);
+    }
+
+    result.status(200).send(votes);
+});
+
+app.post('/api/votes/:poll_fancy_id', async (request, result) => {
+    // TODO: validate polloption belongs to poll
+    // const fancy_id = request.params.poll_fancy_id;
+    // let poll = await db.Poll.findOne({
+    //     where: {fancy_id: fancy_id},
+    //     include: {
+    //         model: db.PollOption,
+    //         as: 'poll_options',
+    //         attributes: {exclude: ['createdAt', 'updatedAt']}
+    //     },
+    // });
+
+    const vote = await db.Vote.create(request.body);
+
+    let voteJSON = vote.toJSON();
+    delete voteJSON.createdAt;
+    delete voteJSON.updatedAt;
+
+    result.status(201).send(voteJSON);
+});
+
 app.get('*', (_request, result) => {
     result.status(200).send({
         message: 'Hello world!',

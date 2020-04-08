@@ -10,19 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     start_date: DataTypes.DATE,
     end_date: DataTypes.DATE,
     valid_event_ids: DataTypes.ARRAY(DataTypes.BIGINT),
-  }, {
-    instanceMethods: {
-      toJSON: function() {
-        console.log("HULLO");
-        const poll = Object.assign({}, this.dataValues);
-
-        delete poll.updatedAt;
-        delete poll.createdAt;
-
-        return poll;
-      }
-    },
-  });
+  }, { });
 
   Poll.associate = (models) => {
     Poll.hasMany(models.PollOption, {as: 'poll_options', foreignKey: 'poll_id'});
