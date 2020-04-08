@@ -35,5 +35,10 @@ export default {
       userAddress: (state) => state.user.userAddress,
     }),
   },
+
+  created() {
+    // This is an async call to the POAP API
+    this.$store.dispatch('poap/getEvents');
+  },
 };
 </script>

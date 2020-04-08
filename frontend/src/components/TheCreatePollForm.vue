@@ -45,6 +45,24 @@
         />
       </div>
 
+      <!-- VALID EVENTS -->
+      <h5 class="section-header">
+        Valid Events
+      </h5>
+      <div class="text-left">
+        A user will be able to vote on this poll only if they hold a valid POAP
+        token from at least one of the selected events
+        <q-select
+          v-model="validEvents"
+          class="q-my-sm"
+          filled
+          label="Events"
+          multiple
+          :options="events"
+          option-label="name"
+        />
+      </div>
+
       <!-- POLL END DATE/TIME -->
       <h5 class="section-header">
         End Date and Time
@@ -136,7 +154,7 @@ export default {
       description: undefined,
       endDate: undefined,
       endTime: undefined,
-      validEventIds: undefined,
+      validEvents: [],
       options: [undefined, undefined], // start with two empty options
     };
   },
@@ -144,6 +162,7 @@ export default {
   computed: {
     ...mapState({
       userAddress: (state) => state.user.userAddress,
+      events: (state) => state.poap.events,
     }),
   },
 
@@ -161,10 +180,11 @@ export default {
         title: this.title,
         description: this.description,
         endDate: this.endDate,
-        validEventIds: this.validEventIds,
+        validEventIds: this.validEvents,
         pollCreator: this.userAddress,
       };
       console.log('pollData: ', pollData);
+      alert('Your poll data can be viewed in the console');
     },
   },
 };
