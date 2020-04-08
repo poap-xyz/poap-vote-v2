@@ -1,8 +1,20 @@
 <template>
   <q-page padding>
-    <h1 class="text-center">
-      POAP Vote
-    </h1>
+    <div class="text-center">
+      <h1>
+        POAP Vote
+      </h1>
+      <h2 class="secondary">
+        Use your POAP NFTs to vote on polls
+      </h2>
+    </div>
+    <div class="row justify-center">
+      <q-btn
+        color="primary"
+        label="Create Poll"
+        @click="$router.push({name: 'create'})"
+      />
+    </div>
   </q-page>
 </template>
 
