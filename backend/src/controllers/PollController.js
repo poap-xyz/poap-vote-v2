@@ -1,4 +1,5 @@
 import PollService from '../db/services/PollService';
+import PollValidator from '../validators/PollValidator';
 
 class PollController {
 
@@ -13,12 +14,12 @@ class PollController {
     }
 
     static async createPoll(request, response) {
-        if (!request.body.title) {
-            response.status(400).send({
-                "error": "Invalid Data",
-            });
+        const validation = PollValidator.validateCreate(request.body);
 
-            return;
+        if (!validation.isValid) {
+            response.status(400).send({
+                "error": validation.errorMessage,
+            });
         }
 
         let poll = null;
