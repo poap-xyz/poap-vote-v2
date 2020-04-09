@@ -53,39 +53,27 @@ app.post('/api/polls', async (request, result) => {
 });
 
 app.get('/api/votes/:poll_fancy_id', async (request, result) => {
-    let poll = null;
+    let votes = null;
 
     try {
-        poll = await PollService.getPollByFancyId(request.params.poll_fancy_id);
+        votes = await VoteService.getVotesForPollWithFancyId(request.params.poll_fancy_id);
     } catch (error) {
         result.status(400).send({error: error.message});
         return;
-    }
-
-    let votes = [];
-
-    for (let index = 0; index < poll.poll_options.length; index++) {
-        const poll_option = poll.poll_options[index];
-        const option_votes = await poll_option.getVotes();
-        votes.push(...option_votes);
     }
 
     result.status(200).send(votes);
 });
 
 app.post('/api/votes/:poll_fancy_id', async (request, result) => {
-    // TODO: validate polloption belongs to poll
-    // const fancy_id = request.params.poll_fancy_id;
-    // let poll = await db.Poll.findOne({
-    //     where: {fancy_id: fancy_id},
-    //     include: {
-    //         model: db.PollOption,
-    //         as: 'poll_options',
-    //         attributes: {exclude: ['createdAt', 'updatedAt']}
-    //     },
-    // });
+    let vote = null;
 
-    const vote = await db.Vote.create(request.body);
+    try {
+        vote = await VoteService.addVote(request.body);
+    } catch (error) {
+        result.status(400).send({error: error.message});
+        return;
+    }
 
     let voteJSON = vote.toJSON();
     delete voteJSON.createdAt;
