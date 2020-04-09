@@ -20,6 +20,8 @@ class PollController {
             response.status(400).send({
                 "error": validation.errorMessage,
             });
+
+            return;
         }
 
         let poll = null;

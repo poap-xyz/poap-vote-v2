@@ -1,4 +1,5 @@
 import VoteService from '../db/services/VoteService';
+import VoteValidator from '../validators/VoteValidator';
 
 class VoteController {
 
@@ -16,6 +17,16 @@ class VoteController {
     }
 
     static async createVote(request, response) {
+        const validation = VoteValidator.validateCreate(request.body);
+
+        if (!validation.isValid) {
+            response.status(400).send({
+                "error": validation.errorMessage,
+            });
+
+            return;
+        }
+
         let vote = null;
 
         try {

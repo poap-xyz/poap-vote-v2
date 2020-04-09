@@ -27,7 +27,7 @@ describe('PollValidator', () => {
         return copy;
     }
 
-    it('should fail without a required fields', () => {
+    it('should fail without all required fields', () => {
         const required_fields = ["title", "polltaker_account", "description",
                                  "end_date", "valid_event_ids", "poll_options"];
 
