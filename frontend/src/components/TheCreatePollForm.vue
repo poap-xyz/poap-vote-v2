@@ -142,9 +142,12 @@
 
 <script>
 import { mapState } from 'vuex';
+import eip712 from 'src/mixins/eip712';
 
 export default {
   name: 'TheCreatePollForm',
+
+  mixins: [eip712],
 
   data() {
     return {
@@ -176,15 +179,30 @@ export default {
     },
 
     async createPoll() {
+      // Define EIP-712 signature format for creating polls
+      const dataFormat = [
+        { name: 'title', type: 'string' },
+        { name: 'description', type: 'string' },
+        { name: 'options', type: 'string' },
+        { name: 'endDate', type: 'string' },
+        { name: 'endTime', type: 'string' },
+        { name: 'validEvents', type: 'bytes32' },
+        { name: 'pollCreator', type: 'address' },
+      ];
+
+      // Structure the actual data to be signed
       const pollData = {
         title: this.title,
         description: this.description,
+        options: this.options,
         endDate: this.endDate,
-        validEventIds: this.validEvents,
+        endTime: this.endTime,
+        validEvents: this.validEvents,
         pollCreator: this.userAddress,
       };
-      console.log('pollData: ', pollData);
-      alert('Your poll data can be viewed in the console');
+
+      // Format data and get user's signature
+      await this.getSignature('Poll', dataFormat, pollData, this.userAddress);
     },
   },
 };
