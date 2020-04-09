@@ -1,6 +1,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import db from './db/models';
+import PollService from './db/services/PollService';
+import VoteService from './db/services/VoteService';
 
 const app = express();
 
@@ -10,15 +12,13 @@ app.unsubscribe(bodyParser.urlencoded({extended: false}));
 const port = process.env.POAP_VOTE_PORT || 3000;
 
 app.get('/api/polls', async (_request, result) => {
-    let polls = await db.Poll.findAll({
-        include: {
-            model: db.PollOption,
-            as: 'poll_options',
-            attributes: {exclude: ['createdAt', 'updatedAt']}
-        },
-        attributes: {exclude: ['createdAt', 'updatedAt']},
-    });
-    result.status(200).send(polls);
+    try {
+        const polls = await PollService.getAllPolls();
+        result.status(200).send(polls);
+    } catch (error) {
+        result.status(400).send({ error: error.message });
+        return;
+    }
 });
 
 app.post('/api/polls', async (request, result) => {
@@ -30,14 +30,14 @@ app.post('/api/polls', async (request, result) => {
         return;
     }
 
-    const poll = await db.Poll.create(request.body, {
-        include: [
-            {
-                model: db.PollOption,
-                as: 'poll_options',
-            }
-        ],
-    });
+    let poll = null;
+
+    try {
+        poll = await PollService.addPoll(request.body);
+    } catch (error) {
+        result.status(400).send({ error: error.message });
+        return;
+    }
 
     let pollJSON = poll.toJSON();
 
@@ -53,14 +53,14 @@ app.post('/api/polls', async (request, result) => {
 });
 
 app.get('/api/votes/:poll_fancy_id', async (request, result) => {
-    const poll = await db.Poll.findOne({
-        where: {fancy_id: request.params.poll_fancy_id},
-        include: {
-            model: db.PollOption,
-            as: 'poll_options',
-            attributes: {exclude: ['createdAt', 'updatedAt']}
-        },
-    });
+    let poll = null;
+
+    try {
+        poll = await PollService.getPollByFancyId(request.params.poll_fancy_id);
+    } catch (error) {
+        result.status(400).send({error: error.message});
+        return;
+    }
 
     let votes = [];
 
