@@ -10,6 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       contents: {
+        allowNull: false,
         type: Sequelize.STRING(1000)
       },
       createdAt: {
