@@ -92,11 +92,11 @@ export default {
       ==============================================================================================
       */
 
-      console.log('Formatting data to be signed');
-      const data = this.formatSignatureData(dataName, dataFormat, dataContents);
-
-      console.log('Requesting user signature...');
       try {
+        console.log('Formatting data to be signed');
+        const data = this.formatSignatureData(dataName, dataFormat, dataContents);
+
+        console.log('Requesting user signature...');
         const result = await web3Send({
           method: 'eth_signTypedData_v3',
           params: [user, data],
@@ -106,22 +106,13 @@ export default {
           // https://twitter.com/PaulRBerg/status/1160516230698196993?s=20
         });
 
-        console.log('Signature received! Parsing signature...');
+        console.log('Signature received!');
         const signature = result.result.substring(2);
-        const r = `0x${signature.substring(0, 64)}`;
-        const s = `0x${signature.substring(64, 128)}`;
-        const v = parseInt(signature.substring(128, 130), 16);
-
-        // At this point we can send the signature and poll data to the server
-        console.log('Sending signature to server for validation...');
-        console.log('poll: ', dataContents);
-        console.log('signature: ', signature);
-        console.log('r: ', r);
-        console.log('s: ', s);
-        console.log('v: ', v);
+        return signature;
       } catch (err) {
         console.log('User rejected signature');
         console.error(err);
+        return undefined;
       }
       /* eslint-enable no-console */
     },
