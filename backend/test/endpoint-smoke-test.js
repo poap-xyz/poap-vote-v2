@@ -13,7 +13,6 @@ describe('Smoke Testing Endpoints', () => {
         const poll = {
             polltaker_account: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
             description: 'This could be a very, very long amount of text if we wanted it to be I guess',
-            start_date: (new Date()),
             end_date: (new Date()),
             valid_event_ids: [1, 3, 5,],
             poll_options: [
@@ -46,7 +45,6 @@ describe('Smoke Testing Endpoints', () => {
             title: 'The first cool poll',
             polltaker_account: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
             description: 'This could be a very, very long amount of text if we wanted it to be I guess',
-            start_date: (new Date()),
             end_date: (new Date()),
             valid_event_ids: [1, 3, 5,],
             poll_options: [
@@ -96,7 +94,6 @@ describe('Smoke Testing Endpoints', () => {
         const vote = {
             voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
             token_ids: [10, 2, 27],
-            date_cast: 1585773069000,
         };
 
         chai.request(app)
@@ -117,7 +114,6 @@ describe('Smoke Testing Endpoints', () => {
         const vote = {
             voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
             token_ids: [10, 2, 27],
-            date_cast: 1585773069000,
             poll_option_id: 1,
         };
 
@@ -154,7 +150,6 @@ describe('Smoke Testing Endpoints', () => {
             title: 'The first cool poll',
             polltaker_account: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
             description: 'Something is different here',
-            start_date: (new Date()),
             end_date: (new Date()),
             valid_event_ids: [12, 56, 90808, 634],
             poll_options: [

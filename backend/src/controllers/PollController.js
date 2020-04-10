@@ -29,6 +29,7 @@ class PollController {
         try {
             const pollData = {
                 fancy_id: await generateFancyId(request.body.title),
+                start_date: Date.now(),
                 ...request.body,
             }
 

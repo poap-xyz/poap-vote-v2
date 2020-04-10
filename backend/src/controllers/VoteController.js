@@ -30,7 +30,12 @@ class VoteController {
         let vote = null;
 
         try {
-            vote = await VoteService.addVote(request.body);
+            const voteData = {
+                date_cast: Date.now(),
+                ...request.body,
+            }
+
+            vote = await VoteService.addVote(voteData);
         } catch (error) {
             response.status(400).send({error: error.message});
             return;
