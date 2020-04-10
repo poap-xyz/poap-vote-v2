@@ -27,7 +27,12 @@ class PollController {
         let poll = null;
 
         try {
-            poll = await PollService.addPoll(request.body);
+            const pollData = {
+                fancy_id: await generateFancyId(request.body.title),
+                ...request.body,
+            }
+
+            poll = await PollService.addPoll(pollData);
         } catch (error) {
             response.status(400).send({ error: error.message });
             return;
@@ -45,6 +50,32 @@ class PollController {
 
         response.status(201).send(pollJSON);
     }
+}
+
+async function generateFancyId(title) {
+    const derived_fancy = title
+                            .substring(0, 57)
+                            .trim()
+                            .toLowerCase()
+                            .replace(/\s+/g, '-')
+                            .replace(/[^\w\s-]+/g, '');
+
+    let existing_poll = await PollService.getPollByFancyId(derived_fancy);
+
+    if (!existing_poll) {
+        return derived_fancy;
+    }
+
+    for (let index = 1; index < 10000; index++) {
+        let appended_fancy = `${derived_fancy}-${index}`
+        existing_poll = await PollService.getPollByFancyId(appended_fancy);
+
+        if (!existing_poll) {
+            return appended_fancy;
+        }
+    }
+
+    throw new Error('Unable to generate unique fancy_id');
 }
 
 export default PollController;
