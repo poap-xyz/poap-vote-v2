@@ -146,8 +146,9 @@
 
 <script>
 import { mapState } from 'vuex';
-import eip712 from 'src/mixins/eip712';
 import { date } from 'quasar';
+import eip712 from 'src/mixins/eip712';
+import { serverApi } from 'boot/axios';
 
 export default {
   name: 'TheCreatePollForm',
@@ -229,7 +230,12 @@ export default {
         ...pollData,
         attestation: signature,
       };
-      console.log('server payload ', payload);
+      console.log('Server payload ', payload);
+
+      // Create poll
+      console.log('Sending POST request to server to create poll...');
+      const response = await serverApi.post('/api/polls', payload);
+      console.log('Server response: ', response);
     },
   },
 };

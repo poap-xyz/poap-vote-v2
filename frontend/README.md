@@ -14,11 +14,21 @@ export INFURA_ID=yourInfuraId
 ```
 
 Blocknative's [onboard.js](https://www.blocknative.com/onboard) package is
-used and requires the three API keys listed above.
+used and requires the API keys listed above.
 
-Once that is setup, install dependencies with `npm install`.
+Once that is setup, follow the steps below:
 
-Finally, start the app in development mode using `npm run dev`.
+```bash
+# Start the server
+cd backend
+npm install
+npm run dev
+
+# Start the frontend app
+cd ../frontend
+npm install
+npm run dev
+```
 
 ### Run tests
 

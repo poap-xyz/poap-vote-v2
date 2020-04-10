@@ -93,7 +93,7 @@ export default {
       */
 
       try {
-        console.log('Formatting data to be signed');
+        console.log('Formatting data to be signed...');
         const data = this.formatSignatureData(dataName, dataFormat, dataContents);
 
         console.log('Requesting user signature...');
