@@ -1,5 +1,6 @@
 import SignatureHelpers from "../utils/SignatureHelpers";
 import { ethers } from 'ethers';
+const sigUtil = require('eth-sig-util')
 
 class PollValidator {
 
@@ -53,11 +54,36 @@ class PollValidator {
 
         let digestPollData = {...pollData};
         delete digestPollData.attestation
-        let digest = SignatureHelpers.getDigestFromPollData(digestPollData);
-        console.log("DIGEST", digest);
 
-        let signer = ethers.utils.verifyMessage(digest, `0x${signature}`);
-        console.log("SIGNER", signer);
+        // Define data specific to poll creation
+        // TODO: If we make dataName and dataFormat inputs to this function, we can
+        // use this same function when verifying signatures from Votes as well.
+        // Because 'Poll' and its dataFormat is hardcoded here, we currently cannot
+        // do that.
+        const dataName = 'Poll';
+        const dataFormat = [
+          { name: 'title', type: 'string' },
+          { name: 'polltaker_account', type: 'address' },
+          { name: 'description', type: 'string' },
+          { name: 'valid_event_ids', type: 'bytes32' },
+          { name: 'poll_options', type: 'string' },
+          { name: 'end_date', type: 'string' },
+        ];
+
+        // Get the payload that was signed
+        const stringifiedData = SignatureHelpers.formatSignatureData(dataName, dataFormat, digestPollData);
+
+        // Recover the signer
+        const signer = sigUtil.recoverTypedSignature({data: JSON.parse(stringifiedData), sig: `0x${signature}`});
+
+        // Convert the returned lowercase address to a checksum address
+        const checksumAddress = ethers.utils.getAddress(signer);
+
+        console.log('------------------------ DEBUG ------------------------');
+        console.log('Expected address:           ', digestPollData.polltaker_account);
+        console.log('Recovered checksum address: ', signer);
+        console.log('IS ADDRESS VALID: ', checksumAddress === digestPollData.polltaker_account);
+        console.log('---------------------- END DEBUG ----------------------');
 
         // const r = `0x${signature.substring(0, 64)}`;
         // const s = `0x${signature.substring(64, 128)}`;
