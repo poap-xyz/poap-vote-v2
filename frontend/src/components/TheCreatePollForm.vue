@@ -335,7 +335,14 @@ export default {
         && this.isValidDescription(this.description) === true
         && this.isValidEventSelection(this.valid_events) === true
         && areAllOptionsValid === true
-        && this.isEndDateValid === true;
+        // isEndDateValid is true by default to avoid unnecessary error message,
+        // therefore we also check the components individually to ensure they
+        // are all filled out
+        && this.isEndDateValid
+        && this.end_date !== undefined
+        && this.endHour !== undefined
+        && this.endMinute !== undefined
+        && this.endAmPm !== undefined;
     },
   },
 
