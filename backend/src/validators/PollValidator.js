@@ -16,6 +16,11 @@ class PollValidator {
             }
         }
 
+        const optionsValidation = this.validatePollOptions(pollData.poll_options);
+        if(!optionsValidation.isValid) {
+            return optionsValidation;
+        }
+
         const signatureValidation = this.validateSignature(pollData);
         if (!signatureValidation.isValid) {
             return signatureValidation;
@@ -38,6 +43,31 @@ class PollValidator {
                 return {
                     isValid: false,
                     errorMessage: "Missing required poll data fields",
+                };
+            }
+        }
+
+        return {
+            isValid: true,
+            errorMessage: null,
+        };
+    }
+
+    static validatePollOptions(pollOptions) {
+        if (!pollOptions.length || pollOptions.length < 2 || pollOptions.length > 20) {
+            return {
+                isValid: false,
+                errorMessage: "Poll must have between 2 and 20 options",
+            };
+        }
+
+        for (let i = 0; i < pollOptions.length; i++) {
+            const option = pollOptions[i];
+
+            if (!option.contents || !option.contents.length || option.contents.length < 1) {
+                return {
+                    isValid: false,
+                    errorMessage: "Poll Option contents are missing or malformed",
                 };
             }
         }

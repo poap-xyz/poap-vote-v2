@@ -51,6 +51,33 @@ describe('PollValidator', () => {
         expect(validation.errorMessage).to.equal('Ethereum address is improperly formed');
     });
 
+    it('should fail if there is only one poll option', () => {
+        const badPollData = pollDataReplacing('poll_options', [
+            {
+                contents: 'The Only Poll Option',
+            },
+        ]);
+
+        const validation = PollValidator.validateCreate(badPollData);
+        expect(validation.isValid).is.false;
+        expect(validation.errorMessage).to.equal('Poll must have between 2 and 20 options');
+    });
+
+    it('should fail if poll option data is malformed', () => {
+        const badPollData = pollDataReplacing('poll_options', [
+            {
+                contents: '',
+            },
+            {
+                contents: 'The other one is empty',
+            },
+        ]);
+
+        const validation = PollValidator.validateCreate(badPollData);
+        expect(validation.isValid).is.false;
+        expect(validation.errorMessage).to.equal('Poll Option contents are missing or malformed');
+    });
+
     it('should fail with an invalid attestation', () => {
         let badPollData = {...pollData};
         badPollData['attestation'] = "7474befda4d6b19f74df50d98b4c568166f621e4b5bc95ea436b03a412a6537e35faf43a7300244e5f87a5cefccbaddc9d2aaf5a405378131f07373aed2ae9d41c";
