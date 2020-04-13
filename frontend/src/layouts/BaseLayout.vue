@@ -12,6 +12,7 @@
           <div
             class="row justify-start items-center"
             style="cursor: pointer;"
+            @click="$router.push({ name: 'home' })"
           >
             <img
               alt="Ethereum logo"

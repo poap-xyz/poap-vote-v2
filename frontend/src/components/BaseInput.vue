@@ -5,6 +5,8 @@
       class="q-my-sm"
       filled
       :label="label"
+      lazy-rules
+      :rules="[val => rules(val)]"
       :type="type"
       @input="handleInput"
     />
@@ -20,6 +22,14 @@ export default {
       type: String,
       required: true,
       default: undefined,
+    },
+
+    rules: {
+      type: Function,
+      required: false,
+      default() {
+        return true;
+      },
     },
 
     type: {

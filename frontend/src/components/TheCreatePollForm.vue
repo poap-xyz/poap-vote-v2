@@ -9,12 +9,14 @@
       <base-input
         v-model="title"
         label="Title"
+        :rules="isValidTitle"
       />
 
       <!-- Poll description -->
       <base-input
         v-model="description"
         label="Description"
+        :rules="isValidDescription"
         type="textarea"
       />
 
@@ -22,6 +24,9 @@
       <h5 class="section-header">
         Poll Options
       </h5>
+      <div class="text-left">
+        Add as many poll options as you'd like.
+      </div>
 
       <!-- Options list -->
       <div
@@ -31,6 +36,7 @@
         <base-input
           v-model="poll_options[index].contents"
           :label="`Option ${index + 1}`"
+          :rules="isValidOption"
         />
       </div>
 
@@ -197,6 +203,18 @@ export default {
   },
 
   methods: {
+    isValidTitle(val) {
+      return (val && val.length > 4) ? true : 'Poll title must be at least 5 characters';
+    },
+
+    isValidDescription(val) { // eslint-disable-line no-unused-vars
+      return true;
+    },
+
+    isValidOption(val) {
+      return (val && val.length > 0) ? true : 'Option must have at least 1 character';
+    },
+
     addOption() {
       this.poll_options.push({ contents: undefined });
     },
