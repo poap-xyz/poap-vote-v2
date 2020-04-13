@@ -98,7 +98,7 @@ export default {
 
         console.log('Requesting user signature...');
         const result = await web3Send({
-          method: 'eth_signTypedData_v3',
+          method: 'eth_signTypedData_v4',
           params: [user, data],
           from: user,
           id: 1,
