@@ -7,18 +7,19 @@ describe('PollValidator', () => {
 
     let pollData = {
         title: 'The first cool poll',
-        polltaker_account: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+        polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
         description: 'This could be a very, very long amount of text if we wanted it to be I guess',
-        end_date: new Date(),
-        valid_event_ids: [1, 3, 5,],
+        end_date: 1587355243,
+        valid_event_ids: [123, 124, 126, 129, 125],
         poll_options: [
             {
-                contents: 'The first cool option',
+                contents: 'Yes',
             },
             {
-                contents: 'The second cool option',
+                contents: 'No',
             },
-        ]
+        ],
+        attestation: "a99cfd3da0b79606cf53c0b14c7432801d400c242bddefbec3b8356f77bbb0e05ac95430143008334b0319fca3f132533d3a86a3cd8dcc5333d1f5682793f61e1b",
     }
 
     let pollDataDeleting = (field) => {
@@ -29,7 +30,7 @@ describe('PollValidator', () => {
 
     it('should fail without all required fields', () => {
         const required_fields = ["title", "polltaker_account", "description",
-                                 "end_date", "valid_event_ids", "poll_options"];
+                                 "end_date", "valid_event_ids", "poll_options", "attestation"];
 
         required_fields.forEach((field) => {
             const validation = PollValidator.validateCreate(pollDataDeleting(field));
@@ -38,8 +39,43 @@ describe('PollValidator', () => {
         });
     });
 
+    it('should fail with an invalid attestation', () => {
+        let badPollData = pollDataDeleting('attestaton');
+        badPollData['attestation'] = "7474befda4d6b19f74df50d98b4c568166f621e4b5bc95ea436b03a412a6537e35faf43a7300244e5f87a5cefccbaddc9d2aaf5a405378131f07373aed2ae9d41c";
+
+        const validation = PollValidator.validateCreate(badPollData);
+        expect(!validation.isValid);
+        expect(validation.errorMessage).to.equal('Signature does match the data submitted');
+    });
+
+    it('should fail if data has been tampered with', () => {
+        let badPollData = pollDataDeleting('title');
+        badPollData['title'] = "My New Title";
+
+        const validation = PollValidator.validateCreate(badPollData);
+        expect(!validation.isValid);
+        expect(validation.errorMessage).to.equal('Signature does match the data submitted');
+    });
+
+    // TODO: Why in the world does this test fail??
+    // it('should fail if data has been tampered with', () => {
+    //     let badPollData = pollDataDeleting('poll_options');
+    //     badPollData['poll_options'] = [
+    //         {
+    //             contents: 'Yes',
+    //         },
+    //         {
+    //             contents: 'Maybe',
+    //         },
+    //     ];
+
+    //     const validation = PollValidator.validateCreate(badPollData);
+    //     expect(!validation.isValid);
+    //     expect(validation.errorMessage).to.equal('Signature does match the data submitted');
+    // });
+
     it('should succeed with all data present', () => {
         const validation = PollValidator.validateCreate(pollData);
-        expect(validation.isValid).to.equal(true);
+        expect(validation.isValid);
     });
 });

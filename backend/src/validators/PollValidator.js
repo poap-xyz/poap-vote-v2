@@ -1,6 +1,4 @@
 import SignatureHelpers from "../utils/SignatureHelpers";
-import { ethers } from 'ethers';
-const sigUtil = require('eth-sig-util')
 
 class PollValidator {
 
@@ -55,11 +53,6 @@ class PollValidator {
         let digestPollData = {...pollData};
         delete digestPollData.attestation
 
-        // Define data specific to poll creation
-        // TODO: If we make dataName and dataFormat inputs to this function, we can
-        // use this same function when verifying signatures from Votes as well.
-        // Because 'Poll' and its dataFormat is hardcoded here, we currently cannot
-        // do that.
         const dataName = 'Poll';
         const dataFormat = [
           { name: 'title', type: 'string' },
@@ -70,28 +63,14 @@ class PollValidator {
           { name: 'end_date', type: 'string' },
         ];
 
-        // Get the payload that was signed
-        const stringifiedData = SignatureHelpers.formatSignatureData(dataName, dataFormat, digestPollData);
+        const recoveredAddress = SignatureHelpers.recoverSigner(signature, dataName, dataFormat, digestPollData)
 
-        // Recover the signer
-        const signer = sigUtil.recoverTypedSignature({data: JSON.parse(stringifiedData), sig: `0x${signature}`});
-
-        // Convert the returned lowercase address to a checksum address
-        const checksumAddress = ethers.utils.getAddress(signer);
-
-        console.log('------------------------ DEBUG ------------------------');
-        console.log('Expected address:           ', digestPollData.polltaker_account);
-        console.log('Recovered checksum address: ', signer);
-        console.log('IS ADDRESS VALID: ', checksumAddress === digestPollData.polltaker_account);
-        console.log('---------------------- END DEBUG ----------------------');
-
-        // const r = `0x${signature.substring(0, 64)}`;
-        // const s = `0x${signature.substring(64, 128)}`;
-        // const v = parseInt(signature.substring(128, 130), 16);
-
-        // console.log("r", r);
-        // console.log("s", s);
-        // console.log("v", v);
+        if (recoveredAddress !== pollData.polltaker_account) {
+            return {
+                isValid: false,
+                errorMessage: "Signature does match the data submitted",
+            }
+        }
 
         return {
             isValid: true,

@@ -1,15 +1,19 @@
-class SignatureHelpers {
-    static getDigestFromPollData(pollData) {
-        const dataFormat = [
-            { name: 'title', type: 'string' },
-            { name: 'polltaker_account', type: 'address' },
-            { name: 'description', type: 'string' },
-            { name: 'valid_event_ids', type: 'bytes32' },
-            { name: 'poll_options', type: 'string' },
-            { name: 'end_date', type: 'string' },
-          ];
+import { ethers } from 'ethers';
+const sigUtil = require('eth-sig-util');
 
-          return this.formatSignatureData('Poll', dataFormat, pollData)
+class SignatureHelpers {
+
+    static recoverSigner(signature, dataName, dataFormat, dataContents) {
+        // Get the payload that was signed
+        const stringifiedData = this.formatSignatureData(dataName, dataFormat, dataContents);
+
+        // Recover the signer
+        const signer = sigUtil.recoverTypedSignature({data: JSON.parse(stringifiedData), sig: `0x${signature}`});
+
+        // Convert the returned lowercase address to a checksum address
+        const checksumAddress = ethers.utils.getAddress(signer);
+
+        return checksumAddress;
     }
 
     static formatSignatureData(dataName, dataFormat, dataContents) {
