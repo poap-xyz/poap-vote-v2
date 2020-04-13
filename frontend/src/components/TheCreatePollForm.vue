@@ -86,7 +86,7 @@
           label="End date"
           mask="date"
           placeholder="YYYY/MM/DD"
-          style="max-width: 190px;"
+          style="max-width: 175px;"
           :rules="['date']"
         >
           <template v-slot:append>
@@ -109,33 +109,31 @@
         </q-input>
 
         <!-- End time -->
-        <q-input
-          v-model="end_time"
-          class="col-auto q-my-sm"
-          filled
-          label="End time"
-          mask="time"
-          placeholder="HH:MM"
-          style="max-width: 190px;"
-          :rules="['time']"
-        >
-          <template v-slot:append>
-            <q-icon
-              name="fas fa-clock"
-              class="cursor-pointer"
-            >
-              <q-popup-proxy
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-time
-                  v-model="end_time"
-                  format24h
-                />
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
+        <div class="col-auto">
+          <div class="row justify-end">
+            <base-select
+              v-model="endHour"
+              class="col q-mr-xs"
+              label="HH"
+              :hide-dropdown-icon="true"
+              :options="endHourOptions"
+            />
+            <base-select
+              v-model="endMinute"
+              class="col q-mr-xs"
+              label="MM"
+              :hide-dropdown-icon="true"
+              :options="endMinuteOptions"
+            />
+            <base-select
+              v-model="amPm"
+              class="col"
+              label="AM/PM"
+              :hide-dropdown-icon="true"
+              :options="amPmOptions"
+            />
+          </div>
+        </div>
       </div>
 
       <div>
@@ -175,6 +173,13 @@ export default {
         { contents: undefined },
         { contents: undefined },
       ],
+      // Parameters for end_time
+      endHour: undefined,
+      endHourOptions: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+      endMinute: undefined,
+      endMinuteOptions: ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'],
+      amPm: undefined,
+      amPmOptions: ['AM', 'PM'],
     };
   },
 
@@ -190,7 +195,8 @@ export default {
      */
     end_date() {
       const [year, month, day] = this.end_day.split('/');
-      const [hours, minutes] = this.end_time.split(':');
+      const hours = this.amPm === 'AM' ? this.endHour : String(Number(this.endHour) + 12);
+      const minutes = this.endMinute;
       const lastDay = date.buildDate({
         year, month, date: day, hours, minutes,
       });
