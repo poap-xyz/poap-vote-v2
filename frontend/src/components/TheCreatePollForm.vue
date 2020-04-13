@@ -33,10 +33,20 @@
         v-for="(option, index) in poll_options"
         :key="index"
       >
+        <!--
+        If there 3 or more options, user can remove the last option. We
+        do it this way instead of allowing user to remove any option
+        because it is much simpler to implement. Two-way binding breaks
+        if you remove an element from an array at an arbitrary index.
+        -->
         <base-input
           v-model="poll_options[index].contents"
+          :icon-append="index === poll_options.length - 1 && index > 1
+            ? 'fas fa-minus-circle'
+            : undefined"
           :label="`Option ${index + 1}`"
           :rules="isValidOption"
+          @iconClicked="removeOption(index)"
         />
       </div>
 
@@ -236,13 +246,14 @@
 import { mapState } from 'vuex';
 import { date } from 'quasar';
 import eip712 from 'src/mixins/eip712';
+import helpers from 'src/mixins/helpers';
 import { serverApi } from 'boot/axios';
 import Fuse from 'fuse.js';
 
 export default {
   name: 'TheCreatePollForm',
 
-  mixins: [eip712],
+  mixins: [eip712, helpers],
 
   data() {
     return {
@@ -352,6 +363,10 @@ export default {
 
     addOption() {
       this.poll_options.push({ contents: undefined });
+    },
+
+    removeOption(index) {
+      this.poll_options = this.removeArrayElementByIndex(this.poll_options, index);
     },
 
     /**

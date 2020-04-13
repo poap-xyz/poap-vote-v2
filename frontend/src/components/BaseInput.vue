@@ -9,7 +9,18 @@
       :rules="[val => rules(val)]"
       :type="type"
       @input="handleInput"
-    />
+    >
+      <template
+        v-if="iconAppend"
+        v-slot:append
+      >
+        <q-icon
+          class="cursor-pointer"
+          :name="iconAppend"
+          @click="$emit('iconClicked')"
+        />
+      </template>
+    </q-input>
   </div>
 </template>
 
@@ -18,6 +29,12 @@ export default {
   name: 'BaseInput',
 
   props: {
+    iconAppend: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+
     label: {
       type: String,
       required: true,
