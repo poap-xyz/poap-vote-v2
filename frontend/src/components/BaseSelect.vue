@@ -4,7 +4,8 @@
       v-model="content"
       class="q-my-sm"
       filled
-      :hide-dropdown-icon="hideDropdownIcon"
+      :hide-bottom-space="isTimeDropdown"
+      :hide-dropdown-icon="isTimeDropdown"
       :label="label"
       :options="options"
       :type="type"
@@ -19,7 +20,7 @@ export default {
   name: 'BaseInput',
 
   props: {
-    hideDropdownIcon: {
+    isTimeDropdown: {
       type: Boolean,
       required: false,
       default: false,

@@ -57,7 +57,7 @@
       </h5>
       <div class="text-left">
         A user will be able to vote on this poll only if they hold a valid POAP
-        token from at least one of the selected events
+        token from at least one of the selected events.
         <q-select
           v-model="valid_events"
           class="q-my-sm"
@@ -65,6 +65,7 @@
           label="Events"
           multiple
           :options="events"
+          :rules="[val => isValidEventSelection(val)]"
           option-label="name"
         />
       </div>
@@ -77,68 +78,84 @@
         Enter the polling end date and time, specified in 24-hour
         format using your local time zone
       </div>
-      <div class="row justify-between">
-        <!-- End date -->
-        <q-input
-          v-model="end_day"
-          class="col-auto q-my-sm"
-          filled
-          label="End date"
-          mask="date"
-          placeholder="YYYY/MM/DD"
-          style="max-width: 175px;"
-          :rules="['date']"
-        >
-          <template v-slot:append>
-            <q-icon
-              name="fas fa-calendar-alt"
-              class="cursor-pointer"
-            >
-              <q-popup-proxy
-                ref="qDateProxy"
-                transition-show="scale"
-                transition-hide="scale"
+      <div>
+        <div class="row justify-between">
+          <!-- End date -->
+          <q-input
+            v-model="end_day"
+            class="col-auto q-my-sm"
+            filled
+            :hide-bottom-space="true"
+            :hide-dropdown-icon="true"
+            label="End date"
+            mask="date"
+            placeholder="YYYY/MM/DD"
+            style="max-width: 175px;"
+            :rules="['date']"
+          >
+            <template v-slot:append>
+              <q-icon
+                name="fas fa-calendar-alt"
+                class="cursor-pointer"
               >
-                <q-date
-                  v-model="end_day"
-                  @input="() => $refs.qDateProxy.hide()"
-                />
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
+                <q-popup-proxy
+                  ref="qDateProxy"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="end_day"
+                    @input="() => $refs.qDateProxy.hide()"
+                  />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
 
-        <!-- End time -->
-        <div class="col-auto">
-          <div class="row justify-end">
-            <base-select
-              v-model="endHour"
-              class="col q-mr-xs"
-              label="HH"
-              :hide-dropdown-icon="true"
-              :options="endHourOptions"
-            />
-            <base-select
-              v-model="endMinute"
-              class="col q-mr-xs"
-              label="MM"
-              :hide-dropdown-icon="true"
-              :options="endMinuteOptions"
-            />
-            <base-select
-              v-model="amPm"
-              class="col"
-              label="AM/PM"
-              :hide-dropdown-icon="true"
-              :options="amPmOptions"
-            />
+          <!-- End time -->
+          <div class="col-auto">
+            <div class="row justify-end">
+              <base-select
+                v-model="endHour"
+                class="col q-mr-xs"
+                label="HH"
+                :is-time-dropdown="true"
+                :options="endHourOptions"
+              />
+              <base-select
+                v-model="endMinute"
+                class="col q-mr-xs"
+                label="MM"
+                :is-time-dropdown="true"
+                :options="endMinuteOptions"
+              />
+              <base-select
+                v-model="endAmPm"
+                class="col"
+                label="AM/PM"
+                :is-time-dropdown="true"
+                :options="endAmPmOptions"
+              />
+            </div>
           </div>
         </div>
+      </div>
+      <!--
+      Since datetime is composed of multiple components, we manually show the
+      verification if it's invalid
+      -->
+      <div
+        v-if="!isEndDateValid"
+        class="text-caption text-left negative"
+      >
+        &nbsp;&nbsp;&nbsp;&nbsp;End date must be in the future
       </div>
 
       <div>
         <base-button
           color="primary"
+          class="q-mt-xl"
+          :disabled="!isFormValid"
           :full-width="true"
           label="Create"
           @click="createPoll"
@@ -178,8 +195,8 @@ export default {
       endHourOptions: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
       endMinute: undefined,
       endMinuteOptions: ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'],
-      amPm: undefined,
-      amPmOptions: ['AM', 'PM'],
+      endAmPm: undefined,
+      endAmPmOptions: ['AM', 'PM'],
     };
   },
 
@@ -194,13 +211,37 @@ export default {
      * converts it into a unix timestamp (therefore this is in seconds)
      */
     end_date() {
+      if (!this.end_day) return undefined;
       const [year, month, day] = this.end_day.split('/');
-      const hours = this.amPm === 'AM' ? this.endHour : String(Number(this.endHour) + 12);
+      const hours = this.endAmPm === 'AM' ? this.endHour : String(Number(this.endHour) + 12);
       const minutes = this.endMinute;
       const lastDay = date.buildDate({
         year, month, date: day, hours, minutes,
       });
       return parseInt(lastDay.getTime() / 1000, 10);
+    },
+
+    isEndDateValid() {
+      // Ensure selected end date is in the future
+      // Unless all fields are filled out, assume valid
+      if (!this.end_date) return true;
+      if (!this.endHour) return true;
+      if (!this.endMinute) return true;
+      if (!this.endAmPm) return true;
+      return this.end_date * 1000 > (new Date()).getTime();
+    },
+
+    isFormValid() {
+      // We explicitly check that values are equal to true since input field rules
+      // return a string when input is invalid, and strings are truthy
+      const areAllOptionsValid = this.poll_options
+        .filter((val) => val.contents && val.contents.length > 0)
+        .length === this.poll_options.length;
+      return this.isValidTitle(this.title) === true
+        && this.isValidDescription(this.description) === true
+        && this.isValidEventSelection(this.valid_events) === true
+        && areAllOptionsValid === true
+        && this.isEndDateValid === true;
     },
   },
 
@@ -219,6 +260,10 @@ export default {
 
     isValidOption(val) {
       return (val && val.length > 0) ? true : 'Option must have at least 1 character';
+    },
+
+    isValidEventSelection(val) {
+      return (val && val.length > 0) ? true : 'Please select at least 1 event';
     },
 
     addOption() {
