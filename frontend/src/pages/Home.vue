@@ -10,6 +10,7 @@
     </div>
     <div class="row justify-center q-mt-xl">
       <base-button
+        id="button--create-poll"
         color="primary"
         label="Create Poll"
         @click="$router.push({name: 'create'})"

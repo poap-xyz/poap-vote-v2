@@ -3,8 +3,9 @@
     <!-- Connect Wallet -->
     <div>
       <base-button
-        label="Connect Wallet"
+        id="button--connect-wallet"
         color="primary"
+        label="Connect Wallet"
         :loading="isLoading"
         @click="connectWallet"
       />

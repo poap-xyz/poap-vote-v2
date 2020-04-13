@@ -1,8 +1,11 @@
 <template>
   <q-page padding>
     <div class="text-center">
-      <h2 class="primary text-bold">
-        Create poll
+      <h2
+        id="page-title"
+        class="primary text-bold"
+      >
+        Create Poll
       </h2>
       <div v-if="userAddress">
         <the-create-poll-form />

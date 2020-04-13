@@ -10,6 +10,28 @@
 //
 //
 
+// const provider = require('../fixtures/provider.json')
+
+// console.log('provider:', provider);
+
+// Cypress.Commands.add('connectWallet'), () => {
+//   cy.window().its('app.store').then(store => {
+//     store.dispatch('user/setEthereumData', provider)
+//   })
+// }
+
+
+Cypress.Commands.add('getStore', () => {
+  cy.window().its('app.store')
+})
+
+Cypress.Commands.add('getRouter', () => {
+  cy.window().its('app.router')
+})
+
+
+// ============================ Commands below here were pre-populated =============================
+
 // these two commands let you persist local storage between tests
 const LOCAL_STORAGE_MEMORY = {};
 
