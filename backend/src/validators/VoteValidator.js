@@ -1,3 +1,5 @@
+import isValidAddress from "../utils/isValidAddress";
+
 class VoteValidator {
 
     static validateCreate(voteData) {
@@ -5,6 +7,13 @@ class VoteValidator {
 
         if (!fieldValidation.isValid) {
             return fieldValidation;
+        }
+
+        if(!isValidAddress(voteData.voter_account)) {
+            return {
+                isValid: false,
+                errorMessage: 'Ethereum address is improperly formed',
+            }
         }
 
         return {

@@ -28,6 +28,12 @@ describe('PollValidator', () => {
         return copy;
     }
 
+    let pollDataReplacing = (field, newValue) => {
+        let copy = pollDataDeleting(field);
+        copy[field] = newValue;
+        return copy;
+    }
+
     it('should fail without all required fields', () => {
         const required_fields = ["title", "polltaker_account", "description",
                                  "end_date", "valid_event_ids", "poll_options", "attestation"];
@@ -39,12 +45,18 @@ describe('PollValidator', () => {
         });
     });
 
+    it('should fail with an invalid address checksum', () => {
+        const validation = PollValidator.validateCreate(pollDataReplacing('polltaker_account', '0x22d491bDe2303f2f43325b2108D26f1eAba1e32B'));
+        expect(validation.isValid).is.false;
+        expect(validation.errorMessage).to.equal('Ethereum address is improperly formed');
+    });
+
     it('should fail with an invalid attestation', () => {
         let badPollData = {...pollData};
         badPollData['attestation'] = "7474befda4d6b19f74df50d98b4c568166f621e4b5bc95ea436b03a412a6537e35faf43a7300244e5f87a5cefccbaddc9d2aaf5a405378131f07373aed2ae9d41c";
 
         const validation = PollValidator.validateCreate(badPollData);
-        expect(!validation.isValid);
+        expect(validation.isValid).is.false;
         expect(validation.errorMessage).to.equal('Signature does match the data submitted');
     });
 
@@ -53,7 +65,7 @@ describe('PollValidator', () => {
         badPollData['title'] = "My New Title";
 
         const validation = PollValidator.validateCreate(badPollData);
-        expect(!validation.isValid);
+        expect(validation.isValid).is.false;
         expect(validation.errorMessage).to.equal('Signature does match the data submitted');
     });
 
@@ -70,12 +82,12 @@ describe('PollValidator', () => {
     //     ];
 
     //     const validation = PollValidator.validateCreate(badPollData);
-    //     expect(!validation.isValid);
+    //     expect(validation.isValid).is.false;
     //     expect(validation.errorMessage).to.equal('Signature does match the data submitted');
     // });
 
     it('should succeed with all data present', () => {
         const validation = PollValidator.validateCreate(pollData);
-        expect(validation.isValid);
+        expect(validation.isValid).is.true;
     });
 });

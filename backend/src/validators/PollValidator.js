@@ -1,4 +1,5 @@
 import SignatureHelpers from "../utils/SignatureHelpers";
+import isValidAddress from "../utils/isValidAddress";
 
 class PollValidator {
 
@@ -6,6 +7,13 @@ class PollValidator {
         const fieldValidation = this.validateFields(pollData);
         if (!fieldValidation.isValid) {
             return fieldValidation;
+        }
+
+        if(!isValidAddress(pollData.polltaker_account)) {
+            return {
+                isValid: false,
+                errorMessage: "Ethereum address is improperly formed",
+            }
         }
 
         const signatureValidation = this.validateSignature(pollData);
