@@ -18,6 +18,7 @@
     "@quasar/extras": "^1.0.0",
     "bnc-onboard": "^1.7.1",
     "ethers": "^4.0.46",
+    "fuse.js": "^5.1.0",
     "quasar": "^1.0.0"
   },
   "devDependencies": {

@@ -64,9 +64,11 @@
           filled
           label="Events"
           multiple
-          :options="events"
-          :rules="[val => isValidEventSelection(val)]"
           option-label="name"
+          :options="filteredEvents"
+          :rules="[val => isValidEventSelection(val)]"
+          use-input
+          @filter="eventsSearchFilter"
         />
       </div>
 
@@ -170,6 +172,7 @@ import { mapState } from 'vuex';
 import { date } from 'quasar';
 import eip712 from 'src/mixins/eip712';
 import { serverApi } from 'boot/axios';
+import Fuse from 'fuse.js';
 
 export default {
   name: 'TheCreatePollForm',
@@ -190,13 +193,21 @@ export default {
         { contents: undefined },
         { contents: undefined },
       ],
-      // Parameters for end_time
+      // Parameters for computing end_time
       endHour: undefined,
       endHourOptions: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
       endMinute: undefined,
       endMinuteOptions: ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'],
       endAmPm: undefined,
       endAmPmOptions: ['AM', 'PM'],
+      // Parameters and options for fuse.js fuzzy-search generated with https://fusejs.io/,
+      // used for event search/filtering
+      filteredEvents: [],
+      fuseOptions: {
+        // https://fusejs.io/api/options.html
+        keys: ['name'],
+        distance: 1000, // we don't care where in the string the match is found
+      },
     };
   },
 
@@ -247,6 +258,7 @@ export default {
 
   mounted() {
     this.startDate = new Date();
+    this.filteredEvents = this.events;
   },
 
   methods: {
@@ -268,6 +280,25 @@ export default {
 
     addOption() {
       this.poll_options.push({ contents: undefined });
+    },
+
+    eventsSearchFilter(val, update) {
+      // Return fill list of options if search string is empty
+      if (val === '') {
+        update(() => {
+          this.filteredEvents = this.events;
+        });
+        return;
+      }
+
+      // If not empty, use fuse.js to perform a fuzzy search on the event list
+      update(() => {
+        const fuse = new Fuse(this.events, this.fuseOptions);
+        const filteredEvents = fuse.search(val); // .slice(0, 6); // show top 6 events only
+        this.filteredEvents = filteredEvents.map((event) => event.item);
+        // const needle = val.toLowerCase();
+        // this.filteredEvents = this.events.filter((v) => v.name.toLowerCase().indexOf(needle)>-1);
+      });
     },
 
     async createPoll() {
