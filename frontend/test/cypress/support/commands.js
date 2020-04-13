@@ -7,19 +7,19 @@
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-//
-//
 
-// const provider = require('../fixtures/provider.json')
-
-// console.log('provider:', provider);
-
-// Cypress.Commands.add('connectWallet'), () => {
-//   cy.window().its('app.store').then(store => {
-//     store.dispatch('user/setEthereumData', provider)
-//   })
-// }
-
+Cypress.Commands.add('connectWallet', () => {
+  cy.window().its('app.store').then(store => {
+    store.commit('user/setWallet', {
+      // Simulate connecting wallet by setting provider/signer/address to strings.
+      // This tricks the UI into thinking a wallet is connected
+      signer: '0x',
+      provider: '0x',
+      ethersProvider: '0x',
+      userAddress: '0x',
+    })
+  })
+})
 
 Cypress.Commands.add('getStore', () => {
   cy.window().its('app.store')
@@ -96,11 +96,19 @@ Cypress.Commands.add('quasar', { prevSubject: 'element' }, (subject, mode, optio
               .type(option)
               .should('have.value', option);
             break;
+          case 'textarea':
+            cy.get('textarea:first')
+              .type(option)
+              // .should('have.value', option); // TODO does not work
+              break
           case 'radio':
           case 'checkbox':
             cy.contains(option)
               .click();
             break;
+          case 'select':
+            // TODO
+            break
           default:
             break;
         }

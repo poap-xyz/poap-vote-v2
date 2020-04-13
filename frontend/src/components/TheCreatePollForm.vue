@@ -7,6 +7,7 @@
       </h5>
       <!-- Poll title -->
       <base-input
+        id="createPoll-title"
         v-model="title"
         label="Title"
         :rules="isValidTitle"
@@ -14,6 +15,7 @@
 
       <!-- Poll description -->
       <base-input
+        id="createPoll-description"
         v-model="description"
         label="Description"
         :rules="isValidDescription"
@@ -40,6 +42,7 @@
         if you remove an element from an array at an arbitrary index.
         -->
         <base-input
+          :id="`createPoll-option-${index+1}`"
           v-model="poll_options[index].contents"
           :icon-append="index === poll_options.length - 1 && index > 1
             ? 'fas fa-minus-circle'
@@ -53,6 +56,7 @@
       <!-- Add new option -->
       <div class="text-left">
         <base-button
+          id="createPoll-addOption"
           color="primary"
           :dense="true"
           label="Add option"
@@ -70,6 +74,7 @@
         token from at least one of the selected events. Use the box below to
         search all events.
         <q-select
+          id="createPoll-selectEvents"
           v-model="valid_events"
           class="q-my-sm"
           filled
@@ -154,36 +159,40 @@
           <!--
           End date
           -->
-          <q-input
-            v-model="end_day"
+          <div
+            id="createPoll-endDay"
             class="col-auto q-my-sm"
-            filled
-            :hide-bottom-space="true"
-            :hide-dropdown-icon="true"
-            label="End date"
-            mask="date"
-            placeholder="YYYY/MM/DD"
-            style="max-width: 175px;"
-            :rules="['date']"
           >
-            <template v-slot:append>
-              <q-icon
-                name="fas fa-calendar-alt"
-                class="cursor-pointer"
-              >
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
+            <q-input
+              v-model="end_day"
+              filled
+              :hide-bottom-space="true"
+              :hide-dropdown-icon="true"
+              label="End date"
+              mask="date"
+              placeholder="YYYY/MM/DD"
+              style="max-width: 175px;"
+              :rules="['date']"
+            >
+              <template v-slot:append>
+                <q-icon
+                  name="fas fa-calendar-alt"
+                  class="cursor-pointer"
                 >
-                  <q-date
-                    v-model="end_day"
-                    @input="() => $refs.qDateProxy.hide()"
-                  />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+                  <q-popup-proxy
+                    ref="qDateProxy"
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="end_day"
+                      @input="() => $refs.qDateProxy.hide()"
+                    />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
 
           <!--
           End time
@@ -191,6 +200,7 @@
           <div class="col-auto">
             <div class="row justify-end">
               <base-select
+                id="createPoll-endHour"
                 v-model="endHour"
                 class="col q-mr-xs"
                 label="HH"
@@ -198,6 +208,7 @@
                 :options="endHourOptions"
               />
               <base-select
+                id="createPoll-endMinute"
                 v-model="endMinute"
                 class="col q-mr-xs"
                 label="MM"
@@ -205,6 +216,7 @@
                 :options="endMinuteOptions"
               />
               <base-select
+                id="createPoll-endAmPm"
                 v-model="endAmPm"
                 class="col"
                 label="AM/PM"
@@ -230,6 +242,7 @@
       <!-------------------------------------- SUBMIT BUTTON -------------------------------------->
       <div>
         <base-button
+          id="createPoll-submit"
           color="primary"
           class="q-mt-xl"
           :disabled="!isFormValid"
