@@ -17,6 +17,14 @@
           <div>{{ poll.title }}</div>
         </q-card-section>
 
+        <!-- Poll description -->
+        <q-card-section>
+          <div class="text-caption text-uppercase text-grey">
+            Description
+          </div>
+          <div>{{ poll.description }}</div>
+        </q-card-section>
+
         <!-- Poll end date -->
         <q-card-section>
           <div class="text-caption text-uppercase text-grey">
@@ -32,12 +40,42 @@
           </div>
           <div class="row justify-start">
             <div
-              v-for="event in poll.valid_event_ids"
-              :key="event"
+              v-for="id in poll.valid_event_ids"
+              :key="id"
+              class="q-mr-sm"
             >
-              {{ event }}
+              <img
+                :src="events[id].image_url"
+                style="max-width:40px"
+              >
+              <q-tooltip>
+                <q-card>
+                  <!-- Layout copied and modified from CreatePollForm select component -->
+                  <q-item-section class="dark-toggle q-pa-md">
+                    <q-item-label class="event-title">
+                      {{ events[id].name }}
+                    </q-item-label>
+                    <q-item-label class="event-caption">
+                      {{ events[id].start_date }} &ndash; {{ events[id].end_date }}
+                    </q-item-label>
+                    <q-item-label class="event-caption">
+                      <span v-if="events[id].city === 'Virtual'">Virtual</span>
+                      <span v-else-if="!events[id].city">Not specified</span>
+                      <span v-else>{{ events[id].city }}, {{ events[id].country }}</span>
+                    </q-item-label>
+                  </q-item-section>
+                </q-card>
+              </q-tooltip>
             </div>
           </div>
+        </q-card-section>
+
+        <!-- Poll Creator -->
+        <q-card-section>
+          <div class="text-caption text-uppercase text-grey">
+            Created By
+          </div>
+          <div>{{ poll.polltaker_account }}</div>
         </q-card-section>
       </q-card>
     </div>
@@ -63,10 +101,25 @@ export default {
 
   computed: {
     ...mapState({
+      allEvents: (state) => state.poap.events,
       polls(state) {
         return state.poap[this.pollType];
       },
     }),
+
+    events() {
+      // Get list of all event IDs
+      const eventIds = [];
+      this.polls.forEach((poll) => eventIds.push(...poll.valid_event_ids));
+      // Get an array of all events
+      const eventArray = this.allEvents.filter((event) => eventIds.includes(String(event.id)));
+      // Convert to an object where Id is the key
+      const eventObject = {};
+      eventArray.forEach((event) => {
+        eventObject[event.id] = event;
+      });
+      return eventObject;
+    },
 
     prettyHeader() {
       if (this.pollType.toLowerCase().startsWith('active')) return 'Active Polls';
@@ -75,3 +128,13 @@ export default {
   },
 };
 </script>
+
+<style lang="stylus" scoped>
+.event-title {
+  font-size: 1.5em
+}
+.event-caption {
+  color: grey
+  font-size: 1.25em
+}
+</style>
