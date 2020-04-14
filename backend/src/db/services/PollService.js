@@ -29,7 +29,7 @@ class PollService {
                 },
             });
         } catch(error) {
-            console.log("[PollService]", error);
+            console.log("[PollService]", error.description);
             throw new Error("There was a database error (PS.2)");
         }
     }
