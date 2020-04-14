@@ -11,8 +11,9 @@
       <template v-slot="{ item, index }">
         <q-card
           :key="index"
-          class="q-mr-md"
+          class="cursor-pointer q-mr-md"
           style="max-width: 400px;"
+          @click="$router.push({name: 'pollDetails', params: {fancyId: item.fancy_id}})"
         >
           <!-- POLL TITLE AND DESCRIPTION-->
           <q-card-section>
