@@ -18,7 +18,7 @@ describe('VoteValidator', () => {
     }
 
     let voteDataReplacing = (field, newValue) => {
-        let copy = voteDataDeleting(field);
+        let copy = {...voteData};
         copy[field] = newValue;
         return copy;
     }

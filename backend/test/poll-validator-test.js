@@ -29,7 +29,7 @@ describe('PollValidator', () => {
     }
 
     let pollDataReplacing = (field, newValue) => {
-        let copy = pollDataDeleting(field);
+        let copy = {...pollData};
         copy[field] = newValue;
         return copy;
     }
