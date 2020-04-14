@@ -260,7 +260,6 @@ import { mapState } from 'vuex';
 import { date } from 'quasar';
 import eip712 from 'src/mixins/eip712';
 import helpers from 'src/mixins/helpers';
-import { serverApi } from 'boot/axios';
 import Fuse from 'fuse.js';
 
 export default {
@@ -439,11 +438,11 @@ export default {
         ...pollData,
         attestation: signature,
       };
-      console.log('Server payload ', payload);
+      console.log('Server payload: ', payload);
 
       // Create poll
       console.log('Sending POST request to server to create poll...');
-      const response = await serverApi.post('/api/polls', payload);
+      const response = await this.$serverApi.post('/api/polls', payload);
       console.log('Server response: ', response);
     },
   },

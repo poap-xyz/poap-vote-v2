@@ -1,5 +1,8 @@
 <template>
-  <div style="margin:0 auto; max-width:600px;">
+  <div
+    v-if="poll"
+    style="margin:0 auto; max-width:600px;"
+  >
     <!-- Title -->
     <h5 class="primary text-bold">
       {{ poll.title }}
@@ -26,11 +29,12 @@
       v-for="option in options"
       :key="option.id"
       class="option q-my-md"
+      :class="{ 'user-cannot-vote': eligibleTokenCount < 1 || !eligibleTokenCount }"
     >
       <q-item
         clickable
         class="q-py-md"
-        @click="selectedOption=option.id"
+        @click="eligibleTokenCount > 0 ? selectedOption=option.id : selectedOption=undefined"
       >
         <q-item-section avatar>
           <q-icon
@@ -42,8 +46,20 @@
         <q-item-section>
           <q-item-label>{{ option.contents }}</q-item-label>
         </q-item-section>
+
+        <q-item-section
+          v-if="votePercentages"
+          avatar
+          class="text-caption"
+        >
+          <q-item-label>{{ voteCounts[option.id] }} votes</q-item-label>
+          <q-item-label>{{ formatPercent(votePercentages[option.id], 2) }}</q-item-label>
+        </q-item-section>
       </q-item>
     </q-card>
+    <div class="text-caption">
+      {{ totalVotes }} total votes
+    </div>
 
     <!-- Button to vote -->
     <div v-if="userAddress">
@@ -69,6 +85,12 @@
       <div v-if="isPollOngoing">
         You can vote in this poll if you hold any of the following POAP tokens.
         <span v-if="!userAddress">Connect your wallet to check your token balance and vote.</span>
+        <span v-else>
+          You hold {{ eligibleTokenCount }} eligible
+          token<span v-if="eligibleTokenCount !== 1">s</span>
+          and therefore have {{ eligibleTokenCount }}
+          vote<span v-if="eligibleTokenCount !== 1">s</span>.
+        </span>
       </div>
       <div v-else>
         Users were eligible to vote in this poll if they held any of the following POAP tokens.
@@ -90,6 +112,7 @@
             <q-card
               bordered
               class="card-border"
+              :class="{'not-a-user-token': !userEventIds.includes(event.id)}"
             >
               <q-item>
                 <q-item-section avatar>
@@ -129,6 +152,7 @@
 <script>
 import { mapState } from 'vuex';
 import ConnectWallet from 'components/ConnectWallet';
+import eip712 from 'src/mixins/eip712';
 import helpers from 'src/mixins/helpers';
 
 export default {
@@ -138,7 +162,7 @@ export default {
     ConnectWallet,
   },
 
-  mixins: [helpers],
+  mixins: [eip712, helpers],
 
   props: {
     // This refers to the fancy ID of the poll we are viewing
@@ -151,15 +175,17 @@ export default {
   data() {
     return {
       selectedOption: undefined,
+      votes: undefined,
     };
   },
+
 
   computed: {
     ...mapState({
       allEvents: (state) => state.poap.events,
       polls: (state) => [...state.poap.activePolls, ...state.poap.completedPolls],
       userAddress: (state) => state.user.userAddress,
-      tokens: (state) => state.user.tokens,
+      userTokens: (state) => state.user.tokens,
     }),
 
     /**
@@ -209,16 +235,107 @@ export default {
     isPollOngoing() {
       return this.timeRemaining !== 0;
     },
+
+    /**
+     * @notice Returns an array of event IDs for which the user has a POAP token
+     */
+    userEventIds() {
+      if (!this.userTokens) return undefined;
+      return this.userTokens.map((token) => token.event.id);
+    },
+
+    /**
+     * @notice Returns true if user has a least one valid POAP token for this poll
+     */
+    eligibleTokenCount() {
+      const validIds = this.poll.valid_event_ids;
+      const intersection = this.userEventIds.filter((val) => validIds.includes(String(val)));
+      return intersection.length;
+    },
+
+    /**
+     * @notice Returns the total number of votes
+     */
+    totalVotes() {
+      // Flatten votes into array of the option IDs amd get total number of votes
+      if (!this.votes) return undefined;
+      return this.votes.length;
+    },
+
+    /**
+     * @notice Returns object where key is vote ID and value is total votes for that option
+     */
+    voteCounts() {
+      // Get the count, i.e. number of times a vote was cast
+      if (!this.votes) return undefined;
+      // Get counts
+      const arrayOfVotes = this.votes.map((vote) => vote.poll_option_id);
+      const counts = arrayOfVotes.reduce((acc, val) => {
+        if (acc[val] === undefined) acc[val] = 1;
+        else acc[val] += 1;
+        return acc;
+      }, {});
+      // Add missing elements (i.e. options with zero votes)
+      this.poll.poll_options.forEach((option) => {
+        if (!counts[option.id]) counts[option.id] = 0;
+      });
+      return counts;
+    },
+
+    /**
+     * @notice Returns object where key is vote ID is the key and value is its percentage
+     */
+    votePercentages() {
+      // Setup output object to ensure all fields (even those with zero votes) are present
+      if (!this.votes) return undefined;
+      const percentages = {};
+      this.poll.poll_options.forEach((option) => {
+        percentages[option.id] = 0;
+      });
+      // Convert vote count to percentages
+      Object.keys(this.voteCounts).forEach((key) => {
+        percentages[key] = this.voteCounts[key] / this.totalVotes;
+      });
+      return percentages;
+    },
+  },
+
+  async mounted() {
+    const response = await this.$serverApi.get(`/api/votes/${this.fancyId}`);
+    this.votes = response.data;
   },
 
   methods: {
-    submitVote() {
+    async submitVote() {
+      // Define EIP-712 signature format for submitting votes
+      const dataFormat = [
+        { name: 'voter_account', type: 'address' },
+        { name: 'token_ids', type: 'bytes32' },
+        { name: 'poll_option_id', type: 'uint256' },
+      ];
+
+      // The actual data to be signed
       const voteData = {
         voter_account: this.userAddress,
-        token_ids: this.eligibleUserTokens,
+        token_ids: this.userTokens.map((token) => token.tokenId),
         poll_option_id: this.selectedOption,
       };
       console.log(voteData);
+
+      // Format data and get user's signature
+      const signature = await this.getSignature('Vote', dataFormat, voteData, this.userAddress);
+
+      // Generate object to send to server
+      const payload = {
+        ...voteData,
+        attestation: signature,
+      };
+      console.log('Server payload: ', payload);
+
+      // Submit vote
+      console.log('Sending POST request to server to submit vote...');
+      const response = await this.$serverApi.post(`/api/votes/${this.fancyId}`, payload);
+      console.log('Server response: ', response);
     },
   },
 };
@@ -227,5 +344,13 @@ export default {
 <style lang="stylus" scoped>
 .option {
   background-color: $primary-lightened
+}
+
+.not-a-user-token {
+  opacity: 0.6;
+}
+
+.user-cannot-vote {
+  opacity: 0.6;
 }
 </style>

@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import axios from 'axios';
 
 let baseURL; // replace this with production URL later
@@ -10,3 +11,6 @@ const serverApi = axios.create({
   baseURL,
 });
 export { serverApi };
+
+// Access within vue files via this.$serverApi
+Vue.prototype.$serverApi = serverApi;

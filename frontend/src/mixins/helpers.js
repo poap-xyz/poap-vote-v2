@@ -30,5 +30,30 @@ export default {
       // const sDisplay = s > 0 ? s + (s === 1 ? ' second' : ' seconds') : '';
       return `${dDisplay}, ${hDisplay}, ${mDisplay}`;
     },
+
+    /**
+     * @notice Takes in a number and returns a string version formatted as a percent
+     * @param {number, string} value the number to be formatted, e.g. input 3.5 for 3.5%
+     * @param {number} maxNumDigits maximum number of digits to show, use 2 to force 2
+     * @returns {string} the value formatted as a percent
+     */
+    formatPercent(value, maxNumDigits = 4) {
+      // Return a dash if given an undefined value
+      if (value === undefined || value === null || Number.isNaN(value)) {
+        return '-%';
+      }
+      // Convert to a number if given a string
+      const numberValue = typeof value === 'string' ? Number(value) : value;
+      if (numberValue === undefined || numberValue === null || Number.isNaN(value)) {
+        return '-%';
+      }
+      // Format as percentage
+      const val = numberValue * 100;
+      const percent = val.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: maxNumDigits,
+      });
+      return `${percent}%`;
+    },
   },
 };
