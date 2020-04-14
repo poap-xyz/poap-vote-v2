@@ -8,6 +8,6 @@ export default function () {
     ethersProvider: undefined,
     userAddress: undefined,
     // POAP tokens
-    // TODO
+    tokens: [],
   };
 }

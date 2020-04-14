@@ -1,5 +1,7 @@
 import { ethers } from 'ethers';
 
+const jsonFetch = (url) => fetch(url).then((res) => res.json());
+
 export async function setEthereumData({ commit }, provider) {
   // Get user's wallet info
   const ethersProvider = new ethers.providers.Web3Provider(provider);
@@ -10,5 +12,7 @@ export async function setEthereumData({ commit }, provider) {
   });
 
   // Get user's POAP tokens
-  // TODO
+  const poapTokensUrl = `https://api.poap.xyz/actions/scan/${userAddress}`;
+  const tokens = await jsonFetch(poapTokensUrl);
+  commit('setTokens', tokens);
 }

@@ -27,10 +27,36 @@
       :key="option.id"
       class="option q-my-md"
     >
-      <q-card-section>
-        {{ option.contents }}
-      </q-card-section>
+      <q-item
+        clickable
+        class="q-py-md"
+        @click="selectedOption=option.id"
+      >
+        <q-item-section avatar>
+          <q-icon
+            color="primary"
+            :name="option.id === selectedOption ? 'far fa-dot-circle' : 'far fa-circle'"
+          />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>{{ option.contents }}</q-item-label>
+        </q-item-section>
+      </q-item>
     </q-card>
+
+    <!-- Button to vote -->
+    <div v-if="userAddress">
+      <base-button
+        id="submitVote"
+        color="primary"
+        class="q-mt-lg"
+        :disabled="!selectedOption"
+        :full-width="true"
+        label="Submit vote"
+        @click="submitVote"
+      />
+    </div>
 
     <!-- List valid events and option to connect wallet -->
     <div>
@@ -42,7 +68,7 @@
       </h6>
       <div v-if="isPollOngoing">
         You can vote in this poll if you hold any of the following POAP tokens.
-        Connect your wallet to check your token balance and vote.
+        <span v-if="!userAddress">Connect your wallet to check your token balance and vote.</span>
       </div>
       <div v-else>
         Users were eligible to vote in this poll if they held any of the following POAP tokens.
@@ -123,7 +149,9 @@ export default {
   },
 
   data() {
-    return {};
+    return {
+      selectedOption: undefined,
+    };
   },
 
   computed: {
@@ -131,6 +159,7 @@ export default {
       allEvents: (state) => state.poap.events,
       polls: (state) => [...state.poap.activePolls, ...state.poap.completedPolls],
       userAddress: (state) => state.user.userAddress,
+      tokens: (state) => state.user.tokens,
     }),
 
     /**
@@ -179,6 +208,17 @@ export default {
      */
     isPollOngoing() {
       return this.timeRemaining !== 0;
+    },
+  },
+
+  methods: {
+    submitVote() {
+      const voteData = {
+        voter_account: this.userAddress,
+        token_ids: this.eligibleUserTokens,
+        poll_option_id: this.selectedOption,
+      };
+      console.log(voteData);
     },
   },
 };

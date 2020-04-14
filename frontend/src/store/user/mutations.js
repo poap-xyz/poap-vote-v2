@@ -8,3 +8,7 @@ export function setWallet(state, wallet) {
   state.ethersProvider = wallet.ethersProvider;
   state.userAddress = wallet.userAddress;
 }
+
+export function setTokens(state, tokens) {
+  state.tokens = tokens;
+}
