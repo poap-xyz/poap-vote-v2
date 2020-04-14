@@ -1,5 +1,6 @@
 import db from '../models';
 import PollService from './PollService';
+import smartLog from '../../utils/smartLog';
 
 class VoteService {
 
@@ -15,7 +16,7 @@ class VoteService {
 
             return votes;
         } catch (error) {
-            console.log("[VoteService]", error);
+            smartLog("[VoteService]", error);
             throw new Error("There was a database error (vs.1)");
         }
     }
@@ -29,7 +30,7 @@ class VoteService {
         try {
             return await db.Vote.create(voteData);
         } catch (error) {
-            console.log("[VoteService]", error);
+            smartLog("[VoteService]", error);
             throw new Error("There was a database error (vs.2)");
         }
     }

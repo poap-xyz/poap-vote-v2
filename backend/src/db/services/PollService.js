@@ -1,4 +1,5 @@
 import db from '../models';
+import smartLog from '../../utils/smartLog';
 
 class PollService {
 
@@ -13,7 +14,7 @@ class PollService {
                 attributes: {exclude: ['createdAt', 'updatedAt']},
             });
         } catch (error) {
-            console.log("[PollService]", error);
+            smartLog("[PollService]", error);
             throw new Error("There was a database error (PS.1)");
         }
     }
@@ -29,7 +30,7 @@ class PollService {
                 },
             });
         } catch(error) {
-            console.log("[PollService]", error.description);
+            smartLog("[PollService]", error.description);
             throw new Error("There was a database error (PS.2)");
         }
     }
@@ -45,7 +46,7 @@ class PollService {
                 ],
             });
         } catch (error) {
-            console.log("[PollService]", error);
+            smartLog("[PollService]", error);
             throw new Error("There was a database error (PS.3)");
         }
     }
