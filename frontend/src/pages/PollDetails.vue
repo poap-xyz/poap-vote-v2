@@ -1,9 +1,9 @@
 <template>
   <q-page padding>
-    <h6 class="primary text-center">
-      Poll Details Page
-    </h6>
-    <the-poll-details :fancy-id="$route.params.fancyId" />
+    <the-poll-details
+      :fancy-id="$route.params.fancyId"
+      class="q-pb-xl"
+    />
   </q-page>
 </template>
 

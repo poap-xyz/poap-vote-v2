@@ -5,7 +5,7 @@
       <base-button
         id="button--connect-wallet"
         color="primary"
-        label="Connect Wallet"
+        :label="label"
         :loading="isLoading"
         @click="connectWallet"
       />
@@ -33,6 +33,14 @@ const wallets = [
 
 export default {
   name: 'ConnectWallet',
+
+  props: {
+    label: {
+      type: String,
+      required: false,
+      default: 'Connect Wallet',
+    },
+  },
 
   data() {
     return {
