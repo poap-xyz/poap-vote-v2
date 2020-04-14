@@ -16,11 +16,19 @@
         @click="$router.push({name: 'create'})"
       />
     </div>
+
+    <poll-list-all-polls />
   </q-page>
 </template>
 
 <script>
+import PollListAllPolls from 'components/PollListAllPolls';
+
 export default {
   name: 'Home',
+
+  components: {
+    PollListAllPolls,
+  },
 };
 </script>
