@@ -40,7 +40,7 @@ describe('PollValidator', () => {
     });
 
     it('should fail with an invalid attestation', () => {
-        let badPollData = pollDataDeleting('attestaton');
+        let badPollData = {...pollData};
         badPollData['attestation'] = "7474befda4d6b19f74df50d98b4c568166f621e4b5bc95ea436b03a412a6537e35faf43a7300244e5f87a5cefccbaddc9d2aaf5a405378131f07373aed2ae9d41c";
 
         const validation = PollValidator.validateCreate(badPollData);
