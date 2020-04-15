@@ -1,12 +1,15 @@
 import PollService from '../db/services/PollService';
 import PollValidator from '../validators/PollValidator';
+import { json } from 'express';
 
 class PollController {
 
     static async fetchPolls(request, response) {
         try {
             const polls = await PollService.getAllPolls();
-            response.status(200).send(polls);
+            const pollsJSON = polls.map(convertPollToJSON);
+
+            response.status(200).send(pollsJSON);
         } catch (error) {
             response.status(400).send({ error: error.message });
             return;
@@ -41,17 +44,7 @@ class PollController {
             return;
         }
 
-        let pollJSON = poll.toJSON();
-
-        delete pollJSON.createdAt;
-        delete pollJSON.updatedAt;
-
-        pollJSON.poll_options.forEach(option => {
-            delete option.createdAt;
-            delete option.updatedAt;
-        });
-
-        response.status(201).send(pollJSON);
+        response.status(201).send(convertPollToJSON(poll));
     }
 }
 
@@ -79,6 +72,22 @@ async function generateFancyId(title) {
     }
 
     throw new Error('Unable to generate unique fancy_id');
+}
+
+function convertPollToJSON(poll) {
+    let jsonPoll = poll.toJSON();
+    jsonPoll.end_date = Math.floor(jsonPoll.end_date.valueOf() / 1000);
+    jsonPoll.start_date = Math.floor(jsonPoll.start_date.valueOf() / 1000);
+
+    delete jsonPoll.createdAt;
+    delete jsonPoll.updatedAt;
+
+    jsonPoll.poll_options.forEach(option => {
+        delete option.createdAt;
+        delete option.updatedAt;
+    });
+
+    return jsonPoll;
 }
 
 export default PollController;

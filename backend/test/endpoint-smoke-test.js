@@ -68,6 +68,7 @@ describe('Smoke Testing Endpoints', () => {
                 expect(result.body).to.include({
                     id: 1,
                     title: 'The first cool poll',
+                    end_date: 1745137203,
                     fancy_id: 'the-first-cool-poll',
                     polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
                     description: 'This could be a very, very long amount of text if we wanted it to be I guess',
@@ -131,6 +132,7 @@ describe('Smoke Testing Endpoints', () => {
                     id: 1,
                     poll_option_id: 1,
                 });
+                expect(typeof result.body.date_cast).to.equal('number');
 
                 done();
             });
@@ -144,6 +146,7 @@ describe('Smoke Testing Endpoints', () => {
                 expect(result.status).to.equal(200);
                 expect(result.body.length).to.equal(1);
                 expect(result.body[0].poll_option_id).to.equal(1);
+                expect(typeof result.body[0].date_cast).to.equal('number');
 
                 done();
             });
@@ -207,6 +210,7 @@ describe('Smoke Testing Endpoints', () => {
                 expect(result.body).to.include({
                     id: 3,
                     title: 'The first cool poll',
+                    end_date: 1745137203,
                     fancy_id: 'the-first-cool-poll-1',
                     polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
                     description: 'This is actually the second first cool poll',

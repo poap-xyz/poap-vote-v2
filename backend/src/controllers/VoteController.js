@@ -13,7 +13,9 @@ class VoteController {
             return;
         }
 
-        response.status(200).send(votes);
+        const votesJSON = votes.map(convertVoteToJSON);
+
+        response.status(200).send(votesJSON);
     }
 
     static async createVote(request, response) {
@@ -41,12 +43,19 @@ class VoteController {
             return;
         }
 
-        let voteJSON = vote.toJSON();
-        delete voteJSON.createdAt;
-        delete voteJSON.updatedAt;
-
-        response.status(201).send(voteJSON);
+        response.status(201).send(convertVoteToJSON(vote));
     }
+}
+
+function convertVoteToJSON(vote) {
+    let jsonVote = vote.toJSON();
+
+    delete jsonVote.createdAt;
+    delete jsonVote.updatedAt;
+
+    jsonVote.date_cast = Math.floor(jsonVote.date_cast.valueOf() / 1000);
+
+    return jsonVote;
 }
 
 export default VoteController;
