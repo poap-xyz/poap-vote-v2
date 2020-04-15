@@ -10,10 +10,10 @@
     <!-- Time remaining -->
     <div class="text-caption text-grey">
       <div v-if="timeRemaining === 0">
-        Voting ended on {{ new Date(poll.end_date) }}
+        Voting ended on {{ secondsToFormattedDate(poll.end_date) }}
       </div>
       <div v-else>
-        Voting ends on {{ new Date(poll.end_date) }}
+        Voting ends on {{ secondsToFormattedDate(poll.end_date) }}
         <br>
         {{ timeRemaining }} remaining
       </div>
@@ -29,14 +29,17 @@
       v-for="option in options"
       :key="option.id"
       class="option q-my-md"
-      :class="{ 'user-cannot-vote': eligibleTokenCount < 1 || !eligibleTokenCount }"
+      :class="{ 'user-cannot-vote': !canUserVote }"
     >
       <q-item
         clickable
         class="q-py-md"
-        @click="eligibleTokenCount > 0 ? selectedOption=option.id : selectedOption=undefined"
+        @click="canUserVote ? selectedOption=option.id : selectedOption=undefined"
       >
-        <q-item-section avatar>
+        <q-item-section
+          v-if="canUserVote"
+          avatar
+        >
           <q-icon
             color="primary"
             :name="option.id === selectedOption ? 'far fa-dot-circle' : 'far fa-circle'"
@@ -68,6 +71,7 @@
         color="primary"
         class="q-mt-lg"
         :disabled="!selectedOption"
+        :loading="isLoading"
         :full-width="true"
         label="Submit vote"
         @click="submitVote"
@@ -176,6 +180,7 @@ export default {
     return {
       selectedOption: undefined,
       votes: undefined,
+      isLoading: undefined,
     };
   },
 
@@ -220,12 +225,11 @@ export default {
      * @notice Time remaining until the poll ends
      */
     timeRemaining() {
-      const now = (new Date()).getTime();
-      const end = (new Date(this.poll.end_date)).getTime();
       // If poll has ended, time remaining is zero
-      if (now >= end) return 0;
+      const end = (new Date(this.poll.end_date)).getTime();
+      if (this.now >= end) return 0;
       // Otherwise, convert to days/hours/minutes
-      const secondsRemaining = (end - now) / 1000;
+      const secondsRemaining = (end - this.now) / 1000;
       return this.secondsToTicker(secondsRemaining);
     },
 
@@ -254,12 +258,19 @@ export default {
     },
 
     /**
-     * @notice Returns the total number of votes
+     * @notice Returns true if user has already voted in this poll
      */
-    totalVotes() {
-      // Flatten votes into array of the option IDs amd get total number of votes
+    hasUserVoted() {
       if (!this.votes) return undefined;
-      return this.votes.length;
+      const addressesThatVoted = this.votes.map((vote) => vote.voter_account);
+      return addressesThatVoted.includes(this.userAddress);
+    },
+
+    /**
+     * @notice Returns true if user can vote in this poll
+     */
+    canUserVote() {
+      return this.eligibleTokenCount > 0 && !this.hasUserVoted;
     },
 
     /**
@@ -269,8 +280,11 @@ export default {
       // Get the count, i.e. number of times a vote was cast
       if (!this.votes) return undefined;
       // Get counts
-      const arrayOfVotes = this.votes.map((vote) => vote.poll_option_id);
-      const counts = arrayOfVotes.reduce((acc, val) => {
+      let voteArray = [];
+      this.votes.forEach((vote) => {
+        voteArray = [...voteArray, ...(new Array(vote.token_ids.length)).fill(vote.poll_option_id)];
+      });
+      const counts = voteArray.reduce((acc, val) => {
         if (acc[val] === undefined) acc[val] = 1;
         else acc[val] += 1;
         return acc;
@@ -280,6 +294,19 @@ export default {
         if (!counts[option.id]) counts[option.id] = 0;
       });
       return counts;
+    },
+
+    /**
+     * @notice Returns the total number of votes
+     */
+    totalVotes() {
+      // Flatten votes into array of the option IDs amd get total number of votes
+      if (!this.votes) return undefined;
+      let voteArray = [];
+      this.votes.forEach((vote) => {
+        voteArray = [...voteArray, ...(new Array(vote.token_ids.length)).fill(vote.poll_option_id)];
+      });
+      return voteArray.length;
     },
 
     /**
@@ -307,35 +334,44 @@ export default {
 
   methods: {
     async submitVote() {
-      // Define EIP-712 signature format for submitting votes
-      const dataFormat = [
-        { name: 'voter_account', type: 'address' },
-        { name: 'token_ids', type: 'bytes32' },
-        { name: 'poll_option_id', type: 'uint256' },
-      ];
+      try {
+        if (!this.eligibleTokenCount || !this.selectedOption) return;
+        this.isLoading = true;
 
-      // The actual data to be signed
-      const voteData = {
-        voter_account: this.userAddress,
-        token_ids: this.userTokens.map((token) => token.tokenId),
-        poll_option_id: this.selectedOption,
-      };
-      console.log(voteData);
+        // Define EIP-712 signature format for submitting votes
+        const dataFormat = [
+          { name: 'voter_account', type: 'address' },
+          { name: 'token_ids', type: 'bytes32' },
+          { name: 'poll_option_id', type: 'uint256' },
+        ];
 
-      // Format data and get user's signature
-      const signature = await this.getSignature('Vote', dataFormat, voteData, this.userAddress);
+        // The actual data to be signed
+        const voteData = {
+          voter_account: this.userAddress,
+          token_ids: this.userTokens.map((token) => token.tokenId),
+          poll_option_id: this.selectedOption,
+        };
+        console.log(voteData);
 
-      // Generate object to send to server
-      const payload = {
-        ...voteData,
-        attestation: signature,
-      };
-      console.log('Server payload: ', payload);
+        // Format data and get user's signature
+        const signature = await this.getSignature('Vote', dataFormat, voteData, this.userAddress);
 
-      // Submit vote
-      console.log('Sending POST request to server to submit vote...');
-      const response = await this.$serverApi.post(`/api/votes/${this.fancyId}`, payload);
-      console.log('Server response: ', response);
+        // Generate object to send to server
+        const payload = {
+          ...voteData,
+          attestation: signature,
+        };
+        console.log('Server payload: ', payload);
+
+        // Submit vote
+        console.log('Sending POST request to server to submit vote...');
+        const response = await this.$serverApi.post(`/api/votes/${this.fancyId}`, payload);
+        console.log('Server response: ', response);
+        this.isLoading = false;
+      } catch (err) {
+        console.error(err);
+        this.isLoading = false;
+      }
     },
   },
 };

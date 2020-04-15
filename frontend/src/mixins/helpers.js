@@ -1,8 +1,21 @@
 /**
  * @notice This mixin contains generic helper functions
  */
+import { date } from 'quasar';
+
+const { formatDate } = date;
 
 export default {
+  data() {
+    return {
+      now: undefined, // used for calculating time remaining
+    };
+  },
+
+  mounted() {
+    setInterval(() => this.now = new Date(), 1000); // eslint-disable-line
+  },
+
   methods: {
     /**
      * @dev Source: https://gist.github.com/oleole90/de5e187f3d462e8adf93aa96d04e7f6b
@@ -19,16 +32,29 @@ export default {
      * @dev https://stackoverflow.com/questions/36098913/convert-seconds-to-days-hours-minutes-and-seconds
      */
     secondsToTicker(seconds) {
-      const d = Math.floor(seconds / (3600 * 24));
-      const h = Math.floor(seconds % ((3600 * 24) / 3600));
-      const m = Math.floor(seconds % (3600 / 60));
-      // const s = Math.floor(seconds % 60);
+      // Convert to days, hours, minutes, seconds
+      const roundedSeconds = Math.round(seconds);
+      const d = Math.floor(roundedSeconds / (3600 * 24));
+      const h = Math.floor((roundedSeconds - (d * 24 * 3600)) / 3600);
+      // If showing seconds, change round to floor. Round makes it appear to match better with
+      // system clock only showing minutes
+      const m = Math.round((roundedSeconds - (d * 24 * 3600) - (h * 3600)) / 60);
+      // const s = Math.floor(roundedSeconds - (d * 24 * 3600) - (h * 3600) - (m * 60));
 
+      // Format for display
       const dDisplay = d > 0 ? d + (d === 1 ? ' day' : ' days') : '';
       const hDisplay = h > 0 ? h + (h === 1 ? ' hour' : ' hours') : '';
       const mDisplay = m > 0 ? m + (m === 1 ? ' minute' : ' minutes') : '';
       // const sDisplay = s > 0 ? s + (s === 1 ? ' second' : ' seconds') : '';
-      return `${dDisplay}, ${hDisplay}, ${mDisplay}`;
+      return `${dDisplay} ${hDisplay} ${mDisplay}`;
+    },
+
+    /**
+     * @notice Convert number of seconds to date formatted as 15 Apr 2020 @ 10:30AM
+     */
+    secondsToFormattedDate(seconds) {
+      const ms = seconds; // TODO multiply seconds by 1000 once #23 is fixed
+      return `${formatDate(ms, 'DD MMM YYYY')} @ ${formatDate(ms, 'hh:mm A')}`;
     },
 
     /**

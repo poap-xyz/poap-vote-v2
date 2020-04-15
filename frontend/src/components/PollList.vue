@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="polls.length > 0">
     <h5 class="secondary text-bold">
       {{ prettyHeader }}
     </h5>
@@ -35,7 +35,7 @@
               End Date
             </div>
             <div>
-              {{ new Date(item.end_date) }}
+              {{ secondsToFormattedDate(item.end_date) }}
             </div>
             <div
               v-if="timeRemaining[index] !== 0"
@@ -139,12 +139,11 @@ export default {
 
     timeRemaining() {
       const times = this.polls.map((poll) => {
-        const now = (new Date()).getTime();
         const end = (new Date(poll.end_date)).getTime();
         // If poll has ended, time remaining is zero
-        if (now >= end) return 0;
+        if (this.now >= end) return 0;
         // Otherwise, convert to days/hours/minutes
-        const secondsRemaining = (end - now) / 1000;
+        const secondsRemaining = (end - this.now) / 1000;
         return this.secondsToTicker(secondsRemaining);
       });
       return times;

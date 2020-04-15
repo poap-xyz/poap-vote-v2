@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="q-mb-xl q-pb-xl">
     <poll-list poll-type="activePolls" />
     <poll-list poll-type="completedPolls" />
   </div>

@@ -246,6 +246,7 @@
           color="primary"
           class="q-mt-xl"
           :disabled="!isFormValid"
+          :loading="isLoading"
           :full-width="true"
           label="Create"
           @click="createPoll"
@@ -296,6 +297,8 @@ export default {
         distance: 1000, // we don't care where in the string the match is found
         threshold: 0.45, // this seems to be a good value from trial and error
       },
+      // UI helpers
+      isLoading: false,
     };
   },
 
@@ -410,40 +413,52 @@ export default {
     },
 
     async createPoll() {
-      // Define EIP-712 signature format for creating polls
-      const dataFormat = [
-        { name: 'title', type: 'string' },
-        { name: 'polltaker_account', type: 'address' },
-        { name: 'description', type: 'string' },
-        { name: 'valid_event_ids', type: 'bytes32' },
-        { name: 'poll_options', type: 'string' },
-        { name: 'end_date', type: 'string' },
-      ];
+      try {
+        if (!this.isFormValid) return;
+        this.isLoading = true;
 
-      // The actual data to be signed
-      const pollData = {
-        title: this.title,
-        polltaker_account: this.userAddress,
-        description: this.description,
-        valid_event_ids: this.valid_events.map((event) => event.id),
-        poll_options: this.poll_options,
-        end_date: this.end_date,
-      };
+        // Define EIP-712 signature format for creating polls
+        const dataFormat = [
+          { name: 'title', type: 'string' },
+          { name: 'polltaker_account', type: 'address' },
+          { name: 'description', type: 'string' },
+          { name: 'valid_event_ids', type: 'bytes32' },
+          { name: 'poll_options', type: 'string' },
+          { name: 'end_date', type: 'string' },
+        ];
 
-      // Format data and get user's signature
-      const signature = await this.getSignature('Poll', dataFormat, pollData, this.userAddress);
+        // The actual data to be signed
+        const pollData = {
+          title: this.title,
+          polltaker_account: this.userAddress,
+          description: this.description,
+          valid_event_ids: this.valid_events.map((event) => event.id),
+          poll_options: this.poll_options,
+          end_date: this.end_date,
+        };
 
-      // Generate object to send to server
-      const payload = {
-        ...pollData,
-        attestation: signature,
-      };
-      console.log('Server payload: ', payload);
+        // Format data and get user's signature
+        const signature = await this.getSignature('Poll', dataFormat, pollData, this.userAddress);
 
-      // Create poll
-      console.log('Sending POST request to server to create poll...');
-      const response = await this.$serverApi.post('/api/polls', payload);
-      console.log('Server response: ', response);
+        // Generate object to send to server
+        const payload = {
+          ...pollData,
+          attestation: signature,
+        };
+        console.log('Server payload: ', payload);
+
+        // Create poll
+        console.log('Sending POST request to server to create poll...');
+        const response = await this.$serverApi.post('/api/polls', payload);
+        console.log('Server response: ', response);
+
+        // Get updated poll list and redirect to details page of the new poll
+        await this.$store.dispatch('poap/getPolls');
+        this.$router.push({ name: 'pollDetails', params: { fancyId: response.data.fancy_id } });
+      } catch (err) {
+        this.isLoading = false;
+        console.error(err);
+      }
     },
   },
 };
