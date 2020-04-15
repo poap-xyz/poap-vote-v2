@@ -27,11 +27,13 @@ class PollController {
         let poll = null;
 
         try {
-            const pollData = {
+            var pollData = {
                 fancy_id: await generateFancyId(request.body.title),
                 start_date: Date.now(),
                 ...request.body,
             }
+
+            pollData.end_date = new Date(pollData.end_date * 1000);
 
             poll = await PollService.addPoll(pollData);
         } catch (error) {

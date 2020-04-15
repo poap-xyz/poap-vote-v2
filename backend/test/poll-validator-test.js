@@ -9,8 +9,8 @@ describe('PollValidator', () => {
         title: 'The first cool poll',
         polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
         description: 'This could be a very, very long amount of text if we wanted it to be I guess',
-        end_date: 1587355243,
-        valid_event_ids: [123, 124, 126, 129, 125],
+        end_date: 1745137203,
+        valid_event_ids: [128, 124, 127, 123, 126, 125],
         poll_options: [
             {
                 contents: 'Yes',
@@ -19,7 +19,7 @@ describe('PollValidator', () => {
                 contents: 'No',
             },
         ],
-        attestation: "a99cfd3da0b79606cf53c0b14c7432801d400c242bddefbec3b8356f77bbb0e05ac95430143008334b0319fca3f132533d3a86a3cd8dcc5333d1f5682793f61e1b",
+        attestation: "dca1a1c59b1626c356e2a343775b573a92b3e26f2960086dd33685c4983eacb938367f83ef2fb794b58d69e940ae3c45298cab62932f0258b56c9d00605a9e461c",
     }
 
     let pollDataDeleting = (field) => {
