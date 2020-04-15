@@ -22,14 +22,12 @@ export async function getPolls({ commit }) {
   const activePolls = [];
   const completedPolls = [];
   allPolls.forEach((poll) => {
-    // TODO update the lines below once timestamp issue in #23 is resolved
-    const endDate = (new Date((new Date(poll.end_date)).getTime() * 1000)).getTime();
-    poll.end_date = endDate;
-    poll.start_date = (new Date(poll.start_date)).getTime();
-    // END TODO
-
+    // Convert timestamps from seconds to milliseconds to simplify use with JS Date object
+    poll.start_date *= 1000;
+    poll.end_date *= 1000;
+    // Check if this poll is active or complete
     const now = (new Date()).getTime();
-    if (now >= endDate) completedPolls.push(poll);
+    if (now >= poll.end_date) completedPolls.push(poll);
     else activePolls.push(poll);
   });
 

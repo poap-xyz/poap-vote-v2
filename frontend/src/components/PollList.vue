@@ -128,7 +128,7 @@ export default {
       const eventIds = [];
       this.polls.forEach((poll) => eventIds.push(...poll.valid_event_ids));
       // Get an array of all events
-      const eventArray = this.allEvents.filter((event) => eventIds.includes(String(event.id)));
+      const eventArray = this.allEvents.filter((event) => eventIds.includes(event.id));
       // Convert to an object where Id is the key
       const eventObject = {};
       eventArray.forEach((event) => {

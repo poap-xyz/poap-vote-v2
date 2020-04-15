@@ -208,7 +208,7 @@ export default {
       // Get list of all event IDs
       const eventIds = this.poll.valid_event_ids;
       // Get an array of all events
-      const eventArray = this.allEvents.filter((event) => eventIds.includes(String(event.id)));
+      const eventArray = this.allEvents.filter((event) => eventIds.includes(event.id));
       return eventArray;
     },
 
@@ -253,7 +253,7 @@ export default {
      */
     eligibleTokenCount() {
       const validIds = this.poll.valid_event_ids;
-      const intersection = this.userEventIds.filter((val) => validIds.includes(String(val)));
+      const intersection = this.userEventIds.filter((val) => validIds.includes(val));
       return intersection.length;
     },
 
