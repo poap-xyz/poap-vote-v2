@@ -9,6 +9,11 @@ class PollValidator {
             return fieldValidation;
         }
 
+        const dateValidation = this.validateEndDate(pollData);
+        if(!dateValidation.isValid) {
+            return dateValidation;
+        }
+
         if(!isValidAddress(pollData.polltaker_account)) {
             return {
                 isValid: false,
@@ -45,6 +50,31 @@ class PollValidator {
                     errorMessage: "Missing required poll data fields",
                 };
             }
+        }
+
+        return {
+            isValid: true,
+            errorMessage: null,
+        };
+    }
+
+    static validateEndDate(pollData) {
+        const y2kInMilliseconds = 946684800000;
+        if ("number" !== typeof pollData.end_date || pollData.end_date > y2kInMilliseconds) {
+            return {
+                isValid: false,
+                errorMessage: "Poll end date should be a number in seconds since Unix epoch",
+            };
+        }
+
+        let now = Math.floor(Date.now() / 1000);
+        let validEnd = now + (24 * 60 * 60);
+
+        if (pollData.end_date < validEnd) {
+            return {
+                isValid: false,
+                errorMessage: "Poll end date must be at least 1 day in the future",
+            };
         }
 
         return {

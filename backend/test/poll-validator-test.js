@@ -45,6 +45,38 @@ describe('PollValidator', () => {
         });
     });
 
+    it('should fail when the poll end date is in the past', () => {
+        const past = Math.floor(Date.now() / 1000) - 10000;
+        const validation = PollValidator.validateCreate(pollDataReplacing('end_date', past));
+
+        expect(validation.isValid).is.false;
+        expect(validation.errorMessage).to.equal('Poll end date must be at least 1 day in the future');
+    });
+
+    it('should fail when the poll end date is not far enough in the future', () => {
+        const past = Math.floor(Date.now() / 1000) + (4 * 3600);
+        const validation = PollValidator.validateCreate(pollDataReplacing('end_date', past));
+
+        expect(validation.isValid).is.false;
+        expect(validation.errorMessage).to.equal('Poll end date must be at least 1 day in the future');
+    });
+
+    it('should fail when the poll end date is not an integer', () => {
+        const dateString = (new Date(Date.now() + 10*24*3600)).toString(); // 10 days from now as string
+        const validation = PollValidator.validateCreate(pollDataReplacing('end_date', dateString));
+
+        expect(validation.isValid).is.false;
+        expect(validation.errorMessage).to.equal('Poll end date should be a number in seconds since Unix epoch');
+    });
+
+    it('should fail when the poll end date is in milliseconds', () => {
+        const milliDate = Date.now() + 10*24*3600*1000; // 10 days from now as milliseconds since epoch
+        const validation = PollValidator.validateCreate(pollDataReplacing('end_date', milliDate));
+
+        expect(validation.isValid).is.false;
+        expect(validation.errorMessage).to.equal('Poll end date should be a number in seconds since Unix epoch');
+    });
+
     it('should fail with an invalid address checksum', () => {
         const validation = PollValidator.validateCreate(pollDataReplacing('polltaker_account', '0x22d491bDe2303f2f43325b2108D26f1eAba1e32B'));
         expect(validation.isValid).is.false;
