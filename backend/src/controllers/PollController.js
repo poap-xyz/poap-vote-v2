@@ -76,8 +76,13 @@ async function generateFancyId(title) {
 
 function convertPollToJSON(poll) {
     let jsonPoll = poll.toJSON();
+
     jsonPoll.end_date = Math.floor(jsonPoll.end_date.valueOf() / 1000);
     jsonPoll.start_date = Math.floor(jsonPoll.start_date.valueOf() / 1000);
+
+    jsonPoll.valid_event_ids = jsonPoll.valid_event_ids.map(event_id => {
+        return parseInt(event_id);
+    });
 
     delete jsonPoll.createdAt;
     delete jsonPoll.updatedAt;

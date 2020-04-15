@@ -53,6 +53,10 @@ function convertVoteToJSON(vote) {
     delete jsonVote.createdAt;
     delete jsonVote.updatedAt;
 
+    jsonVote.token_ids = jsonVote.token_ids.map(token_id => {
+        return parseInt(token_id);
+    });
+
     jsonVote.date_cast = Math.floor(jsonVote.date_cast.valueOf() / 1000);
 
     return jsonVote;

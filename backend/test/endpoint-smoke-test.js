@@ -1,9 +1,11 @@
 import chai from 'chai';
 import chatHttp from 'chai-http';
+import assertArrays from 'chai-arrays';
 import 'chai/register-should';
 import app from '../src/index';
 
 chai.use(chatHttp);
+chai.use(assertArrays);
 
 const { expect } = chai;
 
@@ -67,15 +69,15 @@ describe('Smoke Testing Endpoints', () => {
                 expect(result.status).to.equal(201);
                 expect(result.body).to.include({
                     id: 1,
-                    title: 'The first cool poll',
-                    end_date: 1745137203,
                     fancy_id: 'the-first-cool-poll',
+                    title: 'The first cool poll',
                     polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
                     description: 'This could be a very, very long amount of text if we wanted it to be I guess',
+                    end_date: 1745137203,
                     attestation: 'dca1a1c59b1626c356e2a343775b573a92b3e26f2960086dd33685c4983eacb938367f83ef2fb794b58d69e940ae3c45298cab62932f0258b56c9d00605a9e461c',
                 });
                 expect(result.body.poll_options.length).to.equal(2);
-                expect(result.body.valid_event_ids.length).to.equal(6);
+                expect(result.body.valid_event_ids).to.be.equalTo([128, 124, 127, 123, 126, 125]);
 
                 done();
             });
@@ -130,9 +132,11 @@ describe('Smoke Testing Endpoints', () => {
                 expect(result.status).to.equal(201);
                 expect(result.body).to.include({
                     id: 1,
+                    voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
                     poll_option_id: 1,
                 });
                 expect(typeof result.body.date_cast).to.equal('number');
+                expect(result.body.token_ids).to.be.equalTo([10, 2, 27,]);
 
                 done();
             });
@@ -209,13 +213,14 @@ describe('Smoke Testing Endpoints', () => {
                 expect(result.status).to.equal(201);
                 expect(result.body).to.include({
                     id: 3,
-                    title: 'The first cool poll',
-                    end_date: 1745137203,
                     fancy_id: 'the-first-cool-poll-1',
-                    polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
+                    title: 'The first cool poll',
                     description: 'This is actually the second first cool poll',
+                    polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
+                    end_date: 1745137203,
                     attestation: '3d43cf29564ca3047550e956009bb819305805ab4a40842d0136b8b23fa955192796f62995f606e6f189b55b651acb99cc352bb168ec331f47d6e6114d2d2bc91b',
                 });
+                expect(result.body.valid_event_ids).to.be.equalTo([128, 124, 127, 123, 126, 125]);
                 expect(result.body.poll_options.length).to.equal(3);
 
                 done();
