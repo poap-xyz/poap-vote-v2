@@ -9,7 +9,9 @@
       <base-input
         id="createPoll-title"
         v-model="title"
+        :counter="true"
         label="Title"
+        :maxlength="255"
         :rules="isValidTitle"
       />
 
@@ -17,7 +19,9 @@
       <base-input
         id="createPoll-description"
         v-model="description"
+        :counter="true"
         label="Description"
+        :maxlength="4000"
         :rules="isValidDescription"
         type="textarea"
       />
@@ -56,6 +60,7 @@
       <!-- Add new option -->
       <div class="text-left">
         <base-button
+          v-if="!isAtMaxOptions"
           id="createPoll-addOption"
           color="primary"
           :dense="true"
@@ -63,6 +68,12 @@
           :flat="true"
           @click="addOption"
         />
+        <div
+          v-else
+          class="text-caption text-italic"
+        >
+          You have reached the maximum number of poll options
+        </div>
       </div>
 
       <!--------------------------------- VALID EVENTS SELECTION ---------------------------------->
@@ -186,6 +197,7 @@
                   >
                     <q-date
                       v-model="end_day"
+                      :options="limitDateSelection"
                       @input="() => $refs.qDateProxy.hide()"
                     />
                   </q-popup-proxy>
@@ -263,6 +275,8 @@ import eip712 from 'src/mixins/eip712';
 import helpers from 'src/mixins/helpers';
 import Fuse from 'fuse.js';
 
+const { buildDate, formatDate } = date;
+
 export default {
   name: 'TheCreatePollForm',
 
@@ -299,6 +313,7 @@ export default {
       },
       // UI helpers
       isLoading: false,
+      maxOptions: 20, // maximum number of poll options
     };
   },
 
@@ -309,6 +324,13 @@ export default {
     }),
 
     /**
+     * @notice Returns true if the user is at the limit of poll options
+     */
+    isAtMaxOptions() {
+      return this.poll_options.length === this.maxOptions;
+    },
+
+    /**
      * @notice Takes the entered date and time provided by the user and
      * converts it into a unix timestamp (therefore this is in seconds)
      */
@@ -317,7 +339,7 @@ export default {
       const [year, month, day] = this.end_day.split('/');
       const hours = this.endAmPm === 'AM' ? this.endHour : String(Number(this.endHour) + 12);
       const minutes = this.endMinute;
-      const lastDay = date.buildDate({
+      const lastDay = buildDate({
         year, month, date: day, hours, minutes,
       });
       return parseInt(lastDay.getTime() / 1000, 10);
@@ -410,6 +432,14 @@ export default {
         const filteredEvents = fuse.search(val);
         this.filteredEvents = filteredEvents.map((event) => event.item);
       });
+    },
+
+    /**
+     * @notice Restrict user from choosing end date before tomorrow
+     */
+    limitDateSelection(val) {
+      const today = formatDate(Date.now(), 'YYYY/MM/DD');
+      return val > today;
     },
 
     async createPoll() {

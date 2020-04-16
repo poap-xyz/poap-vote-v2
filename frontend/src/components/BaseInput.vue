@@ -3,9 +3,11 @@
     <q-input
       v-model="content"
       class="q-my-sm"
+      :counter="counter"
       filled
       :label="label"
       lazy-rules
+      :maxlength="maxlength"
       :rules="[val => rules(val)]"
       :type="type"
       @input="handleInput"
@@ -29,6 +31,12 @@ export default {
   name: 'BaseInput',
 
   props: {
+    counter: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
     iconAppend: {
       type: String,
       required: false,
@@ -38,6 +46,12 @@ export default {
     label: {
       type: String,
       required: true,
+      default: undefined,
+    },
+
+    maxlength: {
+      type: Number,
+      required: false,
       default: undefined,
     },
 
