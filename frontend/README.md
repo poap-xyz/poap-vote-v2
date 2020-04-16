@@ -16,7 +16,7 @@ export INFURA_ID=yourInfuraId
 Blocknative's [onboard.js](https://www.blocknative.com/onboard) package is
 used and requires the API keys listed above.
 
-Once that is setup, follow the steps below:
+Once that is setup, create a copy of that file called `.env.prod`. Next, follow the steps below:
 
 ```bash
 # Start the server
@@ -24,8 +24,8 @@ cd backend
 npm install
 npm run dev
 
-# Start the frontend app
-cd ../frontend
+# In a new terminal window, start the frontend app
+cd frontend
 npm install
 npm run dev
 ```
@@ -43,12 +43,29 @@ npm run test
 npm run test:visual # once window launches, click "Run all specs"
 ```
 
-### Build the app for production
+### Production
+
+Run the commands below to build the app for production. After building, the files
+for deployment can be found in `frontend/dist/spa`.
 
 ```bash
+cd frontend
+npm install
 npm run build
 ```
 
-### Customize the configuration
+Because the frontend is a single page application (SPA), we need to setup URL
+rewriting. This is basically a level of abstraction between the actual URL
+and the files/content shown, so the URL no longer corresponds to a server
+file. For single page applications, we want all server 404s to instead be
+routed to the application to figure out the route itself. With nginx we can
+do this with the the following configuration, which will serve `index.html` in
+response to any request
+([stack overflow source](https://stackoverflow.com/questions/45260011/nginx-route-with-single-page-app),
+[nginx docs](https://nginx.org/en/docs/http/ngx_http_core_module.html#try_files)):
 
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+```
+location / {
+    try_files /index.html =404;
+}
+```
