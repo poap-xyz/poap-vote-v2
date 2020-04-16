@@ -130,7 +130,7 @@ describe('Smoke Testing Endpoints', () => {
             });
     });
 
-    it('should fail to create a vote missing a poll option', (done) => {
+    it('should not create a vote missing a poll option', (done) => {
         const vote = {
             voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
             token_ids: [10, 2, 27],
@@ -144,6 +144,27 @@ describe('Smoke Testing Endpoints', () => {
                 expect(result.status).to.equal(400);
                 expect(result.body).to.include({
                     error: 'Missing required vote data fields',
+                });
+
+                done();
+            });
+    });
+
+    it('should not create a vote when the option does not exist', (done) => {
+        const vote = {
+            voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
+            token_ids: [10, 2, 27],
+            poll_option_id: 100,
+        };
+
+        chai.request(app)
+            .post('/api/poll/1/votes')
+            .set('Accept', 'application/json')
+            .send(vote)
+            .end( (_error, result) => {
+                expect(result.status).to.equal(400);
+                expect(result.body).to.include({
+                    error: 'Option selected does not belong to this poll',
                 });
 
                 done();
@@ -268,6 +289,27 @@ describe('Smoke Testing Endpoints', () => {
                 });
                 expect(result.body.valid_event_ids).to.be.equalTo([128, 124, 127, 123, 126, 125]);
                 expect(result.body.poll_options.length).to.equal(3);
+
+                done();
+            });
+    });
+
+    it('should not create a vote when the option does not belong to the poll', (done) => {
+        const vote = {
+            voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
+            token_ids: [10, 2, 27],
+            poll_option_id: 1,
+        };
+
+        chai.request(app)
+            .post('/api/poll/3/votes')
+            .set('Accept', 'application/json')
+            .send(vote)
+            .end( (_error, result) => {
+                expect(result.status).to.equal(400);
+                expect(result.body).to.include({
+                    error: 'Option selected does not belong to this poll',
+                });
 
                 done();
             });

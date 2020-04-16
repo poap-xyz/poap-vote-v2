@@ -1,5 +1,6 @@
 import VoteService from '../db/services/VoteService';
 import VoteValidator from '../validators/VoteValidator';
+import PollService from '../db/services/PollService';
 
 class VoteController {
 
@@ -27,19 +28,20 @@ class VoteController {
     }
 
     static async createVote(request, response) {
-        const validation = VoteValidator.validateCreate(request.body);
-
-        if (!validation.isValid) {
-            response.status(400).send({
-                "error": validation.errorMessage,
-            });
-
-            return;
-        }
-
         let vote = null;
 
         try {
+            const poll = await PollService.getPollById(request.params.poll_id);
+            const validation = VoteValidator.validateCreate(request.body, poll);
+
+            if (!validation.isValid) {
+                response.status(400).send({
+                    "error": validation.errorMessage,
+                });
+
+                return;
+            }
+
             const voteData = {
                 date_cast: Date.now(),
                 ...request.body,
