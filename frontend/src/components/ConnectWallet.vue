@@ -20,15 +20,16 @@ import Onboard from 'bnc-onboard';
 let provider;
 const wallets = [
   { walletName: 'metamask' },
-  { walletName: 'torus' },
-  { walletName: 'fortmatic', apiKey: process.env.FORTMATIC_API_KEY },
-  { walletName: 'walletConnect', infuraKey: process.env.INFURA_ID },
-  { walletName: 'portis', apiKey: process.env.PORTIS_API_KEY },
-  { walletName: 'authereum' },
-  // Squarelink site would not load to get API key, so leaving out for now
-  // { walletName: 'squarelink', apiKey: process.env.SQUARELINK_API_KEY },
-  { walletName: 'opera' },
-  { walletName: 'dapper' },
+  // Hiding all other wallets since right now only MetaMask works
+  // { walletName: 'torus' },
+  // { walletName: 'fortmatic', apiKey: process.env.FORTMATIC_API_KEY },
+  // { walletName: 'walletConnect', infuraKey: process.env.INFURA_ID },
+  // { walletName: 'portis', apiKey: process.env.PORTIS_API_KEY },
+  // { walletName: 'authereum' },
+  // // Squarelink site would not load to get API key, so leaving out for now
+  // // { walletName: 'squarelink', apiKey: process.env.SQUARELINK_API_KEY },
+  // { walletName: 'opera' },
+  // { walletName: 'dapper' },
 ];
 
 export default {

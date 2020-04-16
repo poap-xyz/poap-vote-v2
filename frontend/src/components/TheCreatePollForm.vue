@@ -393,8 +393,8 @@ export default {
       return (val && val.length > 4) ? true : 'Poll title must be at least 5 characters';
     },
 
-    isValidDescription(val) { // eslint-disable-line no-unused-vars
-      return true;
+    isValidDescription(val) {
+      return (val && val.length > 4) ? true : 'Description must be at least 5 characters';
     },
 
     isValidOption(val) {
