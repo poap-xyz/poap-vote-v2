@@ -11,7 +11,7 @@
         v-model="title"
         :counter="true"
         label="Title"
-        :maxlength="255"
+        :maxlength="80"
         :rules="isValidTitle"
       />
 

@@ -255,12 +255,19 @@ export default {
     },
 
     /**
-     * @notice Returns true if user has a least one valid POAP token for this poll
+     * @notice Returns an array of IDs of eligibile vote tokens held by user
      */
-    eligibleTokenCount() {
+    eligibleTokens() {
       const validIds = this.poll.valid_event_ids;
       const intersection = this.userEventIds.filter((val) => validIds.includes(val));
-      return intersection.length;
+      return intersection;
+    },
+
+    /**
+     * @notice Returns number of votes user will get
+     */
+    eligibleTokenCount() {
+      return this.eligibleTokens.length;
     },
 
     /**
@@ -345,7 +352,7 @@ export default {
 
     async submitVote() {
       try {
-        if (!this.eligibleTokenCount || !this.selectedOption) return;
+        if (!this.canUserVote) return;
         this.isLoading = true;
 
         // Define EIP-712 signature format for submitting votes
@@ -358,7 +365,7 @@ export default {
         // The actual data to be signed
         const voteData = {
           voter_account: this.userAddress,
-          token_ids: this.userTokens.map((token) => token.tokenId),
+          token_ids: this.eligibleTokens,
           poll_option_id: this.selectedOption,
         };
 
