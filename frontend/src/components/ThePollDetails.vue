@@ -70,12 +70,18 @@
         id="submitVote"
         color="primary"
         class="q-mt-lg"
-        :disabled="!selectedOption"
+        :disabled="!canUserVote"
         :loading="isLoading"
         :full-width="true"
         label="Submit vote"
         @click="submitVote"
       />
+      <div
+        v-if="hasUserVoted"
+        class="text-center text-caption text-italic text-grey"
+      >
+        You have already voted in this poll
+      </div>
     </div>
 
     <!-- List valid events and option to connect wallet -->
@@ -328,11 +334,15 @@ export default {
   },
 
   async mounted() {
-    const response = await this.$serverApi.get(`/api/votes/${this.fancyId}`);
-    this.votes = response.data;
+    await this.fetchVotes();
   },
 
   methods: {
+    async fetchVotes() {
+      const response = await this.$serverApi.get(`/api/votes/${this.fancyId}`);
+      this.votes = response.data;
+    },
+
     async submitVote() {
       try {
         if (!this.eligibleTokenCount || !this.selectedOption) return;
@@ -351,7 +361,6 @@ export default {
           token_ids: this.userTokens.map((token) => token.tokenId),
           poll_option_id: this.selectedOption,
         };
-        console.log(voteData);
 
         // Format data and get user's signature
         const signature = await this.getSignature('Vote', dataFormat, voteData, this.userAddress);
@@ -367,6 +376,10 @@ export default {
         console.log('Sending POST request to server to submit vote...');
         const response = await this.$serverApi.post(`/api/votes/${this.fancyId}`, payload);
         console.log('Server response: ', response);
+
+        // Update page data
+        await this.fetchVotes();
+        this.notifyUser('positive', 'Your vote has been successfully recorded!');
         this.isLoading = false;
       } catch (err) {
         console.error(err);
