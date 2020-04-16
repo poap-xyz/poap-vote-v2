@@ -391,14 +391,14 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.option {
-  background-color: $primary-lightened
+.body--light {
+  .option {
+    background-color: $primary-lightened
+  }
 }
-
 .not-a-user-token {
   opacity: 0.6;
 }
-
 .user-cannot-vote {
   opacity: 0.6;
 }

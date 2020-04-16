@@ -27,7 +27,10 @@
         </div>
         <!-- ADDRESS AND SETTINGS AND SETTINGS -->
         <div class="col-auto q-mr-md">
-          <div class="text-caption dark-toggle">
+          <div
+            v-if="userAddress"
+            class="text-caption dark-toggle"
+          >
             Address: {{ userAddress }}
           </div>
 

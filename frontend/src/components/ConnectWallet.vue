@@ -64,7 +64,7 @@ export default {
           walletSelect: { wallets },
           dappId: process.env.BLOCKNATIVE_API_KEY,
           networkId: 1,
-          darkMode: Boolean(this.$q.localStorage.getItem('isDark')),
+          darkMode: this.$q.dark.isActive,
           subscriptions: {
             wallet: (wallet) => { provider = wallet.provider; },
           },
