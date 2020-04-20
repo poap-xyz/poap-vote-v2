@@ -15,22 +15,6 @@
 
 <script>
 import { mapState } from 'vuex';
-import Onboard from 'bnc-onboard';
-
-let provider;
-const wallets = [
-  { walletName: 'metamask' },
-  // Hiding all other wallets since right now only MetaMask works
-  // { walletName: 'torus' },
-  // { walletName: 'fortmatic', apiKey: process.env.FORTMATIC_API_KEY },
-  // { walletName: 'walletConnect', infuraKey: process.env.INFURA_ID },
-  // { walletName: 'portis', apiKey: process.env.PORTIS_API_KEY },
-  // { walletName: 'authereum' },
-  // // Squarelink site would not load to get API key, so leaving out for now
-  // // { walletName: 'squarelink', apiKey: process.env.SQUARELINK_API_KEY },
-  // { walletName: 'opera' },
-  // { walletName: 'dapper' },
-];
 
 export default {
   name: 'ConnectWallet',
@@ -59,21 +43,8 @@ export default {
   methods: {
     async connectWallet() {
       try {
-        // Let user connect wallet of their choice
         this.isLoading = true;
-        const onboard = Onboard({
-          walletSelect: { wallets },
-          dappId: process.env.BLOCKNATIVE_API_KEY,
-          networkId: 1,
-          darkMode: this.$q.dark.isActive,
-          subscriptions: {
-            wallet: (wallet) => { provider = wallet.provider; },
-          },
-        });
-        await onboard.walletSelect();
-        await onboard.walletCheck();
-        // Update state with wallet info
-        await this.$store.dispatch('user/setEthereumData', provider);
+        await this.$store.dispatch('user/setEthereumData', window.ethereum);
       } catch (err) {
         console.error(err); // eslint-disable-line no-console
       } finally {
