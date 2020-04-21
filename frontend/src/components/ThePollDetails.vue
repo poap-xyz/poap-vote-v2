@@ -1,6 +1,18 @@
 <template>
   <div
-    v-if="poll"
+    v-if="isPollDataLoading"
+    class="row justify-center q-my-xl q-py-xl"
+  >
+    <q-spinner
+      color="primary"
+      size="3rem"
+    />
+    <div class="col-xs-12 text-center text-italic q-mt-lg">
+      Loading poll details...
+    </div>
+  </div>
+  <div
+    v-else-if="poll"
     style="margin:0 auto; max-width:600px;"
   >
     <!-- Title -->
@@ -71,7 +83,7 @@
         color="primary"
         class="q-mt-lg"
         :disabled="!canUserVote"
-        :loading="isLoading"
+        :loading="isVoteSubmissionLoading"
         :full-width="true"
         label="Submit vote"
         @click="submitVote"
@@ -157,6 +169,13 @@
       Poll created by {{ poll.polltaker_account }}
     </div>
   </div>
+  <!-- The below div should never display if app and API are functioning properly -->
+  <div
+    v-else
+    class="text-center q-mt-xl"
+  >
+    Uh-oh, something went wrong. Please refresh the page and try again.
+  </div>
 </template>
 
 <script>
@@ -185,8 +204,10 @@ export default {
   data() {
     return {
       selectedOption: undefined,
+      poll: undefined,
       votes: undefined,
-      isLoading: undefined,
+      isPollDataLoading: undefined,
+      isVoteSubmissionLoading: undefined,
     };
   },
 
@@ -198,14 +219,6 @@ export default {
       userAddress: (state) => state.user.userAddress,
       userTokens: (state) => state.user.tokens,
     }),
-
-    /**
-     * @notice Based on the id prop, find the specific poll we are viewing
-     */
-    poll() {
-      const polls = this.polls.filter((poll) => poll.id === this.id);
-      return polls[0];
-    },
 
     /**
      * @notice Based on the specific poll we are viewing, get details for its events
@@ -341,7 +354,11 @@ export default {
   },
 
   async mounted() {
+    this.isPollDataLoading = true;
+    const response = await this.$serverApi.get(`/api/polls/${this.id}`);
+    this.poll = response.data;
     await this.fetchVotes();
+    this.isPollDataLoading = false;
   },
 
   methods: {
@@ -353,7 +370,7 @@ export default {
     async submitVote() {
       try {
         if (!this.canUserVote) return;
-        this.isLoading = true;
+        this.isVoteSubmissionLoading = true;
 
         // Define EIP-712 signature format for submitting votes
         const dataFormat = [
@@ -387,10 +404,10 @@ export default {
         // Update page data
         await this.fetchVotes();
         this.notifyUser('positive', 'Your vote has been successfully recorded!');
-        this.isLoading = false;
+        this.isVoteSubmissionLoading = false;
       } catch (err) {
         console.error(err);
-        this.isLoading = false;
+        this.isVoteSubmissionLoading = false;
       }
     },
   },
