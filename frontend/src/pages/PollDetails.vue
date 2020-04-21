@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <the-poll-details
-      :id="$route.params.id"
+      :id="Number($route.params.id)"
       class="q-pb-xl"
     />
   </q-page>

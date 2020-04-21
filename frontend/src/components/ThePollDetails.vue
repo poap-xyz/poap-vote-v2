@@ -177,7 +177,7 @@ export default {
   props: {
     // This refers to the ID of the poll we are viewing
     id: {
-      type: String,
+      type: Number,
       required: true,
     },
   },
@@ -346,7 +346,7 @@ export default {
 
   methods: {
     async fetchVotes() {
-      const response = await this.$serverApi.get(`/api/votes/${this.id}`);
+      const response = await this.$serverApi.get(`/api/poll/${this.id}/votes`);
       this.votes = response.data;
     },
 
@@ -381,7 +381,7 @@ export default {
 
         // Submit vote
         console.log('Sending POST request to server to submit vote...');
-        const response = await this.$serverApi.post(`/api/votes/${this.id}`, payload);
+        const response = await this.$serverApi.post(`/api/poll/${this.id}/votes`, payload);
         console.log('Server response: ', response);
 
         // Update page data
