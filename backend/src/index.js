@@ -15,6 +15,7 @@ const port = process.env.POAP_VOTE_PORT || 3000;
 
 app.get('/api/polls', PollController.fetchPolls);
 app.post('/api/polls', PollController.createPoll);
+app.get('/api/polls/:id', PollController.fetchPoll);
 
 app.get('/api/votes/:poll_fancy_id', VoteController.fetchVotes);
 app.post('/api/votes/:poll_fancy_id', VoteController.createVote);

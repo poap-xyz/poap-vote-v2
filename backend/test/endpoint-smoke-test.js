@@ -97,6 +97,40 @@ describe('Smoke Testing Endpoints', () => {
             });
     });
 
+    it('should fetch the poll with its id', (done) => {
+        chai.request(app)
+            .get('/api/polls/1')
+            .set('Accept', 'application/json')
+            .end( (_error, result) => {
+                expect(result.status).to.equal(200);
+                expect(result.body).to.include({
+                    id: 1,
+                    title: 'The first cool poll',
+                    polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
+                    description: 'This could be a very, very long amount of text if we wanted it to be I guess',
+                    end_date: 1745137203,
+                    attestation: 'dca1a1c59b1626c356e2a343775b573a92b3e26f2960086dd33685c4983eacb938367f83ef2fb794b58d69e940ae3c45298cab62932f0258b56c9d00605a9e461c',
+                });
+                expect(result.body.poll_options.length).to.equal(2);
+
+                done();
+            });
+    });
+
+    it('should fail to fetch a poll with an id that does not exit', (done) => {
+        chai.request(app)
+            .get('/api/polls/2')
+            .set('Accept', 'application/json')
+            .end( (_error, result) => {
+                //expect(result.status).to.equal(404);
+                expect(result.body).to.include({
+                    error: 'Poll does not exist',
+                });
+
+                done();
+            });
+    });
+
     it('should fail to create a vote missing a poll option', (done) => {
         const vote = {
             voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",

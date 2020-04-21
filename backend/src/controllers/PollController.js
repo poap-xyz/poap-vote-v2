@@ -16,6 +16,25 @@ class PollController {
         }
     }
 
+    static async fetchPoll(request, response) {
+        try {
+            const poll = await PollService.getPollById(request.params.id);
+
+            if (!poll) {
+                response.status(404).send({
+                    error: 'Poll does not exist',
+                });
+
+                return;
+            }
+
+            response.status(200).send(convertPollToJSON(poll));
+        } catch (error) {
+            response.status(400).send({error: error.message});
+            return;
+        }
+    }
+
     static async createPoll(request, response) {
         const validation = PollValidator.validateCreate(request.body);
 

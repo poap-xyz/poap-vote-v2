@@ -19,6 +19,21 @@ class PollService {
         }
     }
 
+    static async getPollById(pollId) {
+        try {
+            return await db.Poll.findByPk(pollId, {
+                include: {
+                    model: db.PollOption,
+                    as: 'poll_options',
+                    attributes: {exclude: ['createdAt', 'updatedAt']}
+                },
+            });
+        } catch (error) {
+            smartLog('[PollService]', error.description);
+            throw new Error('There was a database error (PS.2)');
+        }
+    }
+
     static async getPollByFancyId(fancy_id) {
         try {
             return await db.Poll.findOne({
