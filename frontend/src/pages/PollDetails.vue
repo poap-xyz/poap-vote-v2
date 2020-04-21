@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <the-poll-details
-      :fancy-id="$route.params.fancyId"
+      :id="$route.params.id"
       class="q-pb-xl"
     />
   </q-page>

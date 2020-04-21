@@ -175,8 +175,8 @@ export default {
   mixins: [eip712, helpers],
 
   props: {
-    // This refers to the fancy ID of the poll we are viewing
-    fancyId: {
+    // This refers to the ID of the poll we are viewing
+    id: {
       type: String,
       required: true,
     },
@@ -200,10 +200,10 @@ export default {
     }),
 
     /**
-     * @notice Based on the fancyId prop, find the specific poll we are viewing
+     * @notice Based on the id prop, find the specific poll we are viewing
      */
     poll() {
-      const polls = this.polls.filter((poll) => poll.fancy_id === this.fancyId);
+      const polls = this.polls.filter((poll) => poll.id === this.id);
       return polls[0];
     },
 
@@ -346,7 +346,7 @@ export default {
 
   methods: {
     async fetchVotes() {
-      const response = await this.$serverApi.get(`/api/votes/${this.fancyId}`);
+      const response = await this.$serverApi.get(`/api/votes/${this.id}`);
       this.votes = response.data;
     },
 
@@ -381,7 +381,7 @@ export default {
 
         // Submit vote
         console.log('Sending POST request to server to submit vote...');
-        const response = await this.$serverApi.post(`/api/votes/${this.fancyId}`, payload);
+        const response = await this.$serverApi.post(`/api/votes/${this.id}`, payload);
         console.log('Server response: ', response);
 
         // Update page data
