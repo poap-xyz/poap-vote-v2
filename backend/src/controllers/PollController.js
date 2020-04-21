@@ -1,6 +1,5 @@
 import PollService from '../db/services/PollService';
 import PollValidator from '../validators/PollValidator';
-import { json } from 'express';
 
 class PollController {
 
@@ -50,7 +49,6 @@ class PollController {
 
         try {
             var pollData = {
-                fancy_id: await generateFancyId(request.body.title),
                 start_date: Date.now(),
                 ...request.body,
             }
@@ -65,32 +63,6 @@ class PollController {
 
         response.status(201).send(convertPollToJSON(poll));
     }
-}
-
-async function generateFancyId(title) {
-    const derived_fancy = title
-                            .substring(0, 57)
-                            .trim()
-                            .toLowerCase()
-                            .replace(/\s+/g, '-')
-                            .replace(/[^\w\s-]+/g, '');
-
-    let existing_poll = await PollService.getPollByFancyId(derived_fancy);
-
-    if (!existing_poll) {
-        return derived_fancy;
-    }
-
-    for (let index = 1; index < 10000; index++) {
-        let appended_fancy = `${derived_fancy}-${index}`
-        existing_poll = await PollService.getPollByFancyId(appended_fancy);
-
-        if (!existing_poll) {
-            return appended_fancy;
-        }
-    }
-
-    throw new Error('Unable to generate unique fancy_id');
 }
 
 function convertPollToJSON(poll) {

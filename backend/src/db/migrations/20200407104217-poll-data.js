@@ -3,11 +3,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.all([
-      queryInterface.addColumn('Polls', 'fancy_id', {
-        type: Sequelize.STRING(64),
-        allowNull: false,
-        unique: true,
-      }),
       queryInterface.addColumn('Polls', 'polltaker_account', {
         type: Sequelize.STRING(42),
         allowNull: false,
@@ -33,7 +28,6 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return Promise.all([
-      queryInterface.removeColumn('Polls', 'fancy_id'),
       queryInterface.removeColumn('Polls', 'polltaker_account'),
       queryInterface.removeColumn('Polls', 'description'),
       queryInterface.removeColumn('Polls', 'start_date'),

@@ -30,11 +30,6 @@ class VoteService {
         return await VoteService.getVotesForPoll(poll);
     }
 
-    static async getVotesForPollWithFancyId(fancy_id) {
-        const poll = await PollService.getPollByFancyId(fancy_id);
-        return await VoteService.getVotesForPoll(poll);
-    }
-
     static async addVote(voteData) {
         try {
             return await db.Vote.create(voteData);

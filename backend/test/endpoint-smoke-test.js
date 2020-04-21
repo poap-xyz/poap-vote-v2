@@ -69,7 +69,6 @@ describe('Smoke Testing Endpoints', () => {
                 expect(result.status).to.equal(201);
                 expect(result.body).to.include({
                     id: 1,
-                    fancy_id: 'the-first-cool-poll',
                     title: 'The first cool poll',
                     polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
                     description: 'This could be a very, very long amount of text if we wanted it to be I guess',
@@ -232,7 +231,7 @@ describe('Smoke Testing Endpoints', () => {
             });
     });
 
-    it('should create a poll when fancy id conflicts', (done) => {
+    it('should create another poll', (done) => {
         const poll = {
             title: 'The first cool poll',
             polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
@@ -261,7 +260,6 @@ describe('Smoke Testing Endpoints', () => {
                 expect(result.status).to.equal(201);
                 expect(result.body).to.include({
                     id: 3,
-                    fancy_id: 'the-first-cool-poll-1',
                     title: 'The first cool poll',
                     description: 'This is actually the second first cool poll',
                     polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
