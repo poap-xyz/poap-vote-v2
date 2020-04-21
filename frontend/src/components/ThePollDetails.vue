@@ -215,7 +215,6 @@ export default {
   computed: {
     ...mapState({
       allEvents: (state) => state.poap.events,
-      polls: (state) => [...state.poap.activePolls, ...state.poap.completedPolls],
       userAddress: (state) => state.user.userAddress,
       userTokens: (state) => state.user.tokens,
     }),
@@ -355,9 +354,13 @@ export default {
 
   async mounted() {
     this.isPollDataLoading = true;
+    // Get poll and vote data
     const response = await this.$serverApi.get(`/api/polls/${this.id}`);
-    this.poll = response.data;
     await this.fetchVotes();
+    // Convert timestamps to milliseconds
+    this.poll = response.data;
+    this.poll.start_date *= 1000;
+    this.poll.end_date *= 1000;
     this.isPollDataLoading = false;
   },
 
