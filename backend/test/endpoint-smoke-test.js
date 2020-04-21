@@ -138,7 +138,7 @@ describe('Smoke Testing Endpoints', () => {
         };
 
         chai.request(app)
-            .post('/api/votes/the-first-cool-poll')
+            .post('/api/poll/1/votes')
             .set('Accept', 'application/json')
             .send(vote)
             .end( (_error, result) => {
@@ -159,7 +159,7 @@ describe('Smoke Testing Endpoints', () => {
         };
 
         chai.request(app)
-            .post('/api/votes/the-first-cool-poll')
+            .post('/api/poll/1/votes')
             .set('Accept', 'application/json')
             .send(vote)
             .end( (_error, result) => {
