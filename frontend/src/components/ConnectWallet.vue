@@ -44,6 +44,7 @@ export default {
     async connectWallet() {
       try {
         this.isLoading = true;
+        await window.ethereum.enable();
         await this.$store.dispatch('user/setEthereumData', window.ethereum);
       } catch (err) {
         console.error(err); // eslint-disable-line no-console
