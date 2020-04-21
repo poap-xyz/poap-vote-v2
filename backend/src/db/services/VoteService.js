@@ -5,6 +5,10 @@ import smartLog from '../../utils/smartLog';
 class VoteService {
 
     static async getVotesForPoll(poll) {
+        if (!poll) {
+            return null;
+        }
+
         try {
             let votes = [];
 
@@ -19,6 +23,11 @@ class VoteService {
             smartLog("[VoteService]", error);
             throw new Error("There was a database error (vs.1)");
         }
+    }
+
+    static async getVotesForPollWithId(pollId) {
+        const poll = await PollService.getPollById(pollId);
+        return await VoteService.getVotesForPoll(poll);
     }
 
     static async getVotesForPollWithFancyId(fancy_id) {

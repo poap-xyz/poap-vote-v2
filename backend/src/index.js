@@ -17,7 +17,7 @@ app.get('/api/polls', PollController.fetchPolls);
 app.post('/api/polls', PollController.createPoll);
 app.get('/api/polls/:id', PollController.fetchPoll);
 
-app.get('/api/votes/:poll_fancy_id', VoteController.fetchVotes);
+app.get('/api/poll/:poll_id/votes', VoteController.fetchVotes);
 app.post('/api/poll/:poll_id/votes', VoteController.createVote);
 
 app.listen(port, () => {

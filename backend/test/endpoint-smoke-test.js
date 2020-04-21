@@ -176,9 +176,23 @@ describe('Smoke Testing Endpoints', () => {
             });
     });
 
+    it('should not return votes for a poll that does not exist', (done) => {
+        chai.request(app)
+            .get('/api/poll/2/votes')
+            .set('Accept', 'application/json')
+            .end( (_error, result) => {
+                expect(result.status).to.equal(404);
+                expect(result.body).to.include({
+                    error: 'Poll does not exist',
+                });
+
+                done();
+            });
+    });
+
     it('should return votes', (done) => {
         chai.request(app)
-            .get('/api/votes/the-first-cool-poll')
+            .get('/api/poll/1/votes')
             .set('Accept', 'application/json')
             .end( (_error, result) => {
                 expect(result.status).to.equal(200);
