@@ -16,10 +16,12 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "@walletconnect/web3-provider": "^1.0.0-beta.47",
     "axios": "^0.19.2",
     "ethers": "^4.0.46",
     "fuse.js": "^5.1.0",
-    "quasar": "^1.0.0"
+    "quasar": "^1.0.0",
+    "web3modal": "^1.5.0"
   },
   "devDependencies": {
     "@quasar/app": "^1.0.0",

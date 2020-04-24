@@ -4,6 +4,14 @@ Polling based on POAP token ownership.
 
 ## Development
 
+Create a file called `.env.dev` in the `frontend` folder with the following content:
+
+```bash
+export INFURA_ID=yourInfuraId
+```
+
+Once that is setup, create a copy of that file called `.env.prod`. Next, follow the steps below:
+
 ```bash
 # Start the server
 cd backend
