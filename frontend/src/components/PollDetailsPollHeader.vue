@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="poll">
     <!-- Title -->
     <h5 class="primary text-bold">
       {{ poll.title }}
@@ -15,6 +15,11 @@
         <br>
         {{ timeRemaining }} remaining
       </div>
+    </div>
+
+    <!-- Description -->
+    <div class="q-py-md">
+      {{ poll.description }}
     </div>
   </div>
 </template>
