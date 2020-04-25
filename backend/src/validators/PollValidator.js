@@ -3,7 +3,7 @@ import isValidAddress from "../utils/isValidAddress";
 
 class PollValidator {
 
-    static validateCreate(pollData) {
+    static validateCreate(pollData, eventsData) {
         const fieldValidation = this.validateFields(pollData);
         if (!fieldValidation.isValid) {
             return fieldValidation;
@@ -14,7 +14,7 @@ class PollValidator {
             return dateValidation;
         }
 
-        if(!isValidAddress(pollData.polltaker_account)) {
+        if (!isValidAddress(pollData.polltaker_account)) {
             return {
                 isValid: false,
                 errorMessage: "Ethereum address is improperly formed",
@@ -22,8 +22,13 @@ class PollValidator {
         }
 
         const optionsValidation = this.validatePollOptions(pollData.poll_options);
-        if(!optionsValidation.isValid) {
+        if (!optionsValidation.isValid) {
             return optionsValidation;
+        }
+
+        const eventsValidation = this.validateEvents(pollData.valid_event_ids, eventsData);
+        if (!eventsValidation.isValid) {
+            return eventsValidation;
         }
 
         const signatureValidation = this.validateSignature(pollData);
@@ -98,6 +103,26 @@ class PollValidator {
                 return {
                     isValid: false,
                     errorMessage: "Poll Option contents are missing or malformed",
+                };
+            }
+        }
+
+        return {
+            isValid: true,
+            errorMessage: null,
+        };
+    }
+
+    static validateEvents(eventIds, eventsData) {
+        const allIds = eventsData.map((event) => { return event.id });
+
+        for (let i = 0; i < eventIds.length; i++) {
+            const eventId = eventIds[i];
+
+            if (!allIds.includes(eventId)) {
+                return {
+                    isValid: false,
+                    errorMessage: `Invalid ID in qualifying events ${eventId}`,
                 };
             }
         }

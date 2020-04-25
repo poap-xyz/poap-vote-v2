@@ -1,5 +1,7 @@
 import PollService from '../db/services/PollService';
 import PollValidator from '../validators/PollValidator';
+import POAP from '../poap/';
+import smartLog from '../utils/smartLog';
 
 class PollController {
 
@@ -35,7 +37,20 @@ class PollController {
     }
 
     static async createPoll(request, response) {
-        const validation = PollValidator.validateCreate(request.body);
+        let events = null;
+
+        try {
+            events = await POAP.fetchEvents();
+        } catch (error) {
+            smartLog("[PollController] ", error.description)
+            response.status(503).send({
+                error: "POAP API currently unavailable",
+            });
+
+            return;
+        }
+
+        const validation = PollValidator.validateCreate(request.body, events);
 
         if (!validation.isValid) {
             response.status(400).send({

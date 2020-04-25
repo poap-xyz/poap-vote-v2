@@ -42,6 +42,37 @@ describe('Smoke Testing Endpoints', () => {
             });
     });
 
+    it('should fail to create a poll including an event that does not exist', (done) => {
+        const poll = {
+            title: 'The first cool poll',
+            polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
+            description: 'This could be a very, very long amount of text if we wanted it to be I guess',
+            end_date: 1745137203,
+            valid_event_ids: [128, 124, 127, 123, 126, 125, 999999],
+            poll_options: [
+                {
+                    contents: 'Yes',
+                },
+                {
+                    contents: 'No',
+                },
+            ],
+            attestation: "dca1a1c59b1626c356e2a343775b573a92b3e26f2960086dd33685c4983eacb938367f83ef2fb794b58d69e940ae3c45298cab62932f0258b56c9d00605a9e461c",
+        }
+
+        chai.request(app)
+            .post('/api/polls')
+            .set('Accept', 'application/json')
+            .send(poll)
+            .end( (_error, result) => {
+                expect(result.status).to.equal(400);
+                expect(result.body).to.include({
+                    error: 'Invalid ID in qualifying events 999999',
+                });
+
+                done();
+            });
+    });
 
     it('should create a poll', (done) => {
         const poll = {
