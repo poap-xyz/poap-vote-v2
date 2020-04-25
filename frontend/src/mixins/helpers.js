@@ -12,6 +12,28 @@ export default {
     };
   },
 
+  computed: {
+    /**
+     * @notice Time remaining until the poll ends
+     */
+    timeRemaining() {
+      // If poll has ended, time remaining is zero
+      if (!this.poll) return undefined;
+      const end = (new Date(this.poll.end_date)).getTime();
+      if (this.now >= end) return 0;
+      // Otherwise, convert to days/hours/minutes
+      const secondsRemaining = (end - this.now) / 1000;
+      return this.secondsToTicker(secondsRemaining);
+    },
+
+    /**
+     * @notice Convert timeRemaining into a bool for convenience
+     */
+    isPollOngoing() {
+      return this.timeRemaining !== 0;
+    },
+  },
+
   mounted() {
     setInterval(() => this.now = new Date(), 1000); // eslint-disable-line
   },

@@ -53,7 +53,7 @@ function getVotePercentages(state) {
 }
 
 /**
- * @notice Returns various vote data
+ * @notice Returns various vote data for the selected poll
  */
 export function voteData(state) {
   const totalVotes = getTotalVotes(state);
@@ -61,4 +61,15 @@ export function voteData(state) {
   const votePercentages = getVotePercentages(state);
 
   return { totalVotes, voteCounts, votePercentages };
+}
+
+/**
+ * @notice Returns event data for the selected poll
+ */
+export function selectedPollEvents(state) {
+  // Get list of all event IDs
+  const eventIds = state.selectedPoll.valid_event_ids;
+  // Get an array of all events
+  const eventArray = state.events.filter((event) => eventIds.includes(event.id));
+  return eventArray;
 }

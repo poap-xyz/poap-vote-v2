@@ -23,7 +23,7 @@
         </q-item-section>
       </q-item>
     </q-card>
-    <div class="text-caption">
+    <div class="text-caption text-grey">
       {{ totalVotes }} total vote
       <span v-if="totalVotes !== 1">s</span>
     </div>
