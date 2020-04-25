@@ -484,7 +484,7 @@ export default {
 
         // Get updated poll list and redirect to details page of the new poll
         await this.$store.dispatch('poap/getPolls');
-        this.$router.push({ name: 'pollDetails', params: { id: response.data.id } });
+        this.$router.push({ name: 'cast', params: { id: response.data.id } });
       } catch (err) {
         this.isLoading = false;
         console.error(err);

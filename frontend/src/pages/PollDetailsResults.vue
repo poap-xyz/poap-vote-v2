@@ -11,7 +11,7 @@
 import ThePollDetails from 'components/ThePollDetails';
 
 export default {
-  name: 'PollDetails',
+  name: 'PollDetailsResults',
 
   components: {
     ThePollDetails,

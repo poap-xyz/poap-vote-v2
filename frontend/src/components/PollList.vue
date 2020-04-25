@@ -14,7 +14,7 @@
           bordered
           class="card-border cursor-pointer q-mr-md"
           style="max-width: 400px;"
-          @click="$router.push({name: 'pollDetails', params: {id: item.id}})"
+          @click="$router.push({name: 'results', params: {id: item.id}})"
         >
           <!-- POLL TITLE AND DESCRIPTION-->
           <q-card-section>
