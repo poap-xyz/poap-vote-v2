@@ -56,4 +56,10 @@ describe('VoteValidator', () => {
         const validation = VoteValidator.validateCreate(voteData, pollData);
         expect(validation.isValid).to.equal(true);
     });
+
+    it('should fail if poll option chosen is not part of this poll', () => {
+        const validation = VoteValidator.validateCreate(voteDataReplacing('poll_option_id', 3), pollData);
+        expect(validation.isValid).is.false;
+        expect(validation.errorMessage).to.equal('Option selected does not belong to this poll');
+    });
 });
