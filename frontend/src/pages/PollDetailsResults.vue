@@ -1,20 +1,34 @@
 <template>
   <q-page padding>
-    <the-poll-details
-      :id="Number($route.params.id)"
-      class="q-pb-xl"
-    />
+    <div style="margin:0 auto; max-width:600px;">
+      <poll-details-poll-header />
+      <poll-details-poll-creator />
+    </div>
   </q-page>
 </template>
 
 <script>
-import ThePollDetails from 'components/ThePollDetails';
+import PollDetailsPollHeader from 'components/PollDetailsPollHeader';
+import PollDetailsPollCreator from 'components/PollDetailsPollCreator';
 
 export default {
   name: 'PollDetailsResults',
 
   components: {
-    ThePollDetails,
+    PollDetailsPollHeader,
+    PollDetailsPollCreator,
+  },
+
+  data() {
+    return {
+      isPollDataLoading: undefined,
+    };
+  },
+
+  async mounted() {
+    this.isPollDataLoading = true;
+    await this.$store.dispatch('poap/getSelectedPoll', Number(this.$route.params.id));
+    this.isPollDataLoading = false;
   },
 };
 </script>

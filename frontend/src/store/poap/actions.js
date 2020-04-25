@@ -33,3 +33,22 @@ export async function getPolls({ commit }) {
 
   commit('setPolls', { activePolls, completedPolls });
 }
+
+/**
+ * @notice Gets details for the poll user is viewing and updates state
+ */
+export async function getSelectedPoll({ commit }, id) {
+  // Get poll data
+  const pollResponse = await serverApi.get(`/api/polls/${id}`);
+
+  // Get votes data
+  const voteResponse = await serverApi.get(`/api/poll/${id}/votes`);
+  const votes = voteResponse.data;
+
+  // Convert timestamps to milliseconds
+  const poll = pollResponse.data;
+  poll.start_date *= 1000;
+  poll.end_date *= 1000;
+
+  commit('setSelectedPoll', { poll, votes });
+}
