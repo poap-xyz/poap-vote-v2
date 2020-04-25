@@ -20,6 +20,13 @@
           </q-card>
         </q-expansion-item>
       </div>
+
+      <base-button
+        class="q-mt-xl"
+        label="Place Your Vote"
+        :full-width="true"
+        @click="$router.push({ name: 'cast', params: {id: Number($route.params.id)} })"
+      />
       <poll-details-poll-creator />
     </div>
   </q-page>

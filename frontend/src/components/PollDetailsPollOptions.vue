@@ -1,5 +1,11 @@
 <template>
   <div v-if="poll">
+    <div
+      v-if="!isPollOngoing"
+      class="secondary text-caption text-bold"
+    >
+      The voting period for this poll has ended and results are final.
+    </div>
     <q-card
       v-for="option in options"
       :key="option.id"
