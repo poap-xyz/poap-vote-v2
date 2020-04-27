@@ -5,6 +5,7 @@
       <base-button
         id="button--connect-wallet"
         color="primary"
+        :full-width="fullWidth"
         :label="label"
         :loading="isLoading"
         @click="connectWallet"
@@ -22,6 +23,12 @@ export default {
   name: 'ConnectWallet',
 
   props: {
+    fullWidth: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
     label: {
       type: String,
       required: false,
