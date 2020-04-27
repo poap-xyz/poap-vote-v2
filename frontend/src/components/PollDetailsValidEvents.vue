@@ -10,16 +10,16 @@
       <!-- Wording for voting page -->
       <div v-if="isForVoting">
         Users can vote in this poll if they hold any of the following POAP tokens.
-        <!-- If user has eleigible tokens -->
+        <!-- If user has no eleigible tokens -->
         <span v-if="eligibleTokenCount === 0">
           You do not hold any tokens qualified to vote in this poll.
         </span>
-        <!-- If user has no eligible tokens  -->
+        <!-- If user has eligible tokens  -->
         <span v-else>
           You hold {{ eligibleTokenCount }} eligible
           token<span v-if="eligibleTokenCount !== 1">s</span>
-          and therefore have {{ eligibleTokenCount }}
-          vote<span v-if="eligibleTokenCount !== 1">s</span>.
+          and therefore your weighted vote is {{ eligibleTokenCount }}
+          token<span v-if="eligibleTokenCount !== 1">s</span>.
         </span>
       </div>
       <!-- Wording for results page -->

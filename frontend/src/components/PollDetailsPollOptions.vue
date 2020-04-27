@@ -10,11 +10,23 @@
       v-for="option in options"
       :key="option.id"
       class="option q-my-md"
+      :class="{ 'user-cannot-vote': isForVoting && !canUserVote }"
     >
       <q-item
         clickable
         class="q-py-md"
+        @click="selectOption(option.id)"
       >
+        <q-item-section
+          v-if="isForVoting && canUserVote"
+          avatar
+        >
+          <q-icon
+            color="primary"
+            :name="option.id === selectedOption ? 'far fa-dot-circle' : 'far fa-circle'"
+          />
+        </q-item-section>
+
         <q-item-section>
           <q-item-label>{{ option.contents }}</q-item-label>
         </q-item-section>
@@ -39,11 +51,26 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 import helpers from 'src/mixins/helpers';
+import voting from 'src/mixins/voting';
 
 export default {
   name: 'PollDetailsPollOptions',
 
-  mixins: [helpers],
+  mixins: [helpers, voting],
+
+  props: {
+    isForVoting: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+
+  data() {
+    return {
+      selectedOption: undefined,
+    };
+  },
 
   computed: {
     ...mapGetters({
@@ -72,6 +99,15 @@ export default {
       return this.voteData.votePercentages;
     },
   },
+
+  methods: {
+    selectOption(id) {
+      if (this.isForVoting && this.canUserVote) {
+        this.selectedOption = id;
+        this.$emit('optionSelected', id);
+      }
+    },
+  },
 };
 </script>
 
@@ -80,9 +116,6 @@ export default {
   .option {
     background-color: $primary-lightened
   }
-}
-.not-a-user-token {
-  opacity: 0.6;
 }
 .user-cannot-vote {
   opacity: 0.6;
