@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import getPollData from 'src/mixins/getPollData';
 import PollDetailsPollHeader from 'components/PollDetailsPollHeader';
 import PollDetailsPollOptions from 'components/PollDetailsPollOptions';
 import PollDetailsValidEvents from 'components/PollDetailsValidEvents';
@@ -49,23 +49,12 @@ export default {
     PollDetailsPollCreator,
   },
 
+  mixins: [getPollData],
+
   data() {
     return {
-      isPollDataLoading: undefined,
       showEvents: undefined,
     };
-  },
-
-  computed: {
-    ...mapState({
-      poll: (state) => state.poap.selectedPoll,
-    }),
-  },
-
-  async mounted() {
-    this.isPollDataLoading = true;
-    await this.$store.dispatch('poap/getSelectedPoll', Number(this.$route.params.id));
-    this.isPollDataLoading = false;
   },
 };
 </script>
