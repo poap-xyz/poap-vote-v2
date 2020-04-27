@@ -10,10 +10,17 @@
       <!-- Wording for voting page -->
       <div v-if="isForVoting">
         Users can vote in this poll if they hold any of the following POAP tokens.
-        You hold {{ eligibleTokenCount }} eligible
-        token<span v-if="eligibleTokenCount !== 1">s</span>
-        and therefore have {{ eligibleTokenCount }}
-        vote<span v-if="eligibleTokenCount !== 1">s</span>.
+        <!-- If user has eleigible tokens -->
+        <span v-if="eligibleTokenCount === 0">
+          You do not hold any tokens qualified to vote in this poll.
+        </span>
+        <!-- If user has no eligible tokens  -->
+        <span v-else>
+          You hold {{ eligibleTokenCount }} eligible
+          token<span v-if="eligibleTokenCount !== 1">s</span>
+          and therefore have {{ eligibleTokenCount }}
+          vote<span v-if="eligibleTokenCount !== 1">s</span>.
+        </span>
       </div>
       <!-- Wording for results page -->
       <div v-else>
@@ -64,6 +71,14 @@
           </a>
         </div>
       </div>
+      <!-- Show button for results page if user cannot vote -->
+      <base-button
+        v-if="eligibleTokenCount === 0"
+        class="q-mt-xl"
+        :full-width="true"
+        label="View Current Results"
+        @click="$router.push({ name: 'results', params: {id: Number($route.params.id)} })"
+      />
     </div>
   </div>
 </template>
