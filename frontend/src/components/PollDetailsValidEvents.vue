@@ -7,12 +7,22 @@
       >
         Valid Events
       </h6>
-      <div>
+      <!-- Wording for voting page -->
+      <div v-if="isForVoting">
+        Users can vote in this poll if they hold any of the following POAP tokens.
+        You hold {{ eligibleTokenCount }} eligible
+        token<span v-if="eligibleTokenCount !== 1">s</span>
+        and therefore have {{ eligibleTokenCount }}
+        vote<span v-if="eligibleTokenCount !== 1">s</span>.
+      </div>
+      <!-- Wording for results page -->
+      <div v-else>
         Users
         <span v-if="isPollOngoing">are</span>
         <span v-else>were</span>
         eligible to vote in this poll if they held any of the following POAP tokens.
       </div>
+      <!-- Event cards -->
       <div class="row justify-start q-mt-md">
         <div
           v-for="event in events"
@@ -27,6 +37,7 @@
             <q-card
               bordered
               class="card-border"
+              :class="{'not-a-user-token': isForVoting && !userEventIds.includes(event.id)}"
             >
               <q-item>
                 <q-item-section avatar>
@@ -58,18 +69,26 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import helpers from 'src/mixins/helpers';
+import voting from 'src/mixins/voting';
 
 export default {
   name: 'PollDetailsValidEvents',
 
-  mixins: [helpers],
+  mixins: [helpers, voting],
 
-  computed: {
-    ...mapGetters({
-      events: 'poap/selectedPollEvents',
-    }),
+  props: {
+    isForVoting: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 };
 </script>
+
+<style lang="stylus" scoped>
+.not-a-user-token {
+  opacity: 0.6;
+}
+</style>
