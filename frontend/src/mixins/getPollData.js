@@ -9,6 +9,7 @@ export default {
   data() {
     return {
       isPollDataLoading: undefined,
+      selectedPollId: undefined,
     };
   },
 
@@ -20,10 +21,20 @@ export default {
 
   async mounted() {
     this.isPollDataLoading = true;
-    const selectedId = Number(this.$route.params.id);
-    if (!this.poll || this.poll.id !== selectedId) {
-      await this.$store.dispatch('poap/getSelectedPoll', selectedId);
-    }
+    await this.getSelectedPollData();
     this.isPollDataLoading = false;
+  },
+
+  methods: {
+    /**
+     * @notice Get poll details and votes
+     * @param {Boolean} forceFetch true to fetch data, used after placing a vote
+     */
+    async getSelectedPollData(forceFetch = false) {
+      this.selectedPollId = Number(this.$route.params.id);
+      if (forceFetch || !this.poll || this.poll.id !== this.selectedPollId) {
+        await this.$store.dispatch('poap/getSelectedPoll', this.selectedPollId);
+      }
+    },
   },
 };

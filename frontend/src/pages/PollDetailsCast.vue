@@ -45,11 +45,6 @@
       <!-- Poll creator -->
       <poll-details-poll-creator />
     </div>
-    <!--  -->
-    <the-poll-details
-      :id="Number($route.params.id)"
-      class="q-pb-xl"
-    />
   </q-page>
 </template>
 
