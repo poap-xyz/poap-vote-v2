@@ -1,7 +1,13 @@
 <template>
   <div v-if="poll">
     <!-- Title -->
-    <h5 class="primary text-bold">
+    <h6
+      class="primary-lightened-text"
+      style="margin-bottom: 0; font-size: 0.9rem"
+    >
+      {{ pageTitle }}
+    </h6>
+    <h5 class="primary text-bold no-margin">
       {{ poll.title }}
     </h5>
 
@@ -33,8 +39,11 @@ export default {
 
   mixins: [helpers],
 
-  data() {
-    return {};
+  props: {
+    pageTitle: {
+      type: String,
+      required: true,
+    },
   },
 
   computed: {

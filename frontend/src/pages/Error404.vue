@@ -10,7 +10,7 @@
       Sorry, nothing here...<strong>(404)</strong>
     </p>
     <q-btn
-      color="secondary"
+      color="primary"
       style="width:200px;"
       to="/"
       label="Go back"
@@ -19,7 +19,15 @@
 </template>
 
 <script>
+import title from 'src/mixins/title';
+
 export default {
   name: 'Error404',
+
+  mixins: [title],
+
+  mounted() {
+    this.generateTitle();
+  },
 };
 </script>

@@ -4,8 +4,11 @@
  *   - If not, fetch the data and save it to the store
  */
 import { mapState } from 'vuex';
+import title from 'src/mixins/title';
 
 export default {
+  mixins: [title],
+
   data() {
     return {
       isPollDataLoading: undefined,
@@ -22,6 +25,7 @@ export default {
   async mounted() {
     this.isPollDataLoading = true;
     await this.getSelectedPollData();
+    this.generateTitle();
     this.isPollDataLoading = false;
   },
 

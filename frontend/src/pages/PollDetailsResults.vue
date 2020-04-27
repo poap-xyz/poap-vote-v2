@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div style="margin:0 auto; max-width:600px;">
-      <poll-details-poll-header />
+      <poll-details-poll-header page-title="Poll Results" />
       <poll-details-poll-options />
       <!-- Event expansion item -->
       <div v-if="poll">
@@ -15,7 +15,7 @@
         >
           <q-card>
             <q-card-section>
-              <poll-details-valid-events />.
+              <poll-details-valid-events />
             </q-card-section>
           </q-card>
         </q-expansion-item>

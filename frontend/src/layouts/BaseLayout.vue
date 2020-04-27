@@ -2,7 +2,6 @@
   <q-layout view="hhh Lpr fff">
     <!-- HEADER -->
     <q-header
-      bordered
       class="q-mx-md q-mt-md"
       style="color: #000000; background-color: rgba(0,0,0,0)"
     >
@@ -20,8 +19,8 @@
               src="statics/app-logo-128x128.png"
               style="max-width: 50px;"
             >
-            <div class="text-h5 dark-toggle">
-              POAP Vote
+            <div class="text-h6 dark-toggle">
+              <span class="primary text-bold">POAP Vote</span>
             </div>
           </div>
         </div>

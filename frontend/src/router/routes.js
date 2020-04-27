@@ -15,6 +15,7 @@ const routes = [
 // Always leave this as last one
 if (process.env.MODE !== 'ssr') {
   routes.push({
+    name: 'Error404',
     path: '*',
     component: () => import('pages/Error404.vue'),
   });

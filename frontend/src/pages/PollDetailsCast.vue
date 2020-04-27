@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div style="margin:0 auto; max-width:600px;">
-      <poll-details-poll-header />
+      <poll-details-poll-header page-title="Cast Your Vote" />
       <poll-details-poll-options
         :is-for-voting="true"
         @optionSelected="onOptionSelected"
@@ -9,7 +9,7 @@
       <div class="q-mt-xl">
         <!-- Not logged in, so show login button -->
         <div
-          v-if="!userAddress"
+          v-if="!userAddress && isPollOngoing"
           class="secondary text-bold text-center"
         >
           Voting requires a web3 connected wallet
@@ -24,7 +24,7 @@
         </div>
       </div>
       <!-- Vote button -->
-      <div v-if="userAddress">
+      <div v-if="userAddress && eligibleTokenCount !== 0">
         <base-button
           id="submitVote"
           color="primary"
@@ -60,8 +60,6 @@ import PollDetailsPollOptions from 'components/PollDetailsPollOptions';
 import PollDetailsValidEvents from 'components/PollDetailsValidEvents';
 import PollDetailsPollCreator from 'components/PollDetailsPollCreator';
 
-import ThePollDetails from 'components/ThePollDetails';
-
 export default {
   name: 'PollDetailsCast',
 
@@ -71,8 +69,6 @@ export default {
     PollDetailsPollOptions,
     PollDetailsValidEvents,
     PollDetailsPollCreator,
-    //
-    ThePollDetails,
   },
 
   mixins: [eip712, getPollData, helpers, voting],
@@ -131,6 +127,7 @@ export default {
 
         // Update page data
         this.notifyUser('positive', 'Your vote has been successfully recorded!');
+        await this.getSelectedPollData(true);
         this.$router.push({ name: 'results', params: { id: this.selectedPollId } });
       } catch (err) {
         console.error(err);

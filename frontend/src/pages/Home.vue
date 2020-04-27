@@ -1,12 +1,12 @@
 <template>
   <q-page padding>
     <div class="text-center">
-      <h1>
+      <h1 class="q-mb-md">
         POAP Vote
       </h1>
-      <h2 class="secondary">
+      <h3 class="no-margin secondary">
         Use your POAP NFTs to vote on polls
-      </h2>
+      </h3>
     </div>
     <div class="row justify-center q-mt-xl">
       <base-button
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import title from 'src/mixins/title';
 import PollListAllPolls from 'components/PollListAllPolls';
 
 export default {
@@ -29,6 +30,12 @@ export default {
 
   components: {
     PollListAllPolls,
+  },
+
+  mixins: [title],
+
+  mounted() {
+    this.generateTitle();
   },
 };
 </script>

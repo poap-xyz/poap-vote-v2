@@ -1,6 +1,6 @@
 <template>
   <div v-if="poll">
-    <div class="text-caption q-mt-xl">
+    <div class="text-caption q-my-xl">
       Poll created by {{ poll.polltaker_account }}
     </div>
   </div>
