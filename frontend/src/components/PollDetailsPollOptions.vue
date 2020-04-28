@@ -32,7 +32,7 @@
         </q-item-section>
 
         <q-item-section
-          v-if="votePercentages"
+          v-if="!isForVoting && votePercentages"
           avatar
           class="text-caption text-grey"
         >
@@ -41,7 +41,10 @@
         </q-item-section>
       </q-item>
     </q-card>
-    <div class="text-caption text-grey">
+    <div
+      v-if="!isForVoting"
+      class="text-caption text-grey"
+    >
       {{ totalVotes }} total vote<span v-if="totalVotes !== 1">s</span>
     </div>
   </div>

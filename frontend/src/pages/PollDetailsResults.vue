@@ -11,22 +11,25 @@
           icon="fas fa-calendar-alt"
           :label="`Token holders from ${ poll.valid_event_ids.length }
       different events are qualified to vote in this poll.`"
-          caption="Click to learn more"
+          caption="Click to learn more and vote"
         >
           <q-card>
             <q-card-section>
               <poll-details-valid-events />
             </q-card-section>
+            <q-card-section>
+              <base-button
+                class="q-mt-lg"
+                label="Place Your Vote"
+                :full-width="true"
+                @click="$router.push({ name: 'cast', params: {id: Number($route.params.id)} })"
+              />
+            </q-card-section>
           </q-card>
         </q-expansion-item>
       </div>
 
-      <base-button
-        class="q-mt-xl"
-        label="Place Your Vote"
-        :full-width="true"
-        @click="$router.push({ name: 'cast', params: {id: Number($route.params.id)} })"
-      />
+
       <poll-details-poll-creator />
     </div>
   </q-page>
