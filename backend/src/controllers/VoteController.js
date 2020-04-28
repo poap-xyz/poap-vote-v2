@@ -62,7 +62,7 @@ class VoteController {
             return;
         }
 
-        const tokenValidation = VoteValidator.validateVoteTokens(request.body, tokens);
+        const tokenValidation = VoteValidator.validateVoteTokens(request.body, tokens, poll);
 
         if (!tokenValidation.isValid) {
             response.status(400).send({

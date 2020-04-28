@@ -223,6 +223,27 @@ describe('Smoke Testing Endpoints', () => {
             });
     });
 
+    it('should not create a vote when using a token that is not from a qualifying event', (done) => {
+        const vote = {
+            voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
+            token_ids: [6068, 8019],
+            poll_option_id: 1,
+        };
+
+        chai.request(app)
+            .post('/api/poll/1/votes')
+            .set('Accept', 'application/json')
+            .send(vote)
+            .end( (_error, result) => {
+                expect(result.status).to.equal(400);
+                expect(result.body).to.include({
+                    error: 'Token not qualified to vote in this poll 8019',
+                });
+
+                done();
+            });
+    });
+
     it('should create a vote', (done) => {
         const vote = {
             voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",

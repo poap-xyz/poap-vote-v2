@@ -66,11 +66,15 @@ class VoteValidator {
         };
     }
 
-    static validateVoteTokens(voteData, accountTokens) {
+    static validateVoteTokens(voteData, accountTokens, pollData) {
         const ownershipValidation = this.validateTokenOwnership(voteData, accountTokens);
-
         if (!ownershipValidation.isValid) {
             return ownershipValidation;
+        }
+
+        const qualificationValidation = this.validateTokenQualification(voteData, accountTokens, pollData);
+        if (!qualificationValidation.isValid) {
+            return qualificationValidation;
         }
 
         return {
@@ -103,6 +107,34 @@ class VoteValidator {
             isValid: true,
             errorMessage: null,
         }
+    }
+
+    static validateTokenQualification(voteData, accountTokens, pollData) {
+        let tokenIdsToEventIds = {}
+
+        for (let i = 0; i < accountTokens.length; i++) {
+            const token = accountTokens[i];
+            tokenIdsToEventIds[token.tokenId] = parseInt(token.event.id);
+        }
+
+        const validEventIds = pollData.valid_event_ids.map( id => parseInt(id) );
+
+        for (let i = 0; i < voteData.token_ids.length; i++) {
+            const voteTokenId = voteData.token_ids[i];
+            const voteTokenEventId = tokenIdsToEventIds[voteTokenId];
+
+            if (!validEventIds.includes(voteTokenEventId)) {
+                return {
+                    isValid: false,
+                    errorMessage: `Token not qualified to vote in this poll ${voteTokenId}`,
+                };
+            }
+        }
+
+        return {
+            isValid: true,
+            errorMessage: null,
+        };
     }
 }
 
