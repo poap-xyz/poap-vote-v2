@@ -73,7 +73,7 @@
       </div>
       <!-- Show button for results page if user cannot vote -->
       <base-button
-        v-if="eligibleTokenCount === 0"
+        v-if="isForVoting && eligibleTokenCount === 0"
         class="q-mt-xl"
         :full-width="true"
         label="View Current Results"
