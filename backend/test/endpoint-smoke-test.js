@@ -152,7 +152,7 @@ describe('Smoke Testing Endpoints', () => {
             .get('/api/polls/2')
             .set('Accept', 'application/json')
             .end( (_error, result) => {
-                //expect(result.status).to.equal(404);
+                expect(result.status).to.equal(404);
                 expect(result.body).to.include({
                     error: 'Poll does not exist',
                 });
@@ -163,8 +163,8 @@ describe('Smoke Testing Endpoints', () => {
 
     it('should not create a vote missing a poll option', (done) => {
         const vote = {
-            voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
-            token_ids: [10, 2, 27],
+            voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
+            token_ids: [6068,],
         };
 
         chai.request(app)
@@ -183,8 +183,8 @@ describe('Smoke Testing Endpoints', () => {
 
     it('should not create a vote when the option does not exist', (done) => {
         const vote = {
-            voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
-            token_ids: [10, 2, 27],
+            voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
+            token_ids: [6068,],
             poll_option_id: 100,
         };
 
@@ -202,10 +202,31 @@ describe('Smoke Testing Endpoints', () => {
             });
     });
 
+    it('should not create a vote when using a token the user does not hold', (done) => {
+        const vote = {
+            voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
+            token_ids: [6068, 1234],
+            poll_option_id: 1,
+        };
+
+        chai.request(app)
+            .post('/api/poll/1/votes')
+            .set('Accept', 'application/json')
+            .send(vote)
+            .end( (_error, result) => {
+                expect(result.status).to.equal(400);
+                expect(result.body).to.include({
+                    error: 'Token not held by voting account 1234',
+                });
+
+                done();
+            });
+    });
+
     it('should create a vote', (done) => {
         const vote = {
-            voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
-            token_ids: [10, 2, 27],
+            voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
+            token_ids: [6068,],
             poll_option_id: 1,
         };
 
@@ -217,11 +238,11 @@ describe('Smoke Testing Endpoints', () => {
                 expect(result.status).to.equal(201);
                 expect(result.body).to.include({
                     id: 1,
-                    voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
+                    voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
                     poll_option_id: 1,
                 });
                 expect(typeof result.body.date_cast).to.equal('number');
-                expect(result.body.token_ids).to.be.equalTo([10, 2, 27,]);
+                expect(result.body.token_ids).to.be.equalTo([6068,]);
 
                 done();
             });
@@ -327,8 +348,8 @@ describe('Smoke Testing Endpoints', () => {
 
     it('should not create a vote when the option does not belong to the poll', (done) => {
         const vote = {
-            voter_account: "0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF",
-            token_ids: [10, 2, 27],
+            voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
+            token_ids: [6068,],
             poll_option_id: 1,
         };
 

@@ -2,7 +2,7 @@ import isValidAddress from "../utils/isValidAddress";
 
 class VoteValidator {
 
-    static validateCreate(voteData, pollData) {
+    static validateCreateData(voteData, pollData) {
         const fieldValidation = this.validateFields(voteData);
         if (!fieldValidation.isValid) {
             return fieldValidation;
@@ -64,6 +64,45 @@ class VoteValidator {
             isValid: false,
             errorMessage: "Option selected does not belong to this poll",
         };
+    }
+
+    static validateVoteTokens(voteData, accountTokens) {
+        const ownershipValidation = this.validateTokenOwnership(voteData, accountTokens);
+
+        if (!ownershipValidation.isValid) {
+            return ownershipValidation;
+        }
+
+        return {
+            isValid: true,
+            errorMessage: null,
+        }
+    }
+
+    static validateTokenOwnership(voteData, accountTokens) {
+        const accountTokenIds = accountTokens.map( (token) => {
+            if (!token.tokenId) {
+                return null;
+            }
+
+            return parseInt(token.tokenId);
+        });
+
+        for (let i = 0; i < voteData.token_ids.length; i++) {
+            const tokenId = voteData.token_ids[i];
+
+            if (!accountTokenIds.includes(tokenId)) {
+                return {
+                    isValid: false,
+                    errorMessage: `Token not held by voting account ${tokenId}`,
+                }
+            }
+        }
+
+        return {
+            isValid: true,
+            errorMessage: null,
+        }
     }
 }
 

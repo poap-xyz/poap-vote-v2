@@ -1,6 +1,8 @@
 import VoteService from '../db/services/VoteService';
 import VoteValidator from '../validators/VoteValidator';
 import PollService from '../db/services/PollService';
+import POAP from '../poap';
+import smartLog from '../utils/smartLog';
 
 class VoteController {
 
@@ -28,20 +30,49 @@ class VoteController {
     }
 
     static async createVote(request, response) {
+        let poll = null;
+        let tokens = null;
         let vote = null;
 
         try {
-            const poll = await PollService.getPollById(request.params.poll_id);
-            const validation = VoteValidator.validateCreate(request.body, poll);
+            poll = await PollService.getPollById(request.params.poll_id);
+        } catch (error) {
+            response.status(400).send({error: error.message});
+            return;
+        }
 
-            if (!validation.isValid) {
-                response.status(400).send({
-                    "error": validation.errorMessage,
-                });
+        const dataValidation = VoteValidator.validateCreateData(request.body, poll);
 
-                return;
-            }
+        if (!dataValidation.isValid) {
+            response.status(400).send({
+                "error": dataValidation.errorMessage,
+            });
 
+            return;
+        }
+
+        try {
+            tokens = await POAP.fetchTokens(request.body.voter_account);
+        } catch (error) {
+            smartLog("[VoteController] ", error.description)
+            response.status(503).send({
+                error: "POAP API currently unavailable",
+            });
+
+            return;
+        }
+
+        const tokenValidation = VoteValidator.validateVoteTokens(request.body, tokens);
+
+        if (!tokenValidation.isValid) {
+            response.status(400).send({
+                "error": tokenValidation.errorMessage,
+            });
+
+            return;
+        }
+
+        try {
             const voteData = {
                 date_cast: Date.now(),
                 ...request.body,

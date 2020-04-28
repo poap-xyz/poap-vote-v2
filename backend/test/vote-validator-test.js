@@ -40,25 +40,25 @@ describe('VoteValidator', () => {
         const required_fields = ["voter_account", "token_ids", "poll_option_id", ];
 
         required_fields.forEach((field) => {
-            const validation = VoteValidator.validateCreate(voteDataDeleting(field), pollData);
+            const validation = VoteValidator.validateCreateData(voteDataDeleting(field), pollData);
             expect(validation.isValid).is.false;
             expect(validation.errorMessage).is.not.null;
         });
     });
 
     it('should fail an invalid address checksum', () => {
-        const validation = VoteValidator.validateCreate(voteDataReplacing('voter_account', '0x22d491Bde2303f2f43325B2108D26f1eAbA1e32b'), pollData);
+        const validation = VoteValidator.validateCreateData(voteDataReplacing('voter_account', '0x22d491Bde2303f2f43325B2108D26f1eAbA1e32b'), pollData);
         expect(validation.isValid).is.false;
         expect(validation.errorMessage).to.equal('Ethereum address is improperly formed');
     });
 
     it('should succeed with all data present', () => {
-        const validation = VoteValidator.validateCreate(voteData, pollData);
+        const validation = VoteValidator.validateCreateData(voteData, pollData);
         expect(validation.isValid).to.equal(true);
     });
 
     it('should fail if poll option chosen is not part of this poll', () => {
-        const validation = VoteValidator.validateCreate(voteDataReplacing('poll_option_id', 3), pollData);
+        const validation = VoteValidator.validateCreateData(voteDataReplacing('poll_option_id', 3), pollData);
         expect(validation.isValid).is.false;
         expect(validation.errorMessage).to.equal('Option selected does not belong to this poll');
     });
