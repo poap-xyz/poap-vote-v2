@@ -22,7 +22,35 @@ describe('VoteValidator', () => {
                 contents: 'No',
             },
         ],
+        valid_event_ids: [183, 125],
     };
+
+    let tokenData = [
+        {
+            "event": {
+                "id": 183,
+            },
+            "tokenId": "10",
+        },
+        {
+            "event": {
+                "id": 125,
+            },
+            "tokenId": "2",
+        },
+        {
+            "event": {
+                "id": 183,
+            },
+            "tokenId": "27",
+        },
+        {
+            "event": {
+                "id": 6,
+            },
+            "tokenId": "13",
+        },
+    ];
 
     let voteDataDeleting = (field) => {
         let copy = {...voteData};
@@ -35,6 +63,8 @@ describe('VoteValidator', () => {
         copy[field] = newValue;
         return copy;
     }
+
+    // CREATE VOTE DATA
 
     it('should fail without all required fields', () => {
         const required_fields = ["voter_account", "token_ids", "poll_option_id", ];
@@ -52,14 +82,21 @@ describe('VoteValidator', () => {
         expect(validation.errorMessage).to.equal('Ethereum address is improperly formed');
     });
 
-    it('should succeed with all data present', () => {
-        const validation = VoteValidator.validateCreateData(voteData, pollData);
-        expect(validation.isValid).to.equal(true);
-    });
-
     it('should fail if poll option chosen is not part of this poll', () => {
         const validation = VoteValidator.validateCreateData(voteDataReplacing('poll_option_id', 3), pollData);
         expect(validation.isValid).is.false;
         expect(validation.errorMessage).to.equal('Option selected does not belong to this poll');
+    });
+
+    it('should succeed with all data present', () => {
+        const validation = VoteValidator.validateCreateData(voteData, pollData);
+        expect(validation.isValid).to.be.true;
+    });
+
+    // CREATE VOTE TOKENS
+
+    it('should succeed if all token data is correct', () => {
+        const validation = VoteValidator.validateVoteTokens(voteData, tokenData, pollData);
+        expect(validation.isValid).to.be.true;
     });
 });
