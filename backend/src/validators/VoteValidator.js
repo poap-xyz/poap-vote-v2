@@ -98,7 +98,7 @@ class VoteValidator {
             if (!accountTokenIds.includes(tokenId)) {
                 return {
                     isValid: false,
-                    errorMessage: `Token not held by voting account ${tokenId}`,
+                    errorMessage: `Token with Id ${tokenId} not held by voting account`,
                 }
             }
         }
@@ -126,7 +126,7 @@ class VoteValidator {
             if (!validEventIds.includes(voteTokenEventId)) {
                 return {
                     isValid: false,
-                    errorMessage: `Token not qualified to vote in this poll ${voteTokenId}`,
+                    errorMessage: `Token with Id ${voteTokenId} not qualified to vote in this poll`,
                 };
             }
         }
@@ -141,7 +141,7 @@ class VoteValidator {
             if (isMissing) {
                 return {
                     isValid: false,
-                    errorMessage: `Qualifying token mising from your vote ${ownedTokenId}`,
+                    errorMessage: `Qualifying token with Id ${ownedTokenId} missing from your vote`,
                 };
             }
         }

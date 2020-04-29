@@ -216,7 +216,7 @@ describe('Smoke Testing Endpoints', () => {
             .end( (_error, result) => {
                 expect(result.status).to.equal(400);
                 expect(result.body).to.include({
-                    error: 'Token not held by voting account 1234',
+                    error: 'Token with Id 1234 not held by voting account',
                 });
 
                 done();
@@ -237,7 +237,7 @@ describe('Smoke Testing Endpoints', () => {
             .end( (_error, result) => {
                 expect(result.status).to.equal(400);
                 expect(result.body).to.include({
-                    error: 'Token not qualified to vote in this poll 8019',
+                    error: 'Token with Id 8019 not qualified to vote in this poll',
                 });
 
                 done();

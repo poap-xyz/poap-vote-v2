@@ -99,21 +99,21 @@ describe('VoteValidator', () => {
         const badVoteData = voteDataReplacing('token_ids', [2, 27]);
         const validation = VoteValidator.validateVoteTokens(badVoteData, tokenData, pollData);
         expect(validation.isValid).to.be.false;
-        expect(validation.errorMessage).to.equal('Qualifying token mising from your vote 10');
+        expect(validation.errorMessage).to.equal('Qualifying token with Id 10 missing from your vote');
     });
 
     it('should fail if a token that is not from a qualifying event is used to vote', () => {
         const badVoteData = voteDataReplacing('token_ids', [10, 2, 27, 13]);
         const validation = VoteValidator.validateVoteTokens(badVoteData, tokenData, pollData);
         expect(validation.isValid).to.be.false;
-        expect(validation.errorMessage).to.equal('Token not qualified to vote in this poll 13');
+        expect(validation.errorMessage).to.equal('Token with Id 13 not qualified to vote in this poll');
     });
 
     it('should fail if a token that is not owned by the account is used to vote', () => {
         const badVoteData = voteDataReplacing('token_ids', [10, 2, 27, 12]);
         const validation = VoteValidator.validateVoteTokens(badVoteData, tokenData, pollData);
         expect(validation.isValid).to.be.false;
-        expect(validation.errorMessage).to.equal('Token not held by voting account 12');
+        expect(validation.errorMessage).to.equal('Token with Id 12 not held by voting account');
     });
 
     it('should succeed if all token data is correct', () => {
