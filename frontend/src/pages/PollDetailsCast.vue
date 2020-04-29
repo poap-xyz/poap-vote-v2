@@ -106,7 +106,7 @@ export default {
         // The actual data to be signed
         const voteData = {
           voter_account: this.userAddress,
-          token_ids: this.eligibleTokens,
+          token_ids: this.userEligibleNftIds,
           poll_option_id: this.selectedOption,
         };
 

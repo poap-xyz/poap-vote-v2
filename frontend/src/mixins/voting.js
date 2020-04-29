@@ -31,6 +31,15 @@ export default {
     },
 
     /**
+     * @notice Returns an array of unique NFT IDs for which the user has a POAP token
+     */
+    userEligibleNftIds() {
+      const validIds = this.poll.valid_event_ids;
+      const intersection = this.userTokens.filter((val) => validIds.includes(val.event.id));
+      return intersection.map((val) => Number(val.tokenId));
+    },
+
+    /**
      * @notice Returns an array of IDs of eligible vote tokens held by user
      */
     eligibleTokens() {
