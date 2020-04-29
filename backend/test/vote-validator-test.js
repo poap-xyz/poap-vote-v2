@@ -95,6 +95,13 @@ describe('VoteValidator', () => {
 
     // CREATE VOTE TOKENS
 
+    it('should fail if not all qualifying tokens are being used to vote', () => {
+        const badVoteData = voteDataReplacing('token_ids', [2, 27]);
+        const validation = VoteValidator.validateVoteTokens(badVoteData, tokenData, pollData);
+        expect(validation.isValid).to.be.false;
+        expect(validation.errorMessage).to.equal('Qualifying token mising from your vote 10');
+    });
+
     it('should succeed if all token data is correct', () => {
         const validation = VoteValidator.validateVoteTokens(voteData, tokenData, pollData);
         expect(validation.isValid).to.be.true;

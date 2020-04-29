@@ -131,6 +131,21 @@ class VoteValidator {
             }
         }
 
+        for (let i = 0; i < accountTokens.length; i++) {
+            const ownedToken = accountTokens[i];
+            const ownedTokenId = parseInt(ownedToken.tokenId);
+            const ownedTokenEventId = parseInt(ownedToken.event.id);
+
+            const isMissing = validEventIds.includes(ownedTokenEventId) && !voteData.token_ids.includes(ownedTokenId)
+
+            if (isMissing) {
+                return {
+                    isValid: false,
+                    errorMessage: `Qualifying token mising from your vote ${ownedTokenId}`,
+                };
+            }
+        }
+
         return {
             isValid: true,
             errorMessage: null,
