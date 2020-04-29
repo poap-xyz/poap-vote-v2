@@ -269,6 +269,48 @@ describe('Smoke Testing Endpoints', () => {
             });
     });
 
+    it('should note let a user vote twice', (done) => {
+        const vote = {
+            voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
+            token_ids: [6068,],
+            poll_option_id: 1,
+        };
+
+        chai.request(app)
+            .post('/api/poll/1/votes')
+            .set('Accept', 'application/json')
+            .send(vote)
+            .end( (_error, result) => {
+                expect(result.status).to.equal(400);
+                expect(result.body).to.include({
+                    error: 'Account or token cannot vote twice',
+                });
+
+                done();
+            });
+    });
+
+    it('should note let a token vote twice', (done) => {
+        const vote = {
+            voter_account: "0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b",
+            token_ids: [6068, 1234],
+            poll_option_id: 1,
+        };
+
+        chai.request(app)
+            .post('/api/poll/1/votes')
+            .set('Accept', 'application/json')
+            .send(vote)
+            .end( (_error, result) => {
+                expect(result.status).to.equal(400);
+                expect(result.body).to.include({
+                    error: 'Account or token cannot vote twice',
+                });
+
+                done();
+            });
+    });
+
     it('should not return votes for a poll that does not exist', (done) => {
         chai.request(app)
             .get('/api/poll/2/votes')

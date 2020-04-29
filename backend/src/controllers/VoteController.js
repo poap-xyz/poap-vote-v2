@@ -52,6 +52,25 @@ class VoteController {
         }
 
         try {
+            const pollOptionIds = poll.poll_options.map(op => op.id);
+            const tokenIds = request.body.token_ids.map(t => t.toString());
+            const priorVotes = await VoteService
+                                        .getAccountOrTokenVotesForPollOptions(request.body.voter_account,
+                                                                                tokenIds,
+                                                                                pollOptionIds);
+
+            if (priorVotes.length > 0) {
+                response.status(400).send({
+                    error: "Account or token cannot vote twice",
+                });
+                return;
+            }
+        } catch (error) {
+            response.status(400).send({error: error.message});
+            return;
+        }
+
+        try {
             tokens = await POAP.fetchTokens(request.body.voter_account);
         } catch (error) {
             smartLog("[VoteController] ", error.description)
