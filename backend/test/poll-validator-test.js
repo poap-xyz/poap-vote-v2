@@ -150,7 +150,7 @@ describe('PollValidator', () => {
 
         const validation = PollValidator.validateCreate(badPollData, poapEventData);
         expect(validation.isValid).is.false;
-        expect(validation.errorMessage).to.equal('Signature does match the data submitted');
+        expect(validation.errorMessage).to.equal('Signature does not match the data submitted');
     });
 
     it('should fail if data has been tampered with', () => {
@@ -159,7 +159,7 @@ describe('PollValidator', () => {
 
         const validation = PollValidator.validateCreate(badPollData, poapEventData);
         expect(validation.isValid).is.false;
-        expect(validation.errorMessage).to.equal('Signature does match the data submitted');
+        expect(validation.errorMessage).to.equal('Signature does not match the data submitted');
     });
 
     // TODO: Why in the world does this test fail??
@@ -176,7 +176,7 @@ describe('PollValidator', () => {
 
     //     const validation = PollValidator.validateCreate(badPollData, poapEventData);
     //     expect(validation.isValid).is.false;
-    //     expect(validation.errorMessage).to.equal('Signature does match the data submitted');
+    //     expect(validation.errorMessage).to.equal('Signature does not match the data submitted');
     // });
 
     it('should succeed with all data present', () => {

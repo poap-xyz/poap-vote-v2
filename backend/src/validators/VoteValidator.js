@@ -178,7 +178,7 @@ class VoteValidator {
         if (recoveredAddress !== voteData.voter_account) {
             return {
                 isValid: false,
-                errorMessage: "Signature does match the data submitted",
+                errorMessage: "Signature does not match data submitted",
             }
         }
 

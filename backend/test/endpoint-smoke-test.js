@@ -248,6 +248,28 @@ describe('Smoke Testing Endpoints', () => {
             });
     });
 
+    it('should not create a vote when the signature does not match the data', (done) => {
+        const vote = {
+            voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
+            token_ids: [6068,],
+            poll_option_id: 2,
+            attestation: "f88bd9bcdd42a63fe78d92180588b369d292694bca974594d60d44d97f11790e77dc3505a15fda0a52686bed6bb6d2f9cc9bc4e29e2ddd19c0d5e1f2903878e01b",
+        };
+
+        chai.request(app)
+            .post('/api/poll/1/votes')
+            .set('Accept', 'application/json')
+            .send(vote)
+            .end( (_error, result) => {
+                expect(result.status).to.equal(400);
+                expect(result.body).to.include({
+                    error: 'Signature does not match data submitted',
+                });
+
+                done();
+            });
+    });
+
     it('should create a vote', (done) => {
         const vote = {
             voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",

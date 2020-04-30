@@ -161,7 +161,7 @@ class PollValidator {
         if (recoveredAddress !== pollData.polltaker_account) {
             return {
                 isValid: false,
-                errorMessage: "Signature does match the data submitted",
+                errorMessage: "Signature does not match the data submitted",
             }
         }
 

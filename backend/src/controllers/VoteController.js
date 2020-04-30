@@ -92,6 +92,16 @@ class VoteController {
         }
 
         try {
+            const signatureValidation = VoteValidator.validateSignature(request.body);
+
+            if (!signatureValidation.isValid) {
+                response.status(400).send({
+                    error: 'Signature does not match data submitted',
+                });
+
+                return;
+            }
+
             const voteData = {
                 date_cast: Date.now(),
                 ...request.body,
