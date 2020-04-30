@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     token_ids: DataTypes.ARRAY(DataTypes.BIGINT),
     date_cast: DataTypes.DATE,
     poll_option_id: DataTypes.INTEGER,
+    attestation: DataTypes.STRING(130),
   }, {});
 
   Vote.associate = (models) => {

@@ -288,6 +288,7 @@ describe('Smoke Testing Endpoints', () => {
                     id: 1,
                     voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
                     poll_option_id: 1,
+                    attestation: "f88bd9bcdd42a63fe78d92180588b369d292694bca974594d60d44d97f11790e77dc3505a15fda0a52686bed6bb6d2f9cc9bc4e29e2ddd19c0d5e1f2903878e01b",
                 });
                 expect(typeof result.body.date_cast).to.equal('number');
                 expect(result.body.token_ids).to.be.equalTo([6068,]);
