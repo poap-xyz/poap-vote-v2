@@ -120,4 +120,16 @@ describe('VoteValidator', () => {
         const validation = VoteValidator.validateVoteTokens(voteData, tokenData, pollData);
         expect(validation.isValid).to.be.true;
     });
+
+    it('should validate a vote signature', () => {
+        const signedVote = {
+            voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
+            token_ids: [6068, 5378],
+            poll_option_id: 10,
+            attestation: "a53e912e990cad3de52d38e2f7f73ba0608b327aa8dbbc41feb8bb417e9768063ad342d586ece1443cc33d3244f87f1b9c87594bb8732ac8c3470e42bd5b0f4f1b",
+        }
+
+        const validation = VoteValidator.validateSignature(signedVote);
+        expect(validation.isValid).to.be.true;
+    });
 });

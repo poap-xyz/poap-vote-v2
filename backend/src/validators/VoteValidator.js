@@ -1,3 +1,4 @@
+import SignatureHelpers from "../utils/SignatureHelpers";
 import isValidAddress from "../utils/isValidAddress";
 
 class VoteValidator {
@@ -150,6 +151,41 @@ class VoteValidator {
             isValid: true,
             errorMessage: null,
         };
+    }
+
+    static validateSignature(voteData) {
+        const signature = voteData.attestation;
+
+        if (130 !== signature.length) {
+            return {
+                isValid: false,
+                errorMessage: "Improperly formed signature",
+            };
+        }
+
+        let digestVoteData = {...voteData};
+        delete digestVoteData.attestation
+
+        const dataName = 'Vote';
+        const dataFormat = [
+            { name: 'voter_account', type: 'address' },
+            { name: 'token_ids', type: 'bytes32' },
+            { name: 'poll_option_id', type: 'uint256' },
+        ];
+
+        const recoveredAddress = SignatureHelpers.recoverSigner(signature, dataName, dataFormat, digestVoteData)
+
+        if (recoveredAddress !== voteData.voter_account) {
+            return {
+                isValid: false,
+                errorMessage: "Signature does match the data submitted",
+            }
+        }
+
+        return {
+            isValid: true,
+            errorMessage: null,
+        }
     }
 }
 
