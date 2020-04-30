@@ -9,6 +9,7 @@ describe('VoteValidator', () => {
         voter_account: "0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b",
         token_ids: [10, 2, 27],
         poll_option_id: 1,
+        attestation: "a53e912e990cad3de52d38e2f7f73ba0608b327aa8dbbc41feb8bb417e9768063ad342d586ece1443cc33d3244f87f1b9c87594bb8732ac8c3470e42bd5b0f4f1b",
     }
 
     let pollData = {

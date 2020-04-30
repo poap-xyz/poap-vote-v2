@@ -28,7 +28,7 @@ class VoteValidator {
     }
 
     static validateFields(voteData) {
-        const required_fields = ["voter_account", "token_ids", "poll_option_id", ];
+        const required_fields = ["voter_account", "token_ids", "poll_option_id", "attestation"];
 
         for (let i = 0; i < required_fields.length; i++) {
             const field = required_fields[i];

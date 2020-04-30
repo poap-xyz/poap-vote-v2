@@ -165,6 +165,7 @@ describe('Smoke Testing Endpoints', () => {
         const vote = {
             voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
             token_ids: [6068,],
+            attestation: "f88bd9bcdd42a63fe78d92180588b369d292694bca974594d60d44d97f11790e77dc3505a15fda0a52686bed6bb6d2f9cc9bc4e29e2ddd19c0d5e1f2903878e01b",
         };
 
         chai.request(app)
@@ -186,6 +187,7 @@ describe('Smoke Testing Endpoints', () => {
             voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
             token_ids: [6068,],
             poll_option_id: 100,
+            attestation: "f88bd9bcdd42a63fe78d92180588b369d292694bca974594d60d44d97f11790e77dc3505a15fda0a52686bed6bb6d2f9cc9bc4e29e2ddd19c0d5e1f2903878e01b",
         };
 
         chai.request(app)
@@ -207,6 +209,7 @@ describe('Smoke Testing Endpoints', () => {
             voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
             token_ids: [6068, 1234],
             poll_option_id: 1,
+            attestation: "f88bd9bcdd42a63fe78d92180588b369d292694bca974594d60d44d97f11790e77dc3505a15fda0a52686bed6bb6d2f9cc9bc4e29e2ddd19c0d5e1f2903878e01b",
         };
 
         chai.request(app)
@@ -228,6 +231,7 @@ describe('Smoke Testing Endpoints', () => {
             voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
             token_ids: [6068, 8019],
             poll_option_id: 1,
+            attestation: "f88bd9bcdd42a63fe78d92180588b369d292694bca974594d60d44d97f11790e77dc3505a15fda0a52686bed6bb6d2f9cc9bc4e29e2ddd19c0d5e1f2903878e01b",
         };
 
         chai.request(app)
@@ -249,6 +253,7 @@ describe('Smoke Testing Endpoints', () => {
             voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
             token_ids: [6068,],
             poll_option_id: 1,
+            attestation: "f88bd9bcdd42a63fe78d92180588b369d292694bca974594d60d44d97f11790e77dc3505a15fda0a52686bed6bb6d2f9cc9bc4e29e2ddd19c0d5e1f2903878e01b",
         };
 
         chai.request(app)
@@ -269,11 +274,12 @@ describe('Smoke Testing Endpoints', () => {
             });
     });
 
-    it('should note let a user vote twice', (done) => {
+    it('should not let a user vote twice', (done) => {
         const vote = {
             voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
             token_ids: [6068,],
             poll_option_id: 1,
+            attestation: "f88bd9bcdd42a63fe78d92180588b369d292694bca974594d60d44d97f11790e77dc3505a15fda0a52686bed6bb6d2f9cc9bc4e29e2ddd19c0d5e1f2903878e01b",
         };
 
         chai.request(app)
@@ -295,6 +301,7 @@ describe('Smoke Testing Endpoints', () => {
             voter_account: "0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b",
             token_ids: [6068, 1234],
             poll_option_id: 1,
+            attestation: "f88bd9bcdd42a63fe78d92180588b369d292694bca974594d60d44d97f11790e77dc3505a15fda0a52686bed6bb6d2f9cc9bc4e29e2ddd19c0d5e1f2903878e01b",
         };
 
         chai.request(app)
@@ -414,6 +421,7 @@ describe('Smoke Testing Endpoints', () => {
             voter_account: "0x8f5906963Ae276E1631EFA8Ff1a9CaE6499EC5E3",
             token_ids: [6068,],
             poll_option_id: 1,
+            attestation: "f88bd9bcdd42a63fe78d92180588b369d292694bca974594d60d44d97f11790e77dc3505a15fda0a52686bed6bb6d2f9cc9bc4e29e2ddd19c0d5e1f2903878e01b",
         };
 
         chai.request(app)
