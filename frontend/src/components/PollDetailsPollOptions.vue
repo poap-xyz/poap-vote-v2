@@ -36,16 +36,29 @@
           avatar
           class="text-caption text-grey"
         >
-          <q-item-label>{{ voteCounts[option.id] }} votes</q-item-label>
+          <q-item-label>
+            {{ voteCounts[option.id] }}
+            vote<span v-if="voteCounts[option.id]!==1">s</span>
+          </q-item-label>
           <q-item-label>{{ formatPercent(votePercentages[option.id], 2) }}</q-item-label>
         </q-item-section>
       </q-item>
     </q-card>
     <div
       v-if="!isForVoting"
-      class="text-caption text-grey"
+      class="row justify-between"
     >
-      {{ totalVotes }} total vote<span v-if="totalVotes !== 1">s</span>
+      <div class="col-auto text-caption text-grey">
+        {{ totalVotes }} total vote<span v-if="totalVotes !== 1">s</span>
+      </div>
+      <div
+        class="col-auto text-caption hyperlink"
+        @click="showVotesByAddress = !showVotesByAddress"
+      >
+        Show results by
+        <span v-if="showVotesByAddress">token counts</span>
+        <span v-else>address</span>
+      </div>
     </div>
   </div>
 </template>
@@ -71,6 +84,7 @@ export default {
   data() {
     return {
       selectedOption: undefined,
+      showVotesByAddress: false, // true to show votes by account, false to show by token
     };
   },
 
@@ -92,13 +106,28 @@ export default {
     },
 
     totalVotes() {
-      return this.voteData.totalVotes;
+      if (!this.showVotesByAddress) return this.voteData.totalVotes;
+      return this.votes.length;
     },
     voteCounts() {
-      return this.voteData.voteCounts;
+      if (!this.showVotesByAddress) return this.voteData.voteCounts;
+      // Preallocate output so all options have a zero count
+      const counts = {};
+      this.options.forEach((option) => { counts[option.id] = 0; });
+      // Get counts
+      this.votes.forEach((vote) => { counts[vote.poll_option_id] += 1; });
+      return counts;
     },
     votePercentages() {
-      return this.voteData.votePercentages;
+      if (!this.showVotesByAddress) return this.voteData.votePercentages;
+      // Preallocate output so all options have a zero count
+      const percentages = {};
+      this.options.forEach((option) => { percentages[option.id] = 0; });
+      // Convert vote counts to percentages
+      Object.keys(this.voteCounts).forEach((key) => {
+        percentages[key] = this.voteCounts[key] / this.totalVotes;
+      });
+      return percentages;
     },
   },
 
@@ -116,9 +145,10 @@ export default {
 <style lang="stylus" scoped>
 .body--light {
   .option {
-    background-color: $primary-lightened
+    background-color: $primary-lightened;
   }
 }
+
 .user-cannot-vote {
   opacity: 0.6;
 }
