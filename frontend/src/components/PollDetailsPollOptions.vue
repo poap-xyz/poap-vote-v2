@@ -59,7 +59,7 @@
       </div>
       <div
         class="col-auto text-caption hyperlink"
-        @click="showVotesByAddress = !showVotesByAddress"
+        @click="changeVoteDisplay"
       >
         Show results by
         <span v-if="showVotesByAddress">token counts</span>
@@ -106,6 +106,7 @@ export default {
     ...mapGetters({
       voteData: 'poap/voteData',
     }),
+
     ...mapState({
       poll: (state) => state.poap.selectedPoll,
     }),
@@ -123,6 +124,7 @@ export default {
       if (!this.showVotesByAddress) return this.voteData.totalVotes;
       return this.votes.length;
     },
+
     voteCounts() {
       if (!this.showVotesByAddress) return this.voteData.voteCounts;
       // Preallocate output so all options have a zero count
@@ -132,6 +134,7 @@ export default {
       this.votes.forEach((vote) => { counts[vote.poll_option_id] += 1; });
       return counts;
     },
+
     votePercentages() {
       if (!this.showVotesByAddress) return this.voteData.votePercentages;
       // Preallocate output so all options have a zero count
@@ -145,12 +148,29 @@ export default {
     },
   },
 
+  mounted() {
+    if (this.$route.query.byAddress) {
+      // Convert 0 or 1 from String to Boolean, passing through Number
+      // since JS evaluates Boolean('0') to true and Boolean(0) to false
+      this.showVotesByAddress = Boolean(Number(this.$route.query.byAddress));
+    }
+  },
+
   methods: {
     selectOption(id) {
       if (this.isForVoting && this.canUserVote) {
         this.selectedOption = id;
         this.$emit('optionSelected', id);
       }
+    },
+
+    changeVoteDisplay() {
+      this.showVotesByAddress = !this.showVotesByAddress;
+      this.$router.replace({
+        name: 'results',
+        params: { id: this.$route.params.id },
+        query: { byAddress: this.showVotesByAddress ? 1 : 0 }, // Convert Boolean to 0 or 1
+      });
     },
   },
 };
