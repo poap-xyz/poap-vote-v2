@@ -47,3 +47,23 @@ ask_continue
 echo "Swapping in new frontend"
 ssh deploy@staging.poap.vote "rm -rfv ~/frontend_last && mv -v ~/frontend_live ~/frontend_last && mv -v ~/frontend_new ~/frontend_live"
 ask_continue
+
+## DEPLOY BACKEND
+
+echo "Building Production"
+cd backend
+npm install --production
+cd ..
+ask_continue
+
+echo "Archiving current backend"
+ssh deploy@staging.poap.vote "rsync -aP ~/backend_live/* ~/backend_last"
+ssh deploy@staging.poap.vote "rsync -aP ~/backend_live/.babelrc ~/backend_last"
+ssh deploy@staging.poap.vote "rsync -aP ~/backend_live/.sequelizerc ~/backend_last"
+ask_continue
+
+echo "Pushing new backend to server"
+rsync -aP backend/* --exclude=.env* deploy@staging.poap.vote:~/backend_live
+rsync -aP backend/.babelrc deploy@staging.poap.vote:~/backend_live
+rync -aP backend/.sequelizerc deploy@staging.poap.vote:~/backend_live
+ask_continue
