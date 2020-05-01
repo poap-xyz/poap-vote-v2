@@ -8,6 +8,7 @@ node_modules
 .env
 .env.dev
 .env.prod
+.env.staging
 
 # Cypress test videos
 *.mp4

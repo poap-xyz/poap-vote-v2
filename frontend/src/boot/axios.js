@@ -2,10 +2,12 @@ import Vue from 'vue';
 import axios from 'axios';
 
 let baseURL;
-if (process.env.DEV) {
+if (process.env.BUILD_ENV === 'development') {
   baseURL = 'http://localhost:3000';
-} else if (process.env.PROD) {
-  baseURL = 'http://tokenfaucet.eastus.cloudapp.azure.com';
+} else if (process.env.BUILD_ENV === 'staging') {
+  baseURL = 'http://staging.poap.vote';
+} else if (process.env.BUILD_ENV === 'production') {
+  throw new Error('Production not yet defined');
 } else {
   throw new Error('Invalid build environment');
 }
