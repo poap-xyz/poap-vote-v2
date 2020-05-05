@@ -1,7 +1,7 @@
 {
   "name": "poap-vote",
   "version": "0.0.1",
-  "description": "Polling based on POAP token ownership",
+  "description": "A sybil-resistant voting engine for anyone to run polls using Ethereum and POAP",
   "productName": "POAP Vote",
   "cordovaId": "org.cordova.quasar.app",
   "capacitorId": "",

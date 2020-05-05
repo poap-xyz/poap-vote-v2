@@ -1,6 +1,6 @@
 # POAP Vote
 
-Polling based on POAP token ownership.
+A sybil-resistant voting engine for anyone to run polls using Ethereum and POAP.
 
 ## Development
 

@@ -111,7 +111,7 @@ module.exports = function (ctx) {
       manifest: {
         name: 'POAP Vote',
         short_name: 'POAP Vote',
-        description: 'Polling based on POAP token ownership',
+        description: 'A sybil-resistant voting engine for anyone to run polls using Ethereum and POAP',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
