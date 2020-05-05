@@ -5,7 +5,7 @@
         POAP Vote
       </h1>
       <h3 class="no-margin secondary">
-        Use your POAP NFTs to vote on polls
+        A sybil-resistant voting engine for anyone to run polls using Ethereum and POAP
       </h3>
     </div>
     <div class="row justify-center q-mt-xl">

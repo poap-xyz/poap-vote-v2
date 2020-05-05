@@ -155,7 +155,6 @@ export default {
         const secondsRemaining = (end - this.now) / 1000;
         return this.secondsToTicker(secondsRemaining);
       });
-      if (this.pollType === 'activePolls') console.log(times);
       return times;
     },
 

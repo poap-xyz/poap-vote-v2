@@ -59,7 +59,7 @@
     </q-page-container>
 
     <!-- FOOTER -->
-    <q-footer
+    <!-- <q-footer
       bordered
       class="q-mt-xl"
       style="color: #000000; background-color: rgba(0,0,0,0)"
@@ -69,7 +69,7 @@
           Footer content here
         </div>
       </div>
-    </q-footer>
+    </q-footer> -->
   </q-layout>
 </template>
 
