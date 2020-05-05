@@ -454,8 +454,8 @@ export default {
           { name: 'title', type: 'string' },
           { name: 'polltaker_account', type: 'address' },
           { name: 'description', type: 'string' },
-          { name: 'valid_event_ids', type: 'bytes32' },
-          { name: 'poll_options', type: 'string' },
+          { name: 'valid_event_ids', type: 'uint256[]' },
+          { name: 'poll_options', type: 'string[]' },
           { name: 'end_date', type: 'string' },
         ];
 
@@ -465,7 +465,7 @@ export default {
           polltaker_account: this.userAddress,
           description: this.description,
           valid_event_ids: this.valid_events.map((event) => event.id),
-          poll_options: this.poll_options,
+          poll_options: this.poll_options.map((option) => option.contents),
           end_date: this.end_date,
         };
 
