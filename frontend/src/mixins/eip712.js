@@ -92,29 +92,20 @@ export default {
       ==============================================================================================
       */
 
-      try {
-        console.log('Formatting data to be signed...');
-        const data = this.formatSignatureData(dataName, dataFormat, dataContents);
+      console.log('Formatting data to be signed...');
+      const data = this.formatSignatureData(dataName, dataFormat, dataContents);
 
-        console.log('Requesting user signature...');
-        const result = await web3Send({
-          method: 'eth_signTypedData_v4',
-          params: [user, data],
-          from: user,
-          id: 1,
-          // TODO what value of id should we use? See below link for a starting point
-          // https://twitter.com/PaulRBerg/status/1160516230698196993?s=20
-        });
+      console.log('Requesting user signature...');
+      const result = await web3Send({
+        method: 'eth_signTypedData_v4',
+        params: [user, data],
+        from: user,
+        id: 1,
+      });
 
-        console.log('Signature received!');
-        const signature = result.result.substring(2);
-        return signature;
-      } catch (err) {
-        console.log('User rejected signature');
-        console.error(err);
-        return undefined;
-      }
-      /* eslint-enable no-console */
+      console.log('Signature received!');
+      const signature = result.result.substring(2);
+      return signature;
     },
   },
 };

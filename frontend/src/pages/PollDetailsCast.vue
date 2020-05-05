@@ -92,6 +92,7 @@ export default {
     },
 
     async submitVote() {
+      /* eslint-disable no-console */
       try {
         if (!this.canUserVote) return;
         this.isVoteSubmissionLoading = true;
@@ -127,12 +128,19 @@ export default {
 
         // Update page data
         this.notifyUser('positive', 'Your vote has been successfully recorded!');
+      } catch (err) {
+        this.isVoteSubmissionLoading = false;
+        this.showError(err, 'Unable to cast vote, please try again');
+      }
+
+      try {
         await this.getSelectedPollData(true);
         this.$router.push({ name: 'results', params: { id: this.selectedPollId } });
       } catch (err) {
-        console.error(err);
         this.isVoteSubmissionLoading = false;
+        this.showError(err, 'Unable to get updated poll data. Please refresh the page and try again');
       }
+      this.isVoteSubmissionLoading = false;
     },
   },
 

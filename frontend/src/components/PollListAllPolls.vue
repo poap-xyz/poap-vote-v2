@@ -22,6 +22,7 @@
 
 <script>
 import PollList from 'components/PollList';
+import helpers from 'src/mixins/helpers';
 
 export default {
   name: 'PollListAllPolls',
@@ -30,6 +31,8 @@ export default {
     PollList,
   },
 
+  mixins: [helpers],
+
   data() {
     return {
       isLoading: undefined,
@@ -37,9 +40,13 @@ export default {
   },
 
   async mounted() {
-    this.isLoading = true;
-    await this.$store.dispatch('poap/getPolls');
-    this.isLoading = false;
+    try {
+      this.isLoading = true;
+      await this.$store.dispatch('poap/getPolls');
+      this.isLoading = false;
+    } catch (err) {
+      this.showError(err, 'Unable to fetch polls. Please refresh the page and try again.');
+    }
   },
 };
 </script>

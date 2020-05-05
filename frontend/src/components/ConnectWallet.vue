@@ -18,9 +18,12 @@
 import { mapState } from 'vuex';
 import Web3Modal from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider';
+import helpers from 'src/mixins/helpers';
 
 export default {
   name: 'ConnectWallet',
+
+  mixins: [helpers],
 
   props: {
     fullWidth: {
@@ -70,7 +73,7 @@ export default {
 
         await this.$store.dispatch('user/setEthereumData', provider);
       } catch (err) {
-        console.error(err); // eslint-disable-line no-console
+        this.showError(err, 'Unable to connect wallet. Please try again.');
       } finally {
         this.isLoading = false;
       }

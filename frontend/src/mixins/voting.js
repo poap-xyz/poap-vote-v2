@@ -2,8 +2,12 @@
  * @notice This mixin contains helper properties and methods for voting
  */
 import { mapGetters, mapState } from 'vuex';
+import helpers from 'src/mixins/helpers';
 
 export default {
+
+  mixins: [helpers],
+
   data() {
     return {
       isPollDataLoading: undefined,
@@ -76,7 +80,11 @@ export default {
     this.isPollDataLoading = true;
     const selectedId = Number(this.$route.params.id);
     if (!this.poll || this.poll.id !== selectedId) {
-      await this.$store.dispatch('poap/getSelectedPoll', selectedId);
+      try {
+        await this.$store.dispatch('poap/getSelectedPoll', selectedId);
+      } catch (err) {
+        this.showError(err, 'Unable to get poll data. Please refresh the page and try again');
+      }
     }
     this.isPollDataLoading = false;
   },

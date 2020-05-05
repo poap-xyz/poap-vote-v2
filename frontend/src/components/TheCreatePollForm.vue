@@ -443,6 +443,8 @@ export default {
     },
 
     async createPoll() {
+      /* eslint-disable no-console */
+      let response;
       try {
         if (!this.isFormValid) return;
         this.isLoading = true;
@@ -479,15 +481,20 @@ export default {
 
         // Create poll
         console.log('Sending POST request to server to create poll...');
-        const response = await this.$serverApi.post('/api/polls', payload);
+        response = await this.$serverApi.post('/api/polls', payload);
         console.log('Server response: ', response);
+      } catch (err) {
+        this.isLoading = false;
+        this.showError(err, 'Unable to create poll, please try again. ');
+      }
 
+      try {
         // Get updated poll list and redirect to details page of the new poll
         await this.$store.dispatch('poap/getPolls');
         this.$router.push({ name: 'results', params: { id: response.data.id } });
       } catch (err) {
         this.isLoading = false;
-        console.error(err);
+        this.showError(err, 'Unable to fetch new poll. Please refresh the page and find your poll on the home page.');
       }
     },
   },

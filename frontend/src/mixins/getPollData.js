@@ -4,10 +4,12 @@
  *   - If not, fetch the data and save it to the store
  */
 import { mapState } from 'vuex';
+import helpers from 'src/mixins/helpers';
 import title from 'src/mixins/title';
 
 export default {
-  mixins: [title],
+
+  mixins: [helpers, title],
 
   data() {
     return {
@@ -37,7 +39,11 @@ export default {
     async getSelectedPollData(forceFetch = false) {
       this.selectedPollId = Number(this.$route.params.id);
       if (forceFetch || !this.poll || this.poll.id !== this.selectedPollId) {
-        await this.$store.dispatch('poap/getSelectedPoll', this.selectedPollId);
+        try {
+          await this.$store.dispatch('poap/getSelectedPoll', this.selectedPollId);
+        } catch (err) {
+          this.showError(err, 'Unable to get poll data. Please refresh the page and try again');
+        }
       }
     },
   },
