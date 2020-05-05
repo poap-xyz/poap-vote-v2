@@ -35,58 +35,66 @@
               End Date
             </div>
             <div>
-              {{ secondsToFormattedDate(item.end_date) }}
-            </div>
-            <div
-              v-if="timeRemaining[index] !== 0"
-              class="text-caption"
-            >
-              {{ timeRemaining[index] }} remaining
-            </div>
-
-            <!-- List of valid event tokens -->
-            <div class="q-mt-lg">
-              <div class="text-caption text-uppercase text-grey">
-                Valid Event Tokens
+              <div>
+                {{ secondsToFormattedDate(item.end_date) }}
               </div>
-              <div class="row justify-start">
-                <div
-                  v-for="id in item.valid_event_ids"
-                  :key="id"
-                  class="q-mr-sm"
-                >
-                  <img
-                    :src="events[id].image_url"
-                    style="max-width:40px"
+              <div
+                v-if="pollType == 'activePolls' && timeRemaining[index]"
+                class="text-caption"
+              >
+                {{ timeRemaining[index] }} remaining
+              </div>
+              <div
+                v-else-if="pollType == 'activePolls'"
+                class="text-caption"
+              >
+                <q-spinner color="primary" />
+              </div>
+
+              <!-- List of valid event tokens -->
+              <div class="q-mt-lg">
+                <div class="text-caption text-uppercase text-grey">
+                  Valid Event Tokens
+                </div>
+                <div class="row justify-start">
+                  <div
+                    v-for="id in item.valid_event_ids"
+                    :key="id"
+                    class="q-mr-sm"
                   >
-                  <q-tooltip>
-                    <q-card>
-                      <!-- Layout copied and modified from CreatePollForm select component -->
-                      <q-item-section class="dark-toggle q-pa-md">
-                        <q-item-label class="event-title">
-                          {{ events[id].name }}
-                        </q-item-label>
-                        <q-item-label class="event-caption">
-                          {{ events[id].start_date }} &ndash; {{ events[id].end_date }}
-                        </q-item-label>
-                        <q-item-label class="event-caption">
-                          <span v-if="events[id].city === 'Virtual'">Virtual</span>
-                          <span v-else-if="!events[id].city">Not specified</span>
-                          <span v-else>{{ events[id].city }}, {{ events[id].country }}</span>
-                        </q-item-label>
-                      </q-item-section>
-                    </q-card>
-                  </q-tooltip>
+                    <img
+                      :src="events[id].image_url"
+                      style="max-width:40px"
+                    >
+                    <q-tooltip>
+                      <q-card>
+                        <!-- Layout copied and modified from CreatePollForm select component -->
+                        <q-item-section class="dark-toggle q-pa-md">
+                          <q-item-label class="event-title">
+                            {{ events[id].name }}
+                          </q-item-label>
+                          <q-item-label class="event-caption">
+                            {{ events[id].start_date }} &ndash; {{ events[id].end_date }}
+                          </q-item-label>
+                          <q-item-label class="event-caption">
+                            <span v-if="events[id].city === 'Virtual'">Virtual</span>
+                            <span v-else-if="!events[id].city">Not specified</span>
+                            <span v-else>{{ events[id].city }}, {{ events[id].country }}</span>
+                          </q-item-label>
+                        </q-item-section>
+                      </q-card>
+                    </q-tooltip>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Poll Creator -->
-            <div class="q-mt-lg">
-              <div class="text-caption text-uppercase text-grey">
-                Created By
+              <!-- Poll Creator -->
+              <div class="q-mt-lg">
+                <div class="text-caption text-uppercase text-grey">
+                  Created By
+                </div>
+                <div>{{ item.polltaker_account }}</div>
               </div>
-              <div>{{ item.polltaker_account }}</div>
             </div>
           </q-card-section>
         </q-card>
@@ -138,6 +146,7 @@ export default {
     },
 
     timeRemaining() {
+      if (!this.polls) return undefined;
       const times = this.polls.map((poll) => {
         const end = (new Date(poll.end_date)).getTime();
         // If poll has ended, time remaining is zero
@@ -146,6 +155,7 @@ export default {
         const secondsRemaining = (end - this.now) / 1000;
         return this.secondsToTicker(secondsRemaining);
       });
+      if (this.pollType === 'activePolls') console.log(times);
       return times;
     },
 

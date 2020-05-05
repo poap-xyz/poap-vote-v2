@@ -54,6 +54,7 @@ export default {
      * @dev https://stackoverflow.com/questions/36098913/convert-seconds-to-days-hours-minutes-and-seconds
      */
     secondsToTicker(seconds) {
+      if (!seconds) return undefined;
       // Convert to days, hours, minutes, seconds
       const roundedSeconds = Math.round(seconds);
       const d = Math.floor(roundedSeconds / (3600 * 24));
