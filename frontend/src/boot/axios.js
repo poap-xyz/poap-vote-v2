@@ -5,7 +5,7 @@ let baseURL;
 if (process.env.BUILD_ENV === 'development') {
   baseURL = 'http://localhost:3000';
 } else if (process.env.BUILD_ENV === 'staging') {
-  baseURL = 'http://staging.poap.vote';
+  baseURL = 'https://staging.poap.vote';
 } else if (process.env.BUILD_ENV === 'production') {
   throw new Error('Production not yet defined');
 } else {
