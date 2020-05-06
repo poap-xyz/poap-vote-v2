@@ -8,7 +8,7 @@ class SignatureHelpers {
         const stringifiedData = this.formatSignatureData(dataName, dataFormat, dataContents);
 
         // Recover the signer
-        const signer = sigUtil.recoverTypedSignature({data: JSON.parse(stringifiedData), sig: `0x${signature}`});
+        const signer = sigUtil.recoverTypedSignature_v4({data: JSON.parse(stringifiedData), sig: `0x${signature}`});
 
         // Convert the returned lowercase address to a checksum address
         const checksumAddress = ethers.utils.getAddress(signer);

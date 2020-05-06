@@ -7,19 +7,12 @@ describe('PollValidator', () => {
 
     let pollData = {
         title: 'The first cool poll',
-        polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
+        polltaker_account: '0xE0a68584111D702a141beCB6692631F1Dae4711f',
         description: 'This could be a very, very long amount of text if we wanted it to be I guess',
-        end_date: 1745137203,
-        valid_event_ids: [128, 124, 127, 123, 126, 125],
-        poll_options: [
-            {
-                contents: 'Yes',
-            },
-            {
-                contents: 'No',
-            },
-        ],
-        attestation: "dca1a1c59b1626c356e2a343775b573a92b3e26f2960086dd33685c4983eacb938367f83ef2fb794b58d69e940ae3c45298cab62932f0258b56c9d00605a9e461c",
+        end_date: 1745180454,
+        valid_event_ids: [128, 124, 127, 123, 126, 125, 129, 130],
+        poll_options: ['Yes', 'No'],
+        attestation: '5a3de160a7b92170a90367ebbe76ddf10e81c126d0b13bd308f8a503a68f843e751949ee0601e8f58d26b062f8799243b2d7829c42bd63bfb0c072c8634e0d661c',
     }
 
     let pollDataDeleting = (field) => {
@@ -52,6 +45,12 @@ describe('PollValidator', () => {
         },
         {
             id: 125,
+        },
+        {
+            id: 129,
+        },
+        {
+            id: 130,
         },
         {
             id: 10,
@@ -105,32 +104,20 @@ describe('PollValidator', () => {
     });
 
     it('should fail with an invalid address checksum', () => {
-        const validation = PollValidator.validateCreate(pollDataReplacing('polltaker_account', '0x22d491bDe2303f2f43325b2108D26f1eAba1e32B'), poapEventData);
+        const validation = PollValidator.validateCreate(pollDataReplacing('polltaker_account', '0xE0a68584111d702A141beCB6692631F1Dae4711f'), poapEventData);
         expect(validation.isValid).is.false;
         expect(validation.errorMessage).to.equal('Ethereum address is improperly formed');
     });
 
     it('should fail if there is only one poll option', () => {
-        const badPollData = pollDataReplacing('poll_options', [
-            {
-                contents: 'The Only Poll Option',
-            },
-        ]);
-
+        const badPollData = pollDataReplacing('poll_options', ['The Only Poll Option']);
         const validation = PollValidator.validateCreate(badPollData, poapEventData);
         expect(validation.isValid).is.false;
         expect(validation.errorMessage).to.equal('Poll must have between 2 and 20 options');
     });
 
     it('should fail if poll option data is malformed', () => {
-        const badPollData = pollDataReplacing('poll_options', [
-            {
-                contents: '',
-            },
-            {
-                contents: 'The other one is empty',
-            },
-        ]);
+        const badPollData = pollDataReplacing('poll_options', ['', 'The other one is empty']);
 
         const validation = PollValidator.validateCreate(badPollData, poapEventData);
         expect(validation.isValid).is.false;
@@ -163,21 +150,12 @@ describe('PollValidator', () => {
     });
 
     // TODO: Why in the world does this test fail??
-    // it('should fail if data has been tampered with', () => {
-    //     let badPollData = pollDataDeleting('poll_options');
-    //     badPollData['poll_options'] = [
-    //         {
-    //             contents: 'Yes',
-    //         },
-    //         {
-    //             contents: 'Maybe',
-    //         },
-    //     ];
-
-    //     const validation = PollValidator.validateCreate(badPollData, poapEventData);
-    //     expect(validation.isValid).is.false;
-    //     expect(validation.errorMessage).to.equal('Signature does not match the data submitted');
-    // });
+    it('should fail if poll options have been tampered with', () => {
+        let badPollData = pollDataReplacing('poll_options', ['Yes', 'Maybe']);
+        const validation = PollValidator.validateCreate(badPollData, poapEventData);
+        expect(validation.isValid).is.false;
+        expect(validation.errorMessage).to.equal('Signature does not match the data submitted');
+    });
 
     it('should succeed with all data present', () => {
         const validation = PollValidator.validateCreate(pollData, poapEventData);

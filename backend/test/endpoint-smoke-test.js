@@ -13,19 +13,12 @@ describe('Smoke Testing Endpoints', () => {
 
     it('should fail to create a poll missing a title', (done) => {
         const poll = {
-            polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
+            polltaker_account: '0xE0a68584111D702a141beCB6692631F1Dae4711f',
             description: 'This could be a very, very long amount of text if we wanted it to be I guess',
-            end_date: 1745137203,
-            valid_event_ids: [128, 124, 127, 123, 126, 125],
-            poll_options: [
-                {
-                    contents: 'Yes',
-                },
-                {
-                    contents: 'No',
-                },
-            ],
-            attestation: "dca1a1c59b1626c356e2a343775b573a92b3e26f2960086dd33685c4983eacb938367f83ef2fb794b58d69e940ae3c45298cab62932f0258b56c9d00605a9e461c",
+            end_date: 1745180454,
+            valid_event_ids: [128, 124, 127, 123, 126, 125, 129, 130],
+            poll_options: ['Yes', 'No'],
+            attestation: "5a3de160a7b92170a90367ebbe76ddf10e81c126d0b13bd308f8a503a68f843e751949ee0601e8f58d26b062f8799243b2d7829c42bd63bfb0c072c8634e0d661c",
         }
 
         chai.request(app)
@@ -45,19 +38,12 @@ describe('Smoke Testing Endpoints', () => {
     it('should fail to create a poll including an event that does not exist', (done) => {
         const poll = {
             title: 'The first cool poll',
-            polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
+            polltaker_account: '0xE0a68584111D702a141beCB6692631F1Dae4711f',
             description: 'This could be a very, very long amount of text if we wanted it to be I guess',
-            end_date: 1745137203,
-            valid_event_ids: [128, 124, 127, 123, 126, 125, 999999],
-            poll_options: [
-                {
-                    contents: 'Yes',
-                },
-                {
-                    contents: 'No',
-                },
-            ],
-            attestation: "dca1a1c59b1626c356e2a343775b573a92b3e26f2960086dd33685c4983eacb938367f83ef2fb794b58d69e940ae3c45298cab62932f0258b56c9d00605a9e461c",
+            end_date: 1745180454,
+            valid_event_ids: [128, 124, 127, 123, 126, 125, 129, 130, 999999],
+            poll_options: ['Yes', 'No'],
+            attestation: "5a3de160a7b92170a90367ebbe76ddf10e81c126d0b13bd308f8a503a68f843e751949ee0601e8f58d26b062f8799243b2d7829c42bd63bfb0c072c8634e0d661c",
         }
 
         chai.request(app)
@@ -77,19 +63,12 @@ describe('Smoke Testing Endpoints', () => {
     it('should create a poll', (done) => {
         const poll = {
             title: 'The first cool poll',
-            polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
+            polltaker_account: '0xE0a68584111D702a141beCB6692631F1Dae4711f',
             description: 'This could be a very, very long amount of text if we wanted it to be I guess',
-            end_date: 1745137203,
-            valid_event_ids: [128, 124, 127, 123, 126, 125],
-            poll_options: [
-                {
-                    contents: 'Yes',
-                },
-                {
-                    contents: 'No',
-                },
-            ],
-            attestation: 'dca1a1c59b1626c356e2a343775b573a92b3e26f2960086dd33685c4983eacb938367f83ef2fb794b58d69e940ae3c45298cab62932f0258b56c9d00605a9e461c',
+            end_date: 1745180454,
+            valid_event_ids: [128, 124, 127, 123, 126, 125, 129, 130],
+            poll_options: ['Yes', 'No'],
+            attestation: '5a3de160a7b92170a90367ebbe76ddf10e81c126d0b13bd308f8a503a68f843e751949ee0601e8f58d26b062f8799243b2d7829c42bd63bfb0c072c8634e0d661c',
         }
 
         chai.request(app)
@@ -101,13 +80,13 @@ describe('Smoke Testing Endpoints', () => {
                 expect(result.body).to.include({
                     id: 1,
                     title: 'The first cool poll',
-                    polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
+                    polltaker_account: '0xE0a68584111D702a141beCB6692631F1Dae4711f',
                     description: 'This could be a very, very long amount of text if we wanted it to be I guess',
-                    end_date: 1745137203,
-                    attestation: 'dca1a1c59b1626c356e2a343775b573a92b3e26f2960086dd33685c4983eacb938367f83ef2fb794b58d69e940ae3c45298cab62932f0258b56c9d00605a9e461c',
+                    end_date: 1745180454,
+                    attestation: '5a3de160a7b92170a90367ebbe76ddf10e81c126d0b13bd308f8a503a68f843e751949ee0601e8f58d26b062f8799243b2d7829c42bd63bfb0c072c8634e0d661c',
                 });
                 expect(result.body.poll_options.length).to.equal(2);
-                expect(result.body.valid_event_ids).to.be.equalTo([128, 124, 127, 123, 126, 125]);
+                expect(result.body.valid_event_ids).to.be.equalTo([128, 124, 127, 123, 126, 125, 129, 130]);
 
                 done();
             });
@@ -136,10 +115,10 @@ describe('Smoke Testing Endpoints', () => {
                 expect(result.body).to.include({
                     id: 1,
                     title: 'The first cool poll',
-                    polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
+                    polltaker_account: '0xE0a68584111D702a141beCB6692631F1Dae4711f',
                     description: 'This could be a very, very long amount of text if we wanted it to be I guess',
-                    end_date: 1745137203,
-                    attestation: 'dca1a1c59b1626c356e2a343775b573a92b3e26f2960086dd33685c4983eacb938367f83ef2fb794b58d69e940ae3c45298cab62932f0258b56c9d00605a9e461c',
+                    end_date: 1745180454,
+                    attestation: '5a3de160a7b92170a90367ebbe76ddf10e81c126d0b13bd308f8a503a68f843e751949ee0601e8f58d26b062f8799243b2d7829c42bd63bfb0c072c8634e0d661c',
                 });
                 expect(result.body.poll_options.length).to.equal(2);
 
@@ -321,7 +300,7 @@ describe('Smoke Testing Endpoints', () => {
 
     it('should note let a token vote twice', (done) => {
         const vote = {
-            voter_account: "0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b",
+            voter_account: "0xE0a68584111D702a141beCB6692631F1Dae4711f",
             token_ids: [6068, 1234],
             poll_option_id: 1,
             attestation: "f88bd9bcdd42a63fe78d92180588b369d292694bca974594d60d44d97f11790e77dc3505a15fda0a52686bed6bb6d2f9cc9bc4e29e2ddd19c0d5e1f2903878e01b",
@@ -372,19 +351,12 @@ describe('Smoke Testing Endpoints', () => {
     it('should not create a poll when the attestation is a duplicate', (done) => {
         const poll = {
             title: 'The first cool poll',
-            polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
+            polltaker_account: '0xE0a68584111D702a141beCB6692631F1Dae4711f',
             description: 'This could be a very, very long amount of text if we wanted it to be I guess',
-            end_date: 1745137203,
-            valid_event_ids: [128, 124, 127, 123, 126, 125],
-            poll_options: [
-                {
-                    contents: 'Yes',
-                },
-                {
-                    contents: 'No',
-                },
-            ],
-            attestation: "dca1a1c59b1626c356e2a343775b573a92b3e26f2960086dd33685c4983eacb938367f83ef2fb794b58d69e940ae3c45298cab62932f0258b56c9d00605a9e461c",
+            end_date: 1745180454,
+            valid_event_ids: [128, 124, 127, 123, 126, 125, 129, 130],
+            poll_options: ['Yes', 'No'],
+            attestation: "5a3de160a7b92170a90367ebbe76ddf10e81c126d0b13bd308f8a503a68f843e751949ee0601e8f58d26b062f8799243b2d7829c42bd63bfb0c072c8634e0d661c",
         }
 
         chai.request(app)
@@ -400,22 +372,12 @@ describe('Smoke Testing Endpoints', () => {
     it('should create another poll', (done) => {
         const poll = {
             title: 'The first cool poll',
-            polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
+            polltaker_account: '0xE0a68584111D702a141beCB6692631F1Dae4711f',
             description: 'This is actually the second first cool poll',
-            end_date: 1745137203,
-            valid_event_ids: [128, 124, 127, 123, 126, 125],
-            poll_options: [
-                {
-                    contents: 'Yes',
-                },
-                {
-                    contents: 'No',
-                },
-                {
-                    contents: 'Maybe',
-                }
-            ],
-            attestation: '3d43cf29564ca3047550e956009bb819305805ab4a40842d0136b8b23fa955192796f62995f606e6f189b55b651acb99cc352bb168ec331f47d6e6114d2d2bc91b',
+            end_date: 1745180444,
+            valid_event_ids: [128, 124, 127, 123, 126, 125, 129, 130],
+            poll_options: ['Yes', 'No', 'Maybe'],
+            attestation: 'ea9b4c64b0b5f03b7f435856813c9500dd4d384e17f099e8f2fb6852c4fe070c62ac7eb12e5818530b8b093823a6ed13d76a6a2dc4b6d83e7b4f58fec9603d911c',
         }
 
         chai.request(app)
@@ -428,11 +390,11 @@ describe('Smoke Testing Endpoints', () => {
                     id: 3,
                     title: 'The first cool poll',
                     description: 'This is actually the second first cool poll',
-                    polltaker_account: '0x22d491Bde2303f2f43325b2108D26f1eAbA1e32b',
-                    end_date: 1745137203,
-                    attestation: '3d43cf29564ca3047550e956009bb819305805ab4a40842d0136b8b23fa955192796f62995f606e6f189b55b651acb99cc352bb168ec331f47d6e6114d2d2bc91b',
+                    polltaker_account: '0xE0a68584111D702a141beCB6692631F1Dae4711f',
+                    end_date: 1745180444,
+                    attestation: 'ea9b4c64b0b5f03b7f435856813c9500dd4d384e17f099e8f2fb6852c4fe070c62ac7eb12e5818530b8b093823a6ed13d76a6a2dc4b6d83e7b4f58fec9603d911c',
                 });
-                expect(result.body.valid_event_ids).to.be.equalTo([128, 124, 127, 123, 126, 125]);
+                expect(result.body.valid_event_ids).to.be.equalTo([128, 124, 127, 123, 126, 125, 129, 130]);
                 expect(result.body.poll_options.length).to.equal(3);
 
                 done();

@@ -1,5 +1,6 @@
 import SignatureHelpers from "../utils/SignatureHelpers";
 import isValidAddress from "../utils/isValidAddress";
+import { poll } from "ethers/utils";
 
 class VoteValidator {
 
@@ -13,7 +14,14 @@ class VoteValidator {
             return {
                 isValid: false,
                 errorMessage: 'Ethereum address is improperly formed',
-            }
+            };
+        }
+
+        if (!pollData) {
+            return {
+                isValid: false,
+                errorMessage: 'Poll does not exist',
+            };
         }
 
         const optionsValidation = this.validateOptionsForPoll(voteData, pollData);
@@ -24,7 +32,7 @@ class VoteValidator {
         return {
             isValid: true,
             errorMessage: null,
-        }
+        };
     }
 
     static validateFields(voteData) {
