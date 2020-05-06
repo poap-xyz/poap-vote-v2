@@ -68,6 +68,7 @@ export function voteData(state) {
  */
 export function selectedPollEvents(state) {
   // Get list of all event IDs
+  if (!state.selectedPoll) return undefined;
   const eventIds = state.selectedPoll.valid_event_ids;
   // Get an array of all events
   const eventArray = state.events.filter((event) => eventIds.includes(event.id));
