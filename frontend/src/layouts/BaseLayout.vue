@@ -33,7 +33,13 @@
             Address: {{ userAddress }}
           </div>
 
-          <div class="row justify-end q-mt-xs">
+          <div class="row justify-end items-center q-mt-xs">
+            <div
+              v-if="!isValidChainId"
+              class="negative text-bold q-mr-md"
+            >
+              You must connect to the mainnet to use this app
+            </div>
             <q-icon
               v-if="!$q.dark.isActive"
               class="col-auto dark-toggle"
@@ -86,6 +92,13 @@ export default {
   computed: {
     ...mapState({
       userAddress: (state) => state.user.userAddress,
+      isValidChainId: (state) => {
+        const { provider } = state.user;
+        if (!provider) return true; // assume valid if not connected
+        const { chainId } = provider;
+        if (chainId === '0x1' || chainId === '0x01' || chainId === '1' || chainId === 1) return true;
+        return false;
+      },
     }),
   },
 
