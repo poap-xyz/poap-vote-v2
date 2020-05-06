@@ -93,6 +93,7 @@ export default {
 
     async submitVote() {
       /* eslint-disable no-console */
+      let response;
       try {
         if (!this.canUserVote) return;
         this.isVoteSubmissionLoading = true;
@@ -123,7 +124,7 @@ export default {
 
         // Submit vote
         console.log('Sending POST request to server to submit vote...');
-        const response = await this.$serverApi.post(`/api/poll/${this.selectedPollId}/votes`, payload);
+        response = await this.$serverApi.post(`/api/poll/${this.selectedPollId}/votes`, payload);
         console.log('Server response: ', response);
 
         // Update page data
@@ -133,12 +134,14 @@ export default {
         this.showError(err, 'Unable to cast vote, please try again');
       }
 
-      try {
-        await this.getSelectedPollData(true);
-        this.$router.push({ name: 'results', params: { id: this.selectedPollId } });
-      } catch (err) {
-        this.isVoteSubmissionLoading = false;
-        this.showError(err, 'Unable to get updated poll data. Please refresh the page and try again');
+      if (response.data) {
+        try {
+          await this.getSelectedPollData(true);
+          this.$router.push({ name: 'results', params: { id: this.selectedPollId } });
+        } catch (err) {
+          this.isVoteSubmissionLoading = false;
+          this.showError(err, 'Unable to get updated poll data. Please refresh the page and try again');
+        }
       }
       this.isVoteSubmissionLoading = false;
     },

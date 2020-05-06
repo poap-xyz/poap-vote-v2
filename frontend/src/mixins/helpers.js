@@ -129,6 +129,7 @@ export default {
     showError(err, msg = 'An unknown error occurred') {
       console.error(err); // eslint-disable-line no-console
       if (!err) this.notifyUser('negative', msg);
+      else if (err.isAxiosError && err.response.data.error) this.notifyUser('negative', err.response.data.error);
       else if (err.message) this.notifyUser('negative', err.message);
       else if (err.msg) this.notifyUser('negative', err.msg);
       else if (typeof err === 'string') this.notifyUser('negative', err);
