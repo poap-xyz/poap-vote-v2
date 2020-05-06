@@ -63,11 +63,18 @@ class PollController {
         let poll = null;
 
         try {
-            var pollData = {
+            let pollData = {
                 start_date: Date.now(),
                 ...request.body,
             }
 
+            let optionObjects = pollData.poll_options.map(optionStr => {
+                return {
+                    contents: optionStr,
+                };
+            });
+
+            pollData.poll_options = optionObjects;
             pollData.end_date = new Date(pollData.end_date * 1000);
 
             poll = await PollService.addPoll(pollData);

@@ -99,7 +99,7 @@ class PollValidator {
         for (let i = 0; i < pollOptions.length; i++) {
             const option = pollOptions[i];
 
-            if (!option.contents || !option.contents.length || option.contents.length < 1) {
+            if ('string' !== (typeof option) || option.length < 1) {
                 return {
                     isValid: false,
                     errorMessage: "Poll Option contents are missing or malformed",
@@ -148,13 +148,13 @@ class PollValidator {
 
         const dataName = 'Poll';
         const dataFormat = [
-          { name: 'title', type: 'string' },
-          { name: 'polltaker_account', type: 'address' },
-          { name: 'description', type: 'string' },
-          { name: 'valid_event_ids', type: 'bytes32' },
-          { name: 'poll_options', type: 'string' },
-          { name: 'end_date', type: 'string' },
-        ];
+            { name: 'title', type: 'string' },
+            { name: 'polltaker_account', type: 'address' },
+            { name: 'description', type: 'string' },
+            { name: 'valid_event_ids', type: 'uint256[]' },
+            { name: 'poll_options', type: 'string[]' },
+            { name: 'end_date', type: 'string' },
+          ];
 
         const recoveredAddress = SignatureHelpers.recoverSigner(signature, dataName, dataFormat, digestPollData)
 
