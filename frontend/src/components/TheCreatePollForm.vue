@@ -483,6 +483,9 @@ export default {
         console.log('Sending POST request to server to create poll...');
         response = await this.$serverApi.post('/api/polls', payload);
         console.log('Server response: ', response);
+
+        // Notify user poll creation was successful
+        this.notifyUser('positive', 'Your poll has been successfully created!');
       } catch (err) {
         this.isLoading = false;
         this.showError(err, 'Unable to create poll, please try again. ');

@@ -127,7 +127,7 @@ export default {
         response = await this.$serverApi.post(`/api/poll/${this.selectedPollId}/votes`, payload);
         console.log('Server response: ', response);
 
-        // Update page data
+        // Notify user vote submission was successful
         this.notifyUser('positive', 'Your vote has been successfully recorded!');
       } catch (err) {
         this.isVoteSubmissionLoading = false;

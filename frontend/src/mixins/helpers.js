@@ -35,6 +35,7 @@ export default {
   },
 
   mounted() {
+    this.now = new Date();
     setInterval(() => this.now = new Date(), 1000); // eslint-disable-line
   },
 
