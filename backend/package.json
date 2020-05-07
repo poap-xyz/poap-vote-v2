@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --exec babel-node ./src/index.js",
     "start": "babel-node src/index.js",
-    "prod": "pm2 start babel-node -- src/index.js",
+    "prod": "pm2 stop all && pm2 start babel-node -- src/index.js",
     "test": "export NODE_ENV=test && export POAP_VOTE_PORT=3001 && sequelize db:migrate:undo:all && sequelize db:migrate && mocha ./test/*-test.js --exit --timeout 10000 --require @babel/register",
     "init-dev-db": "createuser poapu && createdb poapvote --owner=poapu && createdb poapvote_test --owner=poapu",
     "reset-dev-db": "dropdb poapvote && createdb poapvote --owner=poapu && dropdb poapvote_test && createdb poapvote_test --owner=poapu",
