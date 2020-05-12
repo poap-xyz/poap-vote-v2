@@ -7,7 +7,7 @@ if (process.env.BUILD_ENV === 'development') {
 } else if (process.env.BUILD_ENV === 'staging') {
   baseURL = 'https://staging.poap.vote';
 } else if (process.env.BUILD_ENV === 'production') {
-  throw new Error('Production not yet defined');
+  baseURL = 'https://poap.vote';
 } else {
   throw new Error('Invalid build environment');
 }

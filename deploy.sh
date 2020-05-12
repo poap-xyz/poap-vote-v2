@@ -9,7 +9,25 @@ ask_continue() {
     fi
 }
 
-TARGET="staging.poap.vote" # todo check for arg
+echo_usage() {
+    echo "deploy.sh production | staging"
+}
+
+if [[ "$2" != "" ]]; then
+    echo_usage
+    exit 1
+fi
+
+if [[ "$1" = "production" ]]; then
+    TARGET="poap.vote"
+    FRONTEND_BUILD_SCRIPT=build-prod
+elif [[ "$1" = "staging" ]]; then
+    TARGET="staging.poap.vote"
+    FRONTEND_BUILD_SCRIPT=build-staging
+else
+    echo_usage
+    exit 1
+fi
 
 echo "Will deploy to $TARGET"
 ask_continue
@@ -27,7 +45,7 @@ ask_continue
 
 echo "Building frontend"
 cd frontend
-npm run build-staging # todo environment dependent
+npm run $FRONTEND_BUILD_SCRIPT
 cd ..
 ask_continue
 
