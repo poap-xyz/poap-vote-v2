@@ -17,13 +17,37 @@ ask_continue
 UNIXTIME=$(date +%s)
 DIRNAME="frontend_$UNIXTIME"
 
-## DEPLOY BACKEND
+## BUILD FRONTEND
 
-echo "Building production backend"
+echo "Installing frontend depdencies"
+cd frontend
+npm install
+cd ..
+ask_continue
+
+echo "Building frontend"
+cd frontend
+npm run build-staging # todo environment dependent
+cd ..
+ask_continue
+
+## BUILD BACKEND
+
+echo "Installing backend dependencies"
 cd backend
 npm install --production
 cd ..
+echo "The next action is destructive. It will put the site in maintenance mode."
+echo "ARE YOU SURE?"
 ask_continue
+
+## PUT UP MAINTENANCE PAGE
+
+echo "** PUTTING THE SITE IN MAINTENANCE MODE **"
+ssh deploy@$TARGET "rm -rfv ~/frontend_last && mv -v ~/frontend_live ~/frontend_last && mv -v ~/frontend_down ~/frontend_live"
+ask_continue
+
+## DEPLOY BACKEND
 
 echo "Archiving current backend"
 ssh deploy@$TARGET "rsync -aP ~/backend_live/* ~/backend_last"
@@ -47,20 +71,6 @@ ask_continue
 
 echo "Restarting the backend server"
 ssh deploy@$TARGET "cd ~/backend_live && pwd && npm run start-prod"
-
-## BUILD FRONTEND
-
-echo "Installing frontend depdencies"
-cd frontend
-npm install
-cd ..
-ask_continue
-
-
-echo "Building frontend"
-cd frontend
-npm run build-staging # todo environment dependent
-cd ..
 ask_continue
 
 ## DEPLOY FRONTEND
@@ -74,5 +84,6 @@ ssh deploy@$TARGET "cp -rv ~/frontend_archive/$DIRNAME ~/frontend_new"
 ask_continue
 
 echo "Swapping in new frontend"
-ssh deploy@$TARGET "rm -rfv ~/frontend_last && mv -v ~/frontend_live ~/frontend_last && mv -v ~/frontend_new ~/frontend_live"
-ask_continue
+ssh deploy@$TARGET "mv -v ~/frontend_live ~/frontend_down && mv -v ~/frontend_new ~/frontend_live"
+
+echo "** DEPLOYMENT COMPLETE **"
