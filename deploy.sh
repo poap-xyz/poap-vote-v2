@@ -55,11 +55,15 @@ echo "Installing backend dependencies"
 cd backend
 npm install --production
 cd ..
-echo "The next action is destructive. It will put the site in maintenance mode."
-echo "ARE YOU SURE?"
 ask_continue
 
 ## PUT UP MAINTENANCE PAGE
+
+echo "Updating the maintenance page"
+rsync -aP frontend/maintenance/* deploy@$TARGET:~/frontend_down
+echo "The next action is destructive. It will put the site in maintenance mode."
+echo "ARE YOU SURE?"
+ask_continue
 
 echo "** PUTTING THE SITE IN MAINTENANCE MODE **"
 ssh deploy@$TARGET "rm -rfv ~/frontend_last && mv -v ~/frontend_live ~/frontend_last && mv -v ~/frontend_down ~/frontend_live"
