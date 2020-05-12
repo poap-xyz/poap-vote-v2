@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
+import compression from 'compression';
 import PollController from './controllers/PollController';
 import VoteController from './controllers/VoteController';
 
@@ -12,6 +13,7 @@ app.unsubscribe(bodyParser.urlencoded({extended: false}));
 
 app.use(cors());
 app.use(helmet());
+app.use(compression());
 
 const port = process.env.POAP_VOTE_PORT || 3000;
 
