@@ -17,6 +17,37 @@ ask_continue
 UNIXTIME=$(date +%s)
 DIRNAME="frontend_$UNIXTIME"
 
+## DEPLOY BACKEND
+
+echo "Building production backend"
+cd backend
+npm install --production
+cd ..
+ask_continue
+
+echo "Archiving current backend"
+ssh deploy@$TARGET "rsync -aP ~/backend_live/* ~/backend_last"
+ssh deploy@$TARGET "rsync -aP ~/backend_live/.babelrc ~/backend_last"
+ssh deploy@$TARGET "rsync -aP ~/backend_live/.sequelizerc ~/backend_last"
+ask_continue
+
+echo "Pushing new backend to server"
+rsync -aP backend/* --exclude=.env* deploy@$TARGET:~/backend_live
+rsync -aP backend/.babelrc deploy@$TARGET:~/backend_live
+rsync -aP backend/.sequelizerc deploy@$TARGET:~/backend_live
+ask_continue
+
+echo "Stopping the backend server"
+ssh deploy@$TARGET "cd ~/backend_live && pwd && npm run stop-prod"
+ask_continue
+
+echo "Running database migrations"
+ssh deploy@$TARGET "cd ~/backend_live && pwd && npm run migrate"
+ask_continue
+
+echo "Restarting the backend server"
+ssh deploy@$TARGET "cd ~/backend_live && pwd && npm run start-prod"
+
 ## BUILD FRONTEND
 
 echo "Installing frontend depdencies"
@@ -44,24 +75,4 @@ ask_continue
 
 echo "Swapping in new frontend"
 ssh deploy@$TARGET "rm -rfv ~/frontend_last && mv -v ~/frontend_live ~/frontend_last && mv -v ~/frontend_new ~/frontend_live"
-ask_continue
-
-## DEPLOY BACKEND
-
-echo "Building production backend"
-cd backend
-npm install --production
-cd ..
-ask_continue
-
-echo "Archiving current backend"
-ssh deploy@$TARGET "rsync -aP ~/backend_live/* ~/backend_last"
-ssh deploy@$TARGET "rsync -aP ~/backend_live/.babelrc ~/backend_last"
-ssh deploy@$TARGET "rsync -aP ~/backend_live/.sequelizerc ~/backend_last"
-ask_continue
-
-echo "Pushing new backend to server"
-rsync -aP backend/* --exclude=.env* deploy@$TARGET:~/backend_live
-rsync -aP backend/.babelrc deploy@$TARGET:~/backend_live
-rsync -aP backend/.sequelizerc deploy@$TARGET:~/backend_live
 ask_continue
