@@ -9,6 +9,9 @@ import VoteController from './controllers/VoteController';
 
 const app = express();
 
+app.enable("trust proxy");
+app.disable('x-powered-by');
+
 app.use(bodyParser.json());
 app.unsubscribe(bodyParser.urlencoded({extended: false}));
 
