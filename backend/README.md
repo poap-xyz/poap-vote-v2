@@ -20,6 +20,7 @@ From the `backend` directory, run:
 
 ```bash
 npm install
+cp .env-tempplate .env
 npm run init-dev-db
 npm run migrate
 npm run dev
