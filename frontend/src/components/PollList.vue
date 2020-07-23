@@ -9,95 +9,99 @@
       class="q-py-md q-pl-xs"
     >
       <template v-slot="{ item, index }">
-        <q-card
-          :key="index"
-          bordered
-          class="card-border cursor-pointer q-mr-md"
-          style="max-width: 400px;"
-          @click="$router.push({name: 'results', params: {id: item.id}})"
+        <a
+          style="text-decoration: none; color: inherit;"
+          :href="'/' + item.id + '/results'"
         >
-          <!-- POLL TITLE AND DESCRIPTION-->
-          <q-card-section>
-            <div class="text-h6">
-              <span v-if="item.title.length < 101">{{ item.title }}</span>
-              <span v-else>{{ item.title.slice(0,100) }}...</span>
-            </div>
-            <div>
-              <span v-if="item.description.length < 101">{{ item.description }}</span>
-              <span v-else>{{ item.description.slice(0,100) }}...</span>
-            </div>
-          </q-card-section>
-
-          <!-- REMAINING METADATA -->
-          <q-card-section>
-            <!-- End Date -->
-            <div class="text-caption text-uppercase text-grey">
-              End Date
-            </div>
-            <div>
+          <q-card
+            :key="index"
+            bordered
+            class="card-border cursor-pointer q-mr-md"
+            style="max-width: 400px;"
+          >
+            <!-- POLL TITLE AND DESCRIPTION-->
+            <q-card-section>
+              <div class="text-h6">
+                <span v-if="item.title.length < 101">{{ item.title }}</span>
+                <span v-else>{{ item.title.slice(0,100) }}...</span>
+              </div>
               <div>
-                {{ secondsToFormattedDate(item.end_date) }}
+                <span v-if="item.description.length < 101">{{ item.description }}</span>
+                <span v-else>{{ item.description.slice(0,100) }}...</span>
               </div>
-              <div
-                v-if="pollType == 'activePolls' && timeRemaining[index]"
-                class="text-caption"
-              >
-                {{ timeRemaining[index] }} remaining
-              </div>
-              <div
-                v-else-if="pollType == 'activePolls'"
-                class="text-caption"
-              >
-                <q-spinner color="primary" />
-              </div>
+            </q-card-section>
 
-              <!-- List of valid event tokens -->
-              <div class="q-mt-lg">
-                <div class="text-caption text-uppercase text-grey">
-                  Valid Event Tokens
+            <!-- REMAINING METADATA -->
+            <q-card-section>
+              <!-- End Date -->
+              <div class="text-caption text-uppercase text-grey">
+                End Date
+              </div>
+              <div>
+                <div>
+                  {{ secondsToFormattedDate(item.end_date) }}
                 </div>
-                <div class="row justify-start">
-                  <div
-                    v-for="id in item.valid_event_ids"
-                    :key="id"
-                    class="q-mr-sm"
-                  >
-                    <img
-                      :src="events[id].image_url"
-                      style="max-width:40px"
+                <div
+                  v-if="pollType == 'activePolls' && timeRemaining[index]"
+                  class="text-caption"
+                >
+                  {{ timeRemaining[index] }} remaining
+                </div>
+                <div
+                  v-else-if="pollType == 'activePolls'"
+                  class="text-caption"
+                >
+                  <q-spinner color="primary" />
+                </div>
+
+                <!-- List of valid event tokens -->
+                <div class="q-mt-lg">
+                  <div class="text-caption text-uppercase text-grey">
+                    Valid Event Tokens
+                  </div>
+                  <div class="row justify-start">
+                    <div
+                      v-for="id in item.valid_event_ids"
+                      :key="id"
+                      class="q-mr-sm"
                     >
-                    <q-tooltip>
-                      <q-card>
-                        <!-- Layout copied and modified from CreatePollForm select component -->
-                        <q-item-section class="dark-toggle q-pa-md">
-                          <q-item-label class="event-title">
-                            {{ events[id].name }}
-                          </q-item-label>
-                          <q-item-label class="event-caption">
-                            {{ events[id].start_date }} &ndash; {{ events[id].end_date }}
-                          </q-item-label>
-                          <q-item-label class="event-caption">
-                            <span v-if="events[id].city === 'Virtual'">Virtual</span>
-                            <span v-else-if="!events[id].city">Not specified</span>
-                            <span v-else>{{ events[id].city }}, {{ events[id].country }}</span>
-                          </q-item-label>
-                        </q-item-section>
-                      </q-card>
-                    </q-tooltip>
+                      <img
+                        :src="events[id].image_url"
+                        style="max-width:40px"
+                      >
+                      <q-tooltip>
+                        <q-card>
+                          <!-- Layout copied and modified from CreatePollForm select component -->
+                          <q-item-section class="dark-toggle q-pa-md">
+                            <q-item-label class="event-title">
+                              {{ events[id].name }}
+                            </q-item-label>
+                            <q-item-label class="event-caption">
+                              {{ events[id].start_date }} &ndash; {{ events[id].end_date }}
+                            </q-item-label>
+                            <q-item-label class="event-caption">
+                              <span v-if="events[id].city === 'Virtual'">Virtual</span>
+                              <span v-else-if="!events[id].city">Not specified</span>
+                              <span v-else>{{ events[id].city }}, {{ events[id].country }}</span>
+                            </q-item-label>
+                          </q-item-section>
+                        </q-card>
+                      </q-tooltip>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <!-- Poll Creator -->
-              <div class="q-mt-lg">
-                <div class="text-caption text-uppercase text-grey">
-                  Created By
+                <!-- Poll Creator -->
+                <div class="q-mt-lg">
+                  <div class="text-caption text-uppercase text-grey">
+                    Created By
+                  </div>
+                  <div>{{ item.polltaker_account }}</div>
                 </div>
-                <div>{{ item.polltaker_account }}</div>
               </div>
-            </div>
-          </q-card-section>
-        </q-card>
+            </q-card-section>
+          </q-card>
+        </a>
       </template>
     </q-virtual-scroll>
   </div>

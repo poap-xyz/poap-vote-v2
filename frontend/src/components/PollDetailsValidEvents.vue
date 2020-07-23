@@ -34,41 +34,34 @@
         <div
           v-for="event in events"
           :key="event.id"
-          class="cursor-pointer q-mr-md q-mt-md"
+          class="q-mr-md q-mt-md"
         >
-          <a
-            :href="event.event_url"
-            target="_blank"
-            style="text-decoration: none; color: inherit;"
+          <q-card
+            bordered
+            :class="{'not-a-user-token': isForVoting && !userEventIds.includes(event.id)}"
           >
-            <q-card
-              bordered
-              class="card-border"
-              :class="{'not-a-user-token': isForVoting && !userEventIds.includes(event.id)}"
-            >
-              <q-item>
-                <q-item-section avatar>
-                  <q-avatar>
-                    <img :src="event.image_url">
-                  </q-avatar>
-                </q-item-section>
+            <q-item>
+              <q-item-section avatar>
+                <q-avatar>
+                  <img :src="event.image_url">
+                </q-avatar>
+              </q-item-section>
 
-                <q-item-section>
-                  <q-item-label>{{ event.name }}</q-item-label>
-                  <q-item-label caption>
-                    <div>
-                      {{ event.start_date }} &ndash; {{ event.end_date }}
-                    </div>
-                    <div>
-                      <span v-if="event.city === 'Virtual'">Virtual</span>
-                      <span v-else-if="!event.city">Not specified</span>
-                      <span v-else>{{ event.city }}, {{ event.country }}</span>
-                    </div>
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-card>
-          </a>
+              <q-item-section>
+                <q-item-label>{{ event.name }}</q-item-label>
+                <q-item-label caption>
+                  <div>
+                    {{ event.start_date }} &ndash; {{ event.end_date }}
+                  </div>
+                  <div>
+                    <span v-if="event.city === 'Virtual'">Virtual</span>
+                    <span v-else-if="!event.city">Not specified</span>
+                    <span v-else>{{ event.city }}, {{ event.country }}</span>
+                  </div>
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-card>
         </div>
       </div>
       <!-- Show button for results page if user cannot vote -->

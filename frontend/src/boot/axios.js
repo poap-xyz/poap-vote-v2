@@ -2,11 +2,12 @@ import Vue from 'vue';
 import axios from 'axios';
 
 let baseURL;
-if (process.env.BUILD_ENV === 'development') {
-  baseURL = 'http://localhost:3000';
-} else if (process.env.BUILD_ENV === 'staging') {
+
+if (process.env.NODE_ENV === 'development') {
+  baseURL = 'https://poap.vote';
+} else if (process.env.NODE_ENV === 'staging') {
   baseURL = 'https://staging.poap.vote';
-} else if (process.env.BUILD_ENV === 'production') {
+} else if (process.env.NODE_ENV === 'production') {
   baseURL = 'https://poap.vote';
 } else {
   throw new Error('Invalid build environment');

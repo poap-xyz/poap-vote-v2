@@ -50,7 +50,7 @@
     >
       <div class="col-auto text-caption text-grey">
         <span v-if="showVotesByAddress">
-          {{ totalVotes }} <span>unique address</span><span v-if="totalVotes !== 1">es</span>
+          {{ totalVotes }} <span>unique account</span><span v-if="totalVotes !== 1">s</span>
           voted
         </span>
         <span v-else>

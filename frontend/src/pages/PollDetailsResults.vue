@@ -28,8 +28,6 @@
           </q-card>
         </q-expansion-item>
       </div>
-
-
       <poll-details-poll-creator />
     </div>
   </q-page>
