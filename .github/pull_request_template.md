@@ -10,7 +10,7 @@ _A clear and concise description of what the PR is about._
 
 _List all Jira tickets that you have been working on._
 
-- [BD-436](https://xivis.atlassian.net/browse/BD-436)
+- [POAP-300](https://xivis.atlassian.net/browse/POAP-300)
 
 ## Types of Changes
 
