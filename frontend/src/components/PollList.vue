@@ -11,7 +11,7 @@
       <template v-slot="{ item, index }">
         <a
           style="text-decoration: none; color: inherit;"
-          :href="'/' + item.id + '/results'"
+          :href="'/' + item.id + destinationURL"
         >
           <q-card
             :key="index"
@@ -165,6 +165,10 @@ export default {
     prettyHeader() {
       if (this.pollType.toLowerCase().startsWith('active')) return 'Active Polls';
       return 'Completed Polls';
+    },
+    destinationURL() {
+      if (this.pollType.toLowerCase().startsWith('active')) return '/results';
+      return '/cast';
     },
   },
 };

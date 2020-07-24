@@ -65,14 +65,6 @@
         <span v-if="showVotesByAddress">token counts</span>
         <span v-else>address</span>
       </div>
-      <div
-        v-if="showVotesByAddress"
-        class="col-xs-12 q-mt-md negative text-caption text-justify"
-      >
-        WARNING: Address weighted results are vulnerable to
-        sybil attacks, as individuals holding multiple POAP tokens
-        can send them to other addresses.
-      </div>
     </div>
   </div>
 </template>

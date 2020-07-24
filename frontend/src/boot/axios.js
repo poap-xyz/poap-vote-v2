@@ -5,6 +5,7 @@ let baseURL;
 
 if (process.env.NODE_ENV === 'development') {
   baseURL = 'https://poap.vote';
+  // baseURL = 'http://localhost:3000';
 } else if (process.env.NODE_ENV === 'staging') {
   baseURL = 'https://staging.poap.vote';
 } else if (process.env.NODE_ENV === 'production') {
