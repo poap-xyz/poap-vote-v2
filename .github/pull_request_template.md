@@ -44,7 +44,6 @@ _Add at least one screenshot displaying how the UI looks like (Kap recommended).
 
   ### Frontend
 
-  - [ ] I have added E2E tests (if needed)
   - [ ] I have added form validations (if needed)
   - [ ] I have added proper UI elements for async interactions (if needed)
   - [ ] I have tested different supported resolutions through Sizzy
@@ -52,12 +51,6 @@ _Add at least one screenshot displaying how the UI looks like (Kap recommended).
 
   ### Backend
 
-  - [ ] I have run migrations (if needed)
-  - [ ] I have updated Swagger (if needed)
-
-  ### Mobile
-
-  - [ ] I have tested on physical devices (both Android and iOS)
 
 ---
 
