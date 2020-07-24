@@ -17,7 +17,7 @@
             :key="index"
             bordered
             class="card-border cursor-pointer q-mr-md"
-            style="max-width: 400px;"
+            style="max-width: 400px; height: 100%"
           >
             <!-- POLL TITLE AND DESCRIPTION-->
             <q-card-section>
@@ -69,7 +69,7 @@
                         :src="events[id].image_url"
                         style="max-width:40px"
                       >
-                      <q-tooltip>
+                      <q-tooltip content-class="bg-white">
                         <q-card>
                           <!-- Layout copied and modified from CreatePollForm select component -->
                           <q-item-section class="dark-toggle q-pa-md">
@@ -167,8 +167,8 @@ export default {
       return 'Completed Polls';
     },
     destinationURL() {
-      if (this.pollType.toLowerCase().startsWith('active')) return '/results';
-      return '/cast';
+      if (this.pollType.toLowerCase().startsWith('active')) return '/cast';
+      return '/results';
     },
   },
 };

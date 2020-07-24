@@ -6,21 +6,31 @@
         :is-for-voting="true"
         @optionSelected="onOptionSelected"
       />
-      <div class="q-mt-xl">
+      <div class="q-my-xl">
+        <!-- Show valid events -->
+        <div>
+          <poll-details-valid-events :is-for-voting="true" />
+        </div>
         <!-- Not logged in, so show login button -->
         <div
           v-if="!userAddress && isPollOngoing"
-          class="secondary text-bold text-center"
+          class="secondary text-bold text-center q-my-xl"
         >
-          Voting requires a web3 connected wallet
+          Voting requires a web3 connected wallet {{!!isForVoting}}
           <connect-wallet
             :full-width="true"
             label="Connect Wallet to Vote"
           />
         </div>
-        <!-- Logged in, so show valid events -->
         <div v-else>
-          <poll-details-valid-events :is-for-voting="true" />
+            <!-- Show button for results page if user cannot vote -->
+            <base-button
+              v-if="eligibleTokenCount === 0"
+              class="q-mt-xl"
+              :full-width="true"
+              label="View Current Results"
+              @click="$router.push({ name: 'results', params: {id: Number($route.params.id)} })"
+            />
         </div>
       </div>
       <!-- Vote button -->

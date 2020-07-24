@@ -10,8 +10,10 @@
       <!-- Wording for voting page -->
       <div v-if="isForVoting">
         Users can vote in this poll if they hold any of the following POAP tokens.
+        <br>
         <!-- If user has no eleigible tokens -->
-        <span v-if="userAddress && eligibleTokenCount === 0">
+        <span v-if="userAddress && eligibleTokenCount === 0"
+          class="secondary text-bold text-center q-my-xl">
           You do not hold any tokens qualified to vote in this poll.
         </span>
         <!-- If user has eligible tokens  -->
@@ -38,7 +40,8 @@
         >
           <q-card
             bordered
-            :class="{'not-a-user-token': isForVoting && !userEventIds.includes(event.id)}"
+            :class="{'dim-token': userAddress ?
+            (isForVoting && !userEventIds.includes(event.id)) : false}"
           >
             <q-item>
               <q-item-section avatar>
@@ -51,7 +54,7 @@
                 <q-item-label>{{ event.name }}</q-item-label>
                 <q-item-label caption>
                   <div>
-                    {{ event.start_date }} &ndash; {{ event.end_date }}
+                    {{ event.start_date }}
                   </div>
                   <div>
                     <span v-if="event.city === 'Virtual'">Virtual</span>
@@ -64,19 +67,12 @@
           </q-card>
         </div>
       </div>
-      <!-- Show button for results page if user cannot vote -->
-      <base-button
-        v-if="isForVoting && eligibleTokenCount === 0"
-        class="q-mt-xl"
-        :full-width="true"
-        label="View Current Results"
-        @click="$router.push({ name: 'results', params: {id: Number($route.params.id)} })"
-      />
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import helpers from 'src/mixins/helpers';
 import voting from 'src/mixins/voting';
 
@@ -85,6 +81,11 @@ export default {
 
   mixins: [helpers, voting],
 
+  computed: {
+    ...mapState({
+      userAddress: (state) => state.user.userAddress,
+    }),
+  },
   props: {
     isForVoting: {
       type: Boolean,
@@ -96,7 +97,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.not-a-user-token {
-  opacity: 0.6;
-}
+  .dim-token {
+    opacity: 0.6;
+  }
 </style>
