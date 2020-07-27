@@ -12,8 +12,10 @@
         Users can vote in this poll if they hold any of the following POAP tokens.
         <br>
         <!-- If user has no eleigible tokens -->
-        <span v-if="userAddress && eligibleTokenCount === 0"
-          class="secondary text-bold text-center q-my-xl">
+        <span
+            v-if="userAddress && eligibleTokenCount === 0"
+            class="secondary text-bold text-center q-my-xl"
+            >
           You do not hold any tokens qualified to vote in this poll.
         </span>
         <!-- If user has eligible tokens  -->
@@ -40,8 +42,8 @@
         >
           <q-card
             bordered
-            :class="{'dim-token': userAddress ?
-            (isForVoting && !userEventIds.includes(event.id)) : false}"
+            v-bind:class="userAddress && (isForVoting &&
+            !userEventIds.includes(event.id)) && 'dim-token'"
           >
             <q-item>
               <q-item-section avatar>

@@ -42,13 +42,13 @@
                   {{ secondsToFormattedDate(item.end_date) }}
                 </div>
                 <div
-                  v-if="pollType == 'activePolls' && timeRemaining[index]"
+                  v-if="pollType === 'activePolls' && timeRemaining[index]"
                   class="text-caption"
                 >
                   {{ timeRemaining[index] }} remaining
                 </div>
                 <div
-                  v-else-if="pollType == 'activePolls'"
+                  v-else-if="pollType === 'activePolls'"
                   class="text-caption"
                 >
                   <q-spinner color="primary" />
