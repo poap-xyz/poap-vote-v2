@@ -10,10 +10,7 @@
       >
         Create Poll
       </h2>
-      <div v-if="userAddress">
-        <the-create-poll-form />
-      </div>
-      <div v-else>
+      <div v-if="!userAddress">
         <h5 class="no-margin secondary">
           Connect your wallet to create a poll
         </h5>
@@ -21,6 +18,9 @@
           class="q-my-xl q-pt-xl"
           :full-width="true"
         />
+      </div>
+      <div>
+        <the-create-poll-form />
       </div>
     </div>
   </q-page>

@@ -81,9 +81,10 @@
         Valid Events
       </h5>
       <div class="text-left">
-        A user will be able to vote on this poll only if they hold a valid POAP
-        token from at least one of the selected events. Use the box below to
-        search all events.
+        A user will be able to vote only if they hold a POAP
+        token from at least one of the selected events.
+        <br>
+        Use the box below to search all events.
         <q-select
           id="createPoll-selectEvents"
           v-model="valid_events"
@@ -114,7 +115,7 @@
               <q-item-section>
                 <q-item-label>{{ event.opt.name }}</q-item-label>
                 <q-item-label caption>
-                  {{ event.opt.start_date }} &ndash; {{ event.opt.end_date }}
+                  {{ event.opt.start_date }}
                 </q-item-label>
                 <q-item-label caption>
                   <span v-if="event.opt.city === 'Virtual'">Virtual</span>
@@ -157,100 +158,6 @@
         </q-select>
       </div>
 
-      <!----------------------------------- POLL END DATE/TIME ------------------------------------>
-      <h5 class="section-header">
-        End Date and Time
-      </h5>
-      <div class="text-left">
-        Enter the polling end date and time, specified in 24-hour
-        format using your local time zone
-      </div>
-      <div>
-        <div class="row justify-between">
-          <!--
-          End date
-          -->
-          <div
-            id="createPoll-endDay"
-            class="col-auto q-my-sm"
-          >
-            <q-input
-              v-model="end_day"
-              filled
-              :hide-bottom-space="true"
-              :hide-dropdown-icon="true"
-              label="End date"
-              mask="date"
-              placeholder="YYYY/MM/DD"
-              style="max-width: 175px;"
-              :rules="['date']"
-            >
-              <template v-slot:append>
-                <q-icon
-                  name="fas fa-calendar-alt"
-                  class="cursor-pointer"
-                >
-                  <q-popup-proxy
-                    ref="qDateProxy"
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date
-                      v-model="end_day"
-                      :options="limitDateSelection"
-                      @input="() => $refs.qDateProxy.hide()"
-                    />
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-          </div>
-
-          <!--
-          End time
-          -->
-          <div class="col-auto">
-            <div class="row justify-end">
-              <base-select
-                id="createPoll-endHour"
-                v-model="endHour"
-                class="col q-mr-xs"
-                label="HH"
-                :is-time-dropdown="true"
-                :options="endHourOptions"
-              />
-              <base-select
-                id="createPoll-endMinute"
-                v-model="endMinute"
-                class="col q-mr-xs"
-                label="MM"
-                :is-time-dropdown="true"
-                :options="endMinuteOptions"
-              />
-              <base-select
-                id="createPoll-endAmPm"
-                v-model="endAmPm"
-                class="col"
-                label="AM/PM"
-                :is-time-dropdown="true"
-                :options="endAmPmOptions"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!--
-      Since datetime is composed of multiple components, we manually show the
-      input validation error if it's invalid (i.e. if end date is in the past)
-      -->
-      <div
-        v-if="!isEndDateValid"
-        class="text-caption text-left negative"
-      >
-        &nbsp;&nbsp;&nbsp;&nbsp;End date must be in the future
-      </div>
-
       <!-------------------------------------- SUBMIT BUTTON -------------------------------------->
       <div>
         <base-button
@@ -270,12 +177,9 @@
 
 <script>
 import { mapState } from 'vuex';
-import { date } from 'quasar';
 import eip712 from 'src/mixins/eip712';
 import helpers from 'src/mixins/helpers';
 import Fuse from 'fuse.js';
-
-const { buildDate, formatDate } = date;
 
 export default {
   name: 'TheCreatePollForm',
@@ -307,9 +211,9 @@ export default {
       filteredEvents: [],
       fuseOptions: {
         // https://fusejs.io/api/options.html
-        keys: ['name'],
-        distance: 1000, // we don't care where in the string the match is found
-        threshold: 0.45, // this seems to be a good value from trial and error
+        keys: ['name', 'city', 'country'],
+        distance: 70, // we don't care where in the string the match is found
+        threshold: 0.3, // this seems to be a good value from trial and error
       },
       // UI helpers
       isLoading: false,
@@ -331,33 +235,6 @@ export default {
     },
 
     /**
-     * @notice Takes the entered date and time provided by the user and
-     * converts it into a unix timestamp (therefore this is in seconds)
-     */
-    end_date() {
-      if (!this.end_day) return undefined;
-      const [year, month, day] = this.end_day.split('/');
-      const hours = this.endAmPm === 'AM' ? this.endHour : String(Number(this.endHour) + 12);
-      const minutes = this.endMinute;
-      const lastDay = buildDate({
-        year, month, date: day, hours, minutes,
-      });
-      return parseInt(lastDay.getTime() / 1000, 10);
-    },
-
-    /**
-     * @notice Ensure selected end date is in the future. Unless all date/time
-     * fields are filled out, we assume the date is valid
-     */
-    isEndDateValid() {
-      if (!this.end_date) return true;
-      if (!this.endHour) return true;
-      if (!this.endMinute) return true;
-      if (!this.endAmPm) return true;
-      return this.end_date * 1000 > (new Date()).getTime();
-    },
-
-    /**
      * @notice Returns true if every input on the form is valid
      */
     isFormValid() {
@@ -371,15 +248,7 @@ export default {
       return this.isValidTitle(this.title) === true
         && this.isValidDescription(this.description) === true
         && this.isValidEventSelection(this.valid_events) === true
-        && areAllOptionsValid === true
-        // isEndDateValid is true by default to avoid unnecessary error message,
-        // therefore we also check the components individually to ensure they
-        // are all filled out
-        && this.isEndDateValid
-        && this.end_date !== undefined
-        && this.endHour !== undefined
-        && this.endMinute !== undefined
-        && this.endAmPm !== undefined;
+        && areAllOptionsValid === true;
     },
   },
 
@@ -434,14 +303,6 @@ export default {
       });
     },
 
-    /**
-     * @notice Restrict user from choosing end date before tomorrow
-     */
-    limitDateSelection(val) {
-      const today = formatDate(Date.now(), 'YYYY/MM/DD');
-      return val > today;
-    },
-
     async createPoll() {
       /* eslint-disable no-console */
       let response;
@@ -456,7 +317,6 @@ export default {
           { name: 'description', type: 'string' },
           { name: 'valid_event_ids', type: 'uint256[]' },
           { name: 'poll_options', type: 'string[]' },
-          { name: 'end_date', type: 'string' },
         ];
 
         // The actual data to be signed
@@ -466,7 +326,6 @@ export default {
           description: this.description,
           valid_event_ids: this.valid_events.map((event) => event.id),
           poll_options: this.poll_options.map((option) => option.contents),
-          end_date: this.end_date,
         };
 
         // Format data and get user's signature
