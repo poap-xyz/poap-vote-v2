@@ -65,6 +65,14 @@ class PollValidator {
 
     static validateEndDate(pollData) {
         const y2kInMilliseconds = 946684800000;
+
+        if (!pollData.end_date) {
+            return {
+                isValid: true,
+                errorMessage: null,
+            };
+        }
+
         if ("number" !== typeof pollData.end_date || pollData.end_date > y2kInMilliseconds) {
             return {
                 isValid: false,

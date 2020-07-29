@@ -75,7 +75,7 @@ class PollController {
             });
 
             pollData.poll_options = optionObjects;
-            pollData.end_date = new Date(pollData.end_date * 1000);
+            pollData.end_date = pollData.end_date ? new Date(pollData.end_date * 1000) : 0;
 
             poll = await PollService.addPoll(pollData);
         } catch (error) {
@@ -89,7 +89,6 @@ class PollController {
 
 function convertPollToJSON(poll) {
     let jsonPoll = poll.toJSON();
-
     jsonPoll.end_date = Math.floor(jsonPoll.end_date.valueOf() / 1000);
     jsonPoll.start_date = Math.floor(jsonPoll.start_date.valueOf() / 1000);
 
