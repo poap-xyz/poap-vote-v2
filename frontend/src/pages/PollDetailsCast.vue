@@ -16,7 +16,7 @@
           v-if="!userAddress && isPollOngoing"
           class="secondary text-bold text-center q-my-xl"
         >
-          Voting requires a web3 connected wallet {{!!isForVoting}}
+          Voting requires a web3 connected wallet
           <connect-wallet
             :full-width="true"
             label="Connect Wallet to Vote"
@@ -52,8 +52,6 @@
           You have already voted in this poll
         </div>
       </div>
-      <!-- Poll creator -->
-      <poll-details-poll-creator />
     </div>
   </q-page>
 </template>
@@ -68,7 +66,6 @@ import ConnectWallet from 'components/ConnectWallet';
 import PollDetailsPollHeader from 'components/PollDetailsPollHeader';
 import PollDetailsPollOptions from 'components/PollDetailsPollOptions';
 import PollDetailsValidEvents from 'components/PollDetailsValidEvents';
-import PollDetailsPollCreator from 'components/PollDetailsPollCreator';
 
 export default {
   name: 'PollDetailsCast',
@@ -78,7 +75,6 @@ export default {
     PollDetailsPollHeader,
     PollDetailsPollOptions,
     PollDetailsValidEvents,
-    PollDetailsPollCreator,
   },
 
   mixins: [eip712, getPollData, helpers, voting],

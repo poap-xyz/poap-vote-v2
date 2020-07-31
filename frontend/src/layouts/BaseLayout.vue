@@ -25,14 +25,14 @@
           </div>
         </div>
         <!-- ADDRESS AND SETTINGS AND SETTINGS -->
-        <div class="col-auto q-mr-md">
-          <div
-            v-if="userAddress"
-            class="text-caption dark-toggle"
-          >
-            Address: {{ userAddress }}
-          </div>
-
+        <div class="col-auto row q-mr-md">
+        <div
+          v-if="userAddress"
+          class="text-caption primary-lightened-text q-mr-md"
+        >
+          Address: {{ userAddress.slice(0, 4) }}...{{ userAddress.slice(-4) }}
+        </div>
+        <div>
           <div class="row justify-end items-center q-mt-xs">
             <div
               v-if="!isValidChainId"
@@ -56,6 +56,7 @@
             />
           </div>
         </div>
+      </div>
       </div>
     </q-header>
 

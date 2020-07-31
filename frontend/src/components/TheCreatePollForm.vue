@@ -81,9 +81,10 @@
         Valid Events
       </h5>
       <div class="text-left">
-        A user will be able to vote on this poll only if they hold a valid POAP
-        token from at least one of the selected events. Use the box below to
-        search all events.
+        A user will be able to vote only if they hold a POAP
+        token from at least one of the selected events.
+        <br>
+        Use the box below to search all events.
         <q-select
           id="createPoll-selectEvents"
           v-model="valid_events"
@@ -114,7 +115,7 @@
               <q-item-section>
                 <q-item-label>{{ event.opt.name }}</q-item-label>
                 <q-item-label caption>
-                  {{ event.opt.start_date }} &ndash; {{ event.opt.end_date }}
+                  {{ event.opt.start_date }}
                 </q-item-label>
                 <q-item-label caption>
                   <span v-if="event.opt.city === 'Virtual'">Virtual</span>
@@ -157,9 +158,10 @@
         </q-select>
       </div>
 
+
       <!----------------------------------- POLL END DATE/TIME ------------------------------------>
       <h5 class="section-header">
-        End Date and Time
+        End Date and Time (Optional)
       </h5>
       <div class="text-left">
         Enter the polling end date and time, specified in 24-hour
@@ -270,10 +272,10 @@
 
 <script>
 import { mapState } from 'vuex';
-import { date } from 'quasar';
 import eip712 from 'src/mixins/eip712';
 import helpers from 'src/mixins/helpers';
 import Fuse from 'fuse.js';
+import { date } from 'quasar';
 
 const { buildDate, formatDate } = date;
 
@@ -308,8 +310,8 @@ export default {
       fuseOptions: {
         // https://fusejs.io/api/options.html
         keys: ['name'],
-        distance: 1000, // we don't care where in the string the match is found
-        threshold: 0.45, // this seems to be a good value from trial and error
+        distance: 70, // we don't care where in the string the match is found
+        threshold: 0.3, // this seems to be a good value from trial and error
       },
       // UI helpers
       isLoading: false,
@@ -371,15 +373,7 @@ export default {
       return this.isValidTitle(this.title) === true
         && this.isValidDescription(this.description) === true
         && this.isValidEventSelection(this.valid_events) === true
-        && areAllOptionsValid === true
-        // isEndDateValid is true by default to avoid unnecessary error message,
-        // therefore we also check the components individually to ensure they
-        // are all filled out
-        && this.isEndDateValid
-        && this.end_date !== undefined
-        && this.endHour !== undefined
-        && this.endMinute !== undefined
-        && this.endAmPm !== undefined;
+        && areAllOptionsValid === true;
     },
   },
 
@@ -449,33 +443,20 @@ export default {
         if (!this.isFormValid) return;
         this.isLoading = true;
 
-        // Define EIP-712 signature format for creating polls
-        const dataFormat = [
-          { name: 'title', type: 'string' },
-          { name: 'polltaker_account', type: 'address' },
-          { name: 'description', type: 'string' },
-          { name: 'valid_event_ids', type: 'uint256[]' },
-          { name: 'poll_options', type: 'string[]' },
-          { name: 'end_date', type: 'string' },
-        ];
-
         // The actual data to be signed
         const pollData = {
           title: this.title,
-          polltaker_account: this.userAddress,
+          polltaker_account: '0x0000000000000000000000000000000000000000',
           description: this.description,
           valid_event_ids: this.valid_events.map((event) => event.id),
           poll_options: this.poll_options.map((option) => option.contents),
-          end_date: this.end_date,
+          end_date: this.end_date ? this.end_date : '',
         };
-
-        // Format data and get user's signature
-        const signature = await this.getSignature('Poll', dataFormat, pollData, this.userAddress);
 
         // Generate object to send to server
         const payload = {
           ...pollData,
-          attestation: signature,
+          attestation: new Date().getTime().toString(),
         };
         console.log('Server payload: ', payload);
 

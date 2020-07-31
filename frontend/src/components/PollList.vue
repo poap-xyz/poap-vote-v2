@@ -34,24 +34,26 @@
             <!-- REMAINING METADATA -->
             <q-card-section>
               <!-- End Date -->
-              <div class="text-caption text-uppercase text-grey">
+              <div v-if="item.end_date > 0" class="text-caption text-uppercase text-grey">
                 End Date
               </div>
               <div>
-                <div>
-                  {{ secondsToFormattedDate(item.end_date) }}
-                </div>
-                <div
-                  v-if="pollType === 'activePolls' && timeRemaining[index]"
-                  class="text-caption"
-                >
-                  {{ timeRemaining[index] }} remaining
-                </div>
-                <div
-                  v-else-if="pollType === 'activePolls'"
-                  class="text-caption"
-                >
-                  <q-spinner color="primary" />
+                <div v-if="item.end_date > 0">
+                  <div>
+                    {{ secondsToFormattedDate(item.end_date) }}
+                  </div>
+                  <div
+                    v-if="pollType === 'activePolls' && timeRemaining[index]"
+                    class="text-caption"
+                  >
+                    {{ timeRemaining[index] }} remaining
+                  </div>
+                  <div
+                    v-else-if="pollType === 'activePolls'"
+                    class="text-caption"
+                  >
+                    <q-spinner color="primary" />
+                  </div>
                 </div>
 
                 <!-- List of valid event tokens -->
@@ -92,7 +94,10 @@
                 </div>
 
                 <!-- Poll Creator -->
-                <div class="q-mt-lg">
+                <div
+                  class="q-mt-lg"
+                  style="visibility: hidden"
+                >
                   <div class="text-caption text-uppercase text-grey">
                     Created By
                   </div>
