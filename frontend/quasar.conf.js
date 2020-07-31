@@ -85,7 +85,7 @@ module.exports = function (ctx) {
       },
       env: {
         INFURA_ID: JSON.stringify(process.env.INFURA_ID),
-        BUILD_ENV: JSON.stringify(process.env.BUILD_ENV),
+        BUILD_ENV: JSON.stringify(process.env.NODE_ENV),
       },
     },
 
