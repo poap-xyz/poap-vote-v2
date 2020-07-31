@@ -309,7 +309,7 @@ export default {
       filteredEvents: [],
       fuseOptions: {
         // https://fusejs.io/api/options.html
-        keys: ['name', 'city', 'country'],
+        keys: ['name'],
         distance: 70, // we don't care where in the string the match is found
         threshold: 0.3, // this seems to be a good value from trial and error
       },
@@ -443,33 +443,20 @@ export default {
         if (!this.isFormValid) return;
         this.isLoading = true;
 
-        // Define EIP-712 signature format for creating polls
-        const dataFormat = [
-          { name: 'title', type: 'string' },
-          { name: 'polltaker_account', type: 'address' },
-          { name: 'description', type: 'string' },
-          { name: 'valid_event_ids', type: 'uint256[]' },
-          { name: 'poll_options', type: 'string[]' },
-          { name: 'end_date', type: 'string' },
-        ];
-
         // The actual data to be signed
         const pollData = {
           title: this.title,
-          polltaker_account: this.userAddress,
+          polltaker_account: '0x0000000000000000000000000000000000000000',
           description: this.description,
           valid_event_ids: this.valid_events.map((event) => event.id),
           poll_options: this.poll_options.map((option) => option.contents),
           end_date: this.end_date ? this.end_date : '',
         };
 
-        // Format data and get user's signature
-        const signature = await this.getSignature('Poll', dataFormat, pollData, this.userAddress);
-
         // Generate object to send to server
         const payload = {
           ...pollData,
-          attestation: signature,
+          attestation: new Date().getTime().toString(),
         };
         console.log('Server payload: ', payload);
 

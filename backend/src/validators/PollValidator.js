@@ -1,5 +1,3 @@
-import SignatureHelpers from "../utils/SignatureHelpers";
-import isValidAddress from "../utils/isValidAddress";
 
 class PollValidator {
 
@@ -14,13 +12,6 @@ class PollValidator {
             return dateValidation;
         }
 
-        if (!isValidAddress(pollData.polltaker_account)) {
-            return {
-                isValid: false,
-                errorMessage: "Ethereum address is improperly formed",
-            }
-        }
-
         const optionsValidation = this.validatePollOptions(pollData.poll_options);
         if (!optionsValidation.isValid) {
             return optionsValidation;
@@ -31,11 +22,6 @@ class PollValidator {
             return eventsValidation;
         }
 
-        const signatureValidation = this.validateSignature(pollData);
-        if (!signatureValidation.isValid) {
-            return signatureValidation;
-        }
-
         return {
             isValid: true,
             errorMessage: null,
@@ -43,8 +29,7 @@ class PollValidator {
     }
 
     static validateFields(pollData) {
-        const required_fields = ["title", "polltaker_account", "description",
-                                "end_date", "valid_event_ids", "poll_options", "attestation"];
+        const required_fields = ["title", "polltaker_account", "description", "valid_event_ids", "poll_options",];
 
         for (let i = 0; i < required_fields.length; i++) {
             const field = required_fields[i];
@@ -141,43 +126,6 @@ class PollValidator {
         };
     }
 
-    static validateSignature(pollData) {
-        const signature = pollData.attestation;
-
-        if (130 !== signature.length) {
-            return {
-                isValid: false,
-                errorMessage: "Improperly formed signature",
-            };
-        }
-
-        let digestPollData = {...pollData};
-        delete digestPollData.attestation
-
-        const dataName = 'Poll';
-        const dataFormat = [
-            { name: 'title', type: 'string' },
-            { name: 'polltaker_account', type: 'address' },
-            { name: 'description', type: 'string' },
-            { name: 'valid_event_ids', type: 'uint256[]' },
-            { name: 'poll_options', type: 'string[]' },
-            { name: 'end_date', type: 'string' },
-          ];
-
-        const recoveredAddress = SignatureHelpers.recoverSigner(signature, dataName, dataFormat, digestPollData)
-
-        if (recoveredAddress !== pollData.polltaker_account) {
-            return {
-                isValid: false,
-                errorMessage: "Signature does not match the data submitted",
-            }
-        }
-
-        return {
-            isValid: true,
-            errorMessage: null,
-        }
-    }
 }
 
 export default PollValidator;

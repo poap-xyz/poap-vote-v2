@@ -19,8 +19,10 @@ export default {
     timeRemaining() {
       // If poll has ended, time remaining is zero
       if (!this.poll) return undefined;
+      // Polls without end date
+      if (this.poll.end_date === 0) return 0;
       const end = (new Date(this.poll.end_date)).getTime();
-      if (this.now >= end) return 0;
+      if (this.now >= end) return -1;
       // Otherwise, convert to days/hours/minutes
       const secondsRemaining = (end - this.now) / 1000;
       return this.secondsToTicker(secondsRemaining);
@@ -30,7 +32,7 @@ export default {
      * @notice Convert timeRemaining into a bool for convenience
      */
     isPollOngoing() {
-      return this.timeRemaining !== 0;
+      return this.timeRemaining !== -1;
     },
   },
 

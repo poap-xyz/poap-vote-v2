@@ -27,7 +27,7 @@ export async function getPolls({ commit }) {
     poll.end_date *= 1000;
     // Check if this poll is active or complete
     const now = (new Date()).getTime();
-    if (now >= poll.end_date) completedPolls.push(poll);
+    if (now >= poll.end_date && poll.end_date > 0) completedPolls.push(poll);
     else activePolls.push(poll);
   });
 
