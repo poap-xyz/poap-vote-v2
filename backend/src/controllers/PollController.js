@@ -33,8 +33,6 @@ class PollController {
             const polls = await PollService.getPaginatedPolls(limit, offset);
             const total = await PollService.getTotalPollsCount();
 
-            console.log(polls);
-
             response.status(200).send({
                 offset: offset,
                 limit: limit,
