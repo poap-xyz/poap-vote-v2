@@ -30,6 +30,7 @@ app.use(speedLimiter);
 const port = process.env.POAP_VOTE_PORT || 3000;
 
 app.get('/api/polls', PollController.fetchPolls);
+app.get('/api/paginated-polls', PollController.fetchPaginatedPolls);
 app.post('/api/polls', PollController.createPoll);
 app.get('/api/polls/:id', PollController.fetchPoll);
 

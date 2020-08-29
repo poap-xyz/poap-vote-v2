@@ -2,6 +2,7 @@ import PollService from '../db/services/PollService';
 import PollValidator from '../validators/PollValidator';
 import POAP from '../poap/';
 import smartLog from '../utils/smartLog';
+import paginate from 'express-paginate';
 
 class PollController {
 
@@ -11,6 +12,36 @@ class PollController {
             const pollsJSON = polls.map(convertPollToJSON);
 
             response.status(200).send(pollsJSON);
+        } catch (error) {
+            response.status(400).send({ error: error.message });
+            return;
+        }
+    }
+
+    static async fetchPaginatedPolls(request, response) {
+        try {
+            let offset = 0;
+            if(request.query.offset) {
+                offset = parseInt(request.query.offset);
+            }
+
+            let limit = 10;
+            if(request.query.limit) {
+                limit = parseInt(request.query.limit);
+            }
+
+            const polls = await PollService.getPaginatedPolls(limit, offset);
+            const total = await PollService.getTotalPollsCount();
+
+            console.log(polls);
+
+            response.status(200).send({
+                offset: offset,
+                limit: limit,
+                total: total,
+                polls: polls.rows.map(convertPollToJSON),
+            });
+
         } catch (error) {
             response.status(400).send({ error: error.message });
             return;
