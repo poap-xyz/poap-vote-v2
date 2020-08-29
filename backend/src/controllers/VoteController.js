@@ -115,6 +115,87 @@ class VoteController {
 
         response.status(201).send(convertVoteToJSON(vote));
     }
+
+    static async createVoteDelegated(request, response) {
+        let poll = null;
+        let tokens = null;
+        let vote = null;
+
+        try {
+            poll = await PollService.getPollById(request.params.poll_id);
+        } catch (error) {
+            response.status(400).send({error: error.message});
+            return;
+        }
+
+        const dataValidation = await VoteValidator.validateDelegatedCreateData(request.body, poll);
+
+        if (!dataValidation.isValid) {
+            response.status(400).send({
+                "error": dataValidation.errorMessage,
+            });
+
+            return;
+        }
+
+        try {
+            const pollOptionIds = poll.poll_options.map(op => op.id);
+            const tokenIds = request.body.token_ids.map(t => t.toString());
+            const priorVotes = await VoteService.getAccountOrTokenVotesForPollOptions(
+                request.body.voter_account,
+                tokenIds,
+                pollOptionIds
+            );
+
+            if (priorVotes.length > 0) {
+                response.status(400).send({
+                    error: "Account or token cannot vote twice",
+                });
+                return;
+            }
+        } catch (error) {
+            response.status(400).send({error: error.message});
+            return;
+        }
+
+        try {
+            tokens = await POAP.fetchTokens(request.body.voter_account);
+        } catch (error) {
+            smartLog("[VoteController] ", error.description)
+            response.status(503).send({
+                error: "POAP API currently unavailable",
+            });
+
+            return;
+        }
+
+        const tokenValidation = VoteValidator.validateVoteTokens(request.body, tokens, poll);
+
+        if (!tokenValidation.isValid) {
+            response.status(400).send({
+                "error": tokenValidation.errorMessage,
+            });
+
+            return;
+        }
+
+        try {
+
+            const voteData = {
+                date_cast: Date.now(),
+                ...request.body,
+                attestation: '',
+            }
+
+            vote = await VoteService.addVote(voteData);
+        } catch (error) {
+            response.status(400).send({error: error.message});
+            return;
+        }
+
+        response.status(201).send(convertVoteToJSON(vote));
+    }
+
 }
 
 function convertVoteToJSON(vote) {

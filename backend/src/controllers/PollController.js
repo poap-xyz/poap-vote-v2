@@ -2,7 +2,6 @@ import PollService from '../db/services/PollService';
 import PollValidator from '../validators/PollValidator';
 import POAP from '../poap/';
 import smartLog from '../utils/smartLog';
-import paginate from 'express-paginate';
 
 class PollController {
 
