@@ -38,7 +38,8 @@ class VoteValidator {
     }
 
     static async validateAddressOnPoapMobile(voterAccount, deviceUid) {
-        let url = 'http://api.localhost/api/v1/check-device-address/?address=' + voterAccount + '&device__uid=' + deviceUid;
+        let host = process.env.POAP_MOBILE_BACKEND_URL || '';
+        let url = host + '/api/v1/check-device-address/?address=' + voterAccount + '&device_uid=' + deviceUid;
 
         try {
             let res = await axios.get(url);
@@ -91,7 +92,7 @@ class VoteValidator {
             return optionsValidation;
         }
 
-        const addressValidation = await this.validateAddressOnPoapMobile(voteData.voter_account, voteData.device__uid);
+        const addressValidation = await this.validateAddressOnPoapMobile(voteData.voter_account, voteData.device_uid);
         if (!addressValidation.isValid) {
             return addressValidation;
         }
@@ -123,7 +124,7 @@ class VoteValidator {
     }
 
     static validateDelegatedFields(voteData) {
-        const required_fields = ["voter_account", "token_ids", "poll_option_id", "device__uid"];
+        const required_fields = ["voter_account", "token_ids", "poll_option_id", "device_uid"];
 
         for (let i = 0; i < required_fields.length; i++) {
             const field = required_fields[i];
