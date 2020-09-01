@@ -19,7 +19,7 @@ class PollService {
         }
     }
 
-    static async getPaginatedPolls(limit, offset) {
+    static async getPaginatedPolls(limit, offset, whereCondition) {
 
         try {
             let options = {
@@ -28,10 +28,11 @@ class PollService {
                     as: 'poll_options',
                     attributes: {exclude: ['createdAt', 'updatedAt']},
                 },
+                where: whereCondition,
                 attributes: {exclude: ['createdAt', 'updatedAt']},
                 limit: limit,
                 offset: offset
-            }
+            };
 
             return await db.Poll.findAndCountAll(options);
         } catch (error) {
@@ -40,9 +41,11 @@ class PollService {
         }
     }
 
-    static async getTotalPollsCount() {
+    static async getTotalPollsCount(whereCondition) {
         try {
-            return await db.Poll.count();
+            return await db.Poll.count({
+                where: whereCondition
+            });
         } catch (error) {
             smartLog("[PollService]", error);
             throw new Error("There was a database error (PS.1)");

@@ -1,3 +1,4 @@
+import Sequelize from 'sequelize';
 import PollService from '../db/services/PollService';
 import PollValidator from '../validators/PollValidator';
 import POAP from '../poap/';
@@ -29,8 +30,21 @@ class PollController {
                 limit = parseInt(request.query.limit);
             }
 
-            const polls = await PollService.getPaginatedPolls(limit, offset);
-            const total = await PollService.getTotalPollsCount();
+            let whereCondition = {};
+            if(request.query.active && request.query.active === 'true'){
+                const Op = Sequelize.Op;
+                whereCondition = {
+                    [Op.or]: [
+                        {'end_date': 0},
+                        {'end_date': {
+                                [Op.gt]: new Date()
+                            }}
+                    ]
+                }
+            }
+
+            const polls = await PollService.getPaginatedPolls(limit, offset, whereCondition);
+            const total = await PollService.getTotalPollsCount(whereCondition);
 
             response.status(200).send({
                 offset: offset,
