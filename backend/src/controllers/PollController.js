@@ -1,3 +1,4 @@
+import Sequelize from 'sequelize';
 import PollService from '../db/services/PollService';
 import PollValidator from '../validators/PollValidator';
 import POAP from '../poap/';
@@ -11,6 +12,47 @@ class PollController {
             const pollsJSON = polls.map(convertPollToJSON);
 
             response.status(200).send(pollsJSON);
+        } catch (error) {
+            response.status(400).send({ error: error.message });
+            return;
+        }
+    }
+
+    static async fetchPaginatedPolls(request, response) {
+        try {
+            let offset = 0;
+            if(request.query.offset) {
+                offset = parseInt(request.query.offset);
+            }
+
+            let limit = 10;
+            if(request.query.limit) {
+                limit = parseInt(request.query.limit);
+            }
+
+            let whereCondition = {};
+            if(request.query.active && request.query.active === 'true'){
+                const Op = Sequelize.Op;
+                whereCondition = {
+                    [Op.or]: [
+                        {'end_date': 0},
+                        {'end_date': {
+                                [Op.gt]: new Date()
+                            }}
+                    ]
+                }
+            }
+
+            const polls = await PollService.getPaginatedPolls(limit, offset, whereCondition);
+            const total = await PollService.getTotalPollsCount(whereCondition);
+
+            response.status(200).send({
+                offset: offset,
+                limit: limit,
+                total: total,
+                polls: polls.rows.map(convertPollToJSON),
+            });
+
         } catch (error) {
             response.status(400).send({ error: error.message });
             return;

@@ -1,6 +1,8 @@
 import SignatureHelpers from "../utils/SignatureHelpers";
 import isValidAddress from "../utils/isValidAddress";
+import axios from 'axios';
 import { poll } from "ethers/utils";
+
 
 class VoteValidator {
 
@@ -35,8 +37,94 @@ class VoteValidator {
         };
     }
 
+    static async validateAddressOnPoapMobile(voterAccount, deviceUid) {
+        let host = process.env.POAP_MOBILE_BACKEND_URL || '';
+        let url = host + '/api/v1/check-device-address/?address=' + voterAccount + '&device_uid=' + deviceUid;
+
+        try {
+            let res = await axios.get(url);
+            if(res.status === 204) {
+                return {
+                    isValid: true
+                };
+            }
+
+        } catch (err) {
+            if(err.response) {
+                if(err.response.status === 400) {
+                    return {
+                        isValid: false,
+                        errorMessage: err.response.data,
+                    };
+                }
+            }
+        }
+
+        return {
+            isValid: false,
+            errorMessage: 'Invalid validation',
+        };
+
+    }
+
+    static async validateDelegatedCreateData(voteData, pollData) {
+        const fieldValidation = this.validateDelegatedFields(voteData);
+        if (!fieldValidation.isValid) {
+            return fieldValidation;
+        }
+
+        if (!isValidAddress(voteData.voter_account)) {
+            return {
+                isValid: false,
+                errorMessage: 'Ethereum address is improperly formed',
+            };
+        }
+
+        if (!pollData) {
+            return {
+                isValid: false,
+                errorMessage: 'Poll does not exist',
+            };
+        }
+
+        const optionsValidation = this.validateOptionsForPoll(voteData, pollData);
+        if (!optionsValidation.isValid) {
+            return optionsValidation;
+        }
+
+        const addressValidation = await this.validateAddressOnPoapMobile(voteData.voter_account, voteData.device_uid);
+        if (!addressValidation.isValid) {
+            return addressValidation;
+        }
+
+        return {
+            isValid: true,
+            errorMessage: null,
+        };
+    }
+
     static validateFields(voteData) {
         const required_fields = ["voter_account", "token_ids", "poll_option_id", "attestation"];
+
+        for (let i = 0; i < required_fields.length; i++) {
+            const field = required_fields[i];
+
+            if (!voteData[field]) {
+                return {
+                    isValid: false,
+                    errorMessage: "Missing required vote data fields",
+                };
+            }
+        }
+
+        return {
+            isValid: true,
+            errorMessage: null,
+        };
+    }
+
+    static validateDelegatedFields(voteData) {
+        const required_fields = ["voter_account", "token_ids", "poll_option_id", "device_uid"];
 
         for (let i = 0; i < required_fields.length; i++) {
             const field = required_fields[i];
