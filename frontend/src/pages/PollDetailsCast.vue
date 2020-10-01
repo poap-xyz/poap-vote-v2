@@ -107,7 +107,7 @@ export default {
         // Define EIP-712 signature format for submitting votes
         const dataFormat = [
           { name: 'voter_account', type: 'address' },
-          { name: 'token_ids', type: 'bytes32' },
+          { name: 'token_ids', type: 'uint256[]' },
           { name: 'poll_option_id', type: 'uint256' },
         ];
 

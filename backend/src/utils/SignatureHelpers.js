@@ -30,7 +30,7 @@ class SignatureHelpers {
           version: '1',
           chainId: 1,
           // verifyingContract: '', // not used
-          salt: '0xee1c0b21b9cf1f4c6cf33150f19fb69dcef673e6c92a8fe734bb2bc11150cc3',
+          salt: '0xee1c0b21b9cf1f4c6cf33150f19fb69dcef673e6c92a8fe734bb2bc11150cc32',
         };
 
         const data = {
