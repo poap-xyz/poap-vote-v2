@@ -158,7 +158,6 @@
         </q-select>
       </div>
 
-
       <!----------------------------------- POLL END DATE/TIME ------------------------------------>
       <h5 class="section-header">
         End Date and Time (Optional)
