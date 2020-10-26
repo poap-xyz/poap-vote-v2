@@ -31,13 +31,26 @@ class PollController {
             }
 
             let whereCondition = {};
-            if(request.query.active && request.query.active === 'true'){
+            if(request.query.active === 'true'){
                 const Op = Sequelize.Op;
                 whereCondition = {
                     [Op.or]: [
                         {'end_date': 0},
                         {'end_date': {
                                 [Op.gt]: new Date()
+                            }}
+                    ]
+                }
+            }
+            if(request.query.active === 'false'){
+                const Op = Sequelize.Op;
+                whereCondition = {
+                    [Op.and]: [
+                        {'end_date': {
+                              [Op.ne]: 0
+                            }},
+                        {'end_date': {
+                              [Op.lt]: new Date()
                             }}
                     ]
                 }
