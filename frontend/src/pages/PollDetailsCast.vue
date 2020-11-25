@@ -6,11 +6,15 @@
         :is-for-voting="true"
         @optionSelected="onOptionSelected"
       />
-      <div class="q-mt-xl">
+      <div class="q-my-xl">
+        <!-- Show valid events -->
+        <div>
+          <poll-details-valid-events :is-for-voting="true" />
+        </div>
         <!-- Not logged in, so show login button -->
         <div
           v-if="!userAddress && isPollOngoing"
-          class="secondary text-bold text-center"
+          class="secondary text-bold text-center q-my-xl"
         >
           Voting requires a web3 connected wallet
           <connect-wallet
@@ -18,9 +22,15 @@
             label="Connect Wallet to Vote"
           />
         </div>
-        <!-- Logged in, so show valid events -->
         <div v-else>
-          <poll-details-valid-events :is-for-voting="true" />
+            <!-- Show button for results page if user cannot vote -->
+            <base-button
+              v-if="eligibleTokenCount === 0"
+              class="q-mt-xl"
+              :full-width="true"
+              label="View Current Results"
+              @click="$router.push({ name: 'results', params: {id: Number($route.params.id)} })"
+            />
         </div>
       </div>
       <!-- Vote button -->
@@ -42,8 +52,6 @@
           You have already voted in this poll
         </div>
       </div>
-      <!-- Poll creator -->
-      <poll-details-poll-creator />
     </div>
   </q-page>
 </template>
@@ -58,7 +66,6 @@ import ConnectWallet from 'components/ConnectWallet';
 import PollDetailsPollHeader from 'components/PollDetailsPollHeader';
 import PollDetailsPollOptions from 'components/PollDetailsPollOptions';
 import PollDetailsValidEvents from 'components/PollDetailsValidEvents';
-import PollDetailsPollCreator from 'components/PollDetailsPollCreator';
 
 export default {
   name: 'PollDetailsCast',
@@ -68,7 +75,6 @@ export default {
     PollDetailsPollHeader,
     PollDetailsPollOptions,
     PollDetailsValidEvents,
-    PollDetailsPollCreator,
   },
 
   mixins: [eip712, getPollData, helpers, voting],
@@ -101,7 +107,7 @@ export default {
         // Define EIP-712 signature format for submitting votes
         const dataFormat = [
           { name: 'voter_account', type: 'address' },
-          { name: 'token_ids', type: 'bytes32' },
+          { name: 'token_ids', type: 'uint256[]' },
           { name: 'poll_option_id', type: 'uint256' },
         ];
 

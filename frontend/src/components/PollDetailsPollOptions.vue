@@ -50,7 +50,7 @@
     >
       <div class="col-auto text-caption text-grey">
         <span v-if="showVotesByAddress">
-          {{ totalVotes }} <span>unique address</span><span v-if="totalVotes !== 1">es</span>
+          {{ totalVotes }} <span>unique account</span><span v-if="totalVotes !== 1">s</span>
           voted
         </span>
         <span v-else>
@@ -64,14 +64,6 @@
         Show results by
         <span v-if="showVotesByAddress">token counts</span>
         <span v-else>address</span>
-      </div>
-      <div
-        v-if="showVotesByAddress"
-        class="col-xs-12 q-mt-md negative text-caption text-justify"
-      >
-        WARNING: Address weighted results are vulnerable to
-        sybil attacks, as individuals holding multiple POAP tokens
-        can send them to other addresses.
       </div>
     </div>
   </div>

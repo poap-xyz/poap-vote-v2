@@ -28,9 +28,6 @@
           </q-card>
         </q-expansion-item>
       </div>
-
-
-      <poll-details-poll-creator />
     </div>
   </q-page>
 </template>
@@ -40,7 +37,6 @@ import getPollData from 'src/mixins/getPollData';
 import PollDetailsPollHeader from 'components/PollDetailsPollHeader';
 import PollDetailsPollOptions from 'components/PollDetailsPollOptions';
 import PollDetailsValidEvents from 'components/PollDetailsValidEvents';
-import PollDetailsPollCreator from 'components/PollDetailsPollCreator';
 
 export default {
   name: 'PollDetailsResults',
@@ -49,7 +45,6 @@ export default {
     PollDetailsPollHeader,
     PollDetailsPollOptions,
     PollDetailsValidEvents,
-    PollDetailsPollCreator,
   },
 
   mixins: [getPollData],

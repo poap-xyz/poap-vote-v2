@@ -19,6 +19,39 @@ class PollService {
         }
     }
 
+    static async getPaginatedPolls(limit, offset, whereCondition) {
+
+        try {
+            let options = {
+                include: {
+                    model: db.PollOption,
+                    as: 'poll_options',
+                    attributes: {exclude: ['createdAt', 'updatedAt']},
+                },
+                where: whereCondition,
+                attributes: {exclude: ['createdAt', 'updatedAt']},
+                limit: limit,
+                offset: offset
+            };
+
+            return await db.Poll.findAndCountAll(options);
+        } catch (error) {
+            smartLog(error);
+            throw new Error("There was a database error (PS.1)");
+        }
+    }
+
+    static async getTotalPollsCount(whereCondition) {
+        try {
+            return await db.Poll.count({
+                where: whereCondition
+            });
+        } catch (error) {
+            smartLog("[PollService]", error);
+            throw new Error("There was a database error (PS.1)");
+        }
+    }
+
     static async getPollById(pollId) {
         try {
             return await db.Poll.findByPk(pollId, {

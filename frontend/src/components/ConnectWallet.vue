@@ -35,7 +35,7 @@ export default {
     label: {
       type: String,
       required: false,
-      default: 'Connect Wallet',
+      default: 'Connect Wallet (Optional)',
     },
   },
 

@@ -10,17 +10,8 @@
       >
         Create Poll
       </h2>
-      <div v-if="userAddress">
+      <div>
         <the-create-poll-form />
-      </div>
-      <div v-else>
-        <h5 class="no-margin secondary">
-          Connect your wallet to create a poll
-        </h5>
-        <connect-wallet
-          class="q-my-xl q-pt-xl"
-          :full-width="true"
-        />
       </div>
     </div>
   </q-page>
@@ -29,14 +20,12 @@
 <script>
 import { mapState } from 'vuex';
 import title from 'src/mixins/title';
-import ConnectWallet from 'components/ConnectWallet';
 import TheCreatePollForm from 'components/TheCreatePollForm';
 
 export default {
   name: 'CreatePoll',
 
   components: {
-    ConnectWallet,
     TheCreatePollForm,
   },
 

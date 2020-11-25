@@ -1,3 +1,4 @@
+import Sequelize from 'sequelize';
 import PollService from '../db/services/PollService';
 import PollValidator from '../validators/PollValidator';
 import POAP from '../poap/';
@@ -11,6 +12,60 @@ class PollController {
             const pollsJSON = polls.map(convertPollToJSON);
 
             response.status(200).send(pollsJSON);
+        } catch (error) {
+            response.status(400).send({ error: error.message });
+            return;
+        }
+    }
+
+    static async fetchPaginatedPolls(request, response) {
+        try {
+            let offset = 0;
+            if(request.query.offset) {
+                offset = parseInt(request.query.offset);
+            }
+
+            let limit = 10;
+            if(request.query.limit) {
+                limit = parseInt(request.query.limit);
+            }
+
+            let whereCondition = {};
+            if(request.query.active === 'true'){
+                const Op = Sequelize.Op;
+                whereCondition = {
+                    [Op.or]: [
+                        {'end_date': 0},
+                        {'end_date': {
+                                [Op.gt]: new Date()
+                            }}
+                    ]
+                }
+            }
+            if(request.query.active === 'false'){
+                const Op = Sequelize.Op;
+                whereCondition = {
+                    [Op.and]: [
+                        {'end_date': {
+                              [Op.ne]: 0
+                            }},
+                        {'end_date': {
+                              [Op.lt]: new Date()
+                            }}
+                    ]
+                }
+            }
+
+            const polls = await PollService.getPaginatedPolls(limit, offset, whereCondition);
+            const total = await PollService.getTotalPollsCount(whereCondition);
+
+            response.status(200).send({
+                offset: offset,
+                limit: limit,
+                total: total,
+                polls: polls.rows.map(convertPollToJSON),
+            });
+
         } catch (error) {
             response.status(400).send({ error: error.message });
             return;
@@ -75,7 +130,7 @@ class PollController {
             });
 
             pollData.poll_options = optionObjects;
-            pollData.end_date = new Date(pollData.end_date * 1000);
+            pollData.end_date = pollData.end_date ? new Date(pollData.end_date * 1000) : 0;
 
             poll = await PollService.addPoll(pollData);
         } catch (error) {
@@ -89,7 +144,6 @@ class PollController {
 
 function convertPollToJSON(poll) {
     let jsonPoll = poll.toJSON();
-
     jsonPoll.end_date = Math.floor(jsonPoll.end_date.valueOf() / 1000);
     jsonPoll.start_date = Math.floor(jsonPoll.start_date.valueOf() / 1000);
 

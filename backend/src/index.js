@@ -30,11 +30,13 @@ app.use(speedLimiter);
 const port = process.env.POAP_VOTE_PORT || 3000;
 
 app.get('/api/polls', PollController.fetchPolls);
+app.get('/api/paginated-polls', PollController.fetchPaginatedPolls);
 app.post('/api/polls', PollController.createPoll);
 app.get('/api/polls/:id', PollController.fetchPoll);
 
 app.get('/api/poll/:poll_id/votes', VoteController.fetchVotes);
 app.post('/api/poll/:poll_id/votes', VoteController.createVote);
+app.post('/api/polls/:poll_id/votes-delegated', VoteController.createVoteDelegated);
 
 app.listen(port, () => {
     console.log('Server is running on PORT ', port);
