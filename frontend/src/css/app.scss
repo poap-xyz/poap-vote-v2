@@ -1,0 +1,251 @@
+// app global css in Stylus form
+@font-face {
+  font-family: "NowayRound";
+  src: url("../assets/fonts/NowayRound-Regular.woff");
+}
+
+body {
+  font-family: $primary-font;
+  background: $secondary-light-violet;
+}
+
+body.home {
+  @media(min-width: 768px){
+    background: $white;
+  }
+}
+
+body:not(.create-poll) {
+  @media(max-width: 767.98px){
+    background: $white;
+  }
+}
+
+h1 {  
+  color: $primary;
+  font-weight: bold;
+  margin-bottom: 0rem;
+}
+
+h2, h5 {
+  margin-bottom: 0rem;
+}
+
+.primary {
+  color: $primary;
+}
+
+.secondary {
+  color: $secondary;
+}
+
+.primary-lightened-text {
+  color: $primary-lightened-text;
+}
+
+.negative {
+  color: $negative
+}
+
+.light-grey {
+  color: $light-grey;
+}
+
+.text-secondary-light-grey {
+  color: $secondary-light-grey !important;
+}
+
+.text-secondary-dark-grey {
+  color: $secondary-dark-grey;
+}
+
+.dark-grey {
+  color: $dark-grey;
+}
+
+.alternative-dark-grey {
+  color: $alternative-dark-grey;
+}
+
+.light-red {
+  color: $light-red;
+}
+
+.dark-grey-text {
+  color: $dark-grey-text;
+}
+
+.dark-grey-text-2 {
+  color: $dark-grey-text-2;
+}
+
+.card-border {
+  border: 2px solid transparent;
+  box-shadow: 0px 6px 16px rgba(187, 196, 239, 0.41);
+  border-radius: 12px;
+}
+
+.card-border:hover {
+  border: 2px solid $primary-lightened-text;
+}
+
+.body--light, .dark-toggle {
+  color: $dark;
+
+  .hyperlink {
+    color: $primary;
+    text-decoration: underline;
+    cursor: pointer;
+    // Without this, the underline extends into the space for some reason
+    // solution source: https://stackoverflow.com/questions/23182904/css-underline-text-but-ignore-the-spaces
+    display: inline-block;
+  }
+}
+
+.body--dark {
+  .dark-toggle {
+    color: $light;
+  }
+
+  .hyperlink {
+    color: $primary;
+    text-decoration: underline;
+    cursor: pointer;
+    // Without this, the underline extends into the space for some reason
+    // solution source: https://stackoverflow.com/questions/23182904/css-underline-text-but-ignore-the-spaces
+    display: inline-block;
+  }
+}
+
+.small-text {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 17px;
+}
+
+.big-title {
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 700;
+  padding: 0 50px;
+  font-family: $secondary-font;
+  @media (min-width: 768px) {
+    padding: 0;
+    font-size: 28px;
+    line-height: 36px;
+  }
+}
+
+.layout-container {
+  width: 100%;
+  margin: 0 auto;
+  @media (min-width: 768px) {
+    max-width: 750px;
+    padding-top: 70px;
+  }
+  @media (min-width: 992px) {
+    max-width: 969px;
+  }
+}
+
+.single-arrow {
+  width: 20px;
+  height: 20px;
+  &::after {
+    content: "";
+    border: solid $accent;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+  }
+}
+
+.single-arrow-up {
+  @extend .single-arrow;
+  &::after {
+    border-color: $primary;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+  }
+}
+
+.primary-btn-with-arrow {
+  button {
+    margin: 0;
+    @media (max-width: 767.98px) {
+      border-radius: 32px;
+    }
+    .q-btn__wrapper {
+      padding: 0 24px;
+      @media (max-width: 374.98px) {
+        padding: 0 12px;
+      }
+    }
+    .btn-icon {
+      width: 16px;
+      height: 14px;
+      margin-left: 22px;
+      @media (min-width: 768px) {
+        margin-left: 42px;
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
+}
+
+.valid-events-mobile {
+  margin: 16px 0 24px;
+  > div > div {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+.circle-check-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: $alternative-light-violet;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  &::after {
+    content: '';
+    mask: url('../assets/icons/check-icon.svg') center / contain no-repeat;
+    background: $light-green;
+    height: 8px;
+    width: 10px;
+  }
+}
+
+.circle-error-icon {
+  @extend .circle-check-icon;
+  &::after {
+    mask: url('../assets/icons/warning-icon.svg') center / contain no-repeat;
+    background: $secondary;
+    height: 10px;
+  }
+}
+
+.poap-tooltip {
+  padding: 0;
+  .q-card {
+    background: $dark-grey;
+    color: $white;
+  }
+}
+
+.purple-title {
+  font-size: 48px;
+  line-height: 53px;
+  margin: 0;
+  color: $primary;
+  font-family: $secondary-font;
+}
+
+.web3modal-modal-lightbox{      
+  z-index: 9999!important;
+}

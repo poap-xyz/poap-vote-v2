@@ -1,0 +1,15 @@
+.event-card-wrapper {
+    background: $white;
+    box-shadow: $shadow;
+    padding: 24px 16px;
+    border-radius: 12px;
+    & /deep/ {
+        .q-item__label + .q-item__label {
+            margin-top: 0;
+        }
+    }
+    .event-name {
+        font-size: 18px;
+        line-height: 23px;
+    }
+}

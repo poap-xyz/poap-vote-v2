@@ -1,8 +1,10 @@
 <template>
   <div v-if="poll.polltaker_account">
     <div class="text-caption q-my-xl">
-      Poll created by <a class="primary-lightened-text anchor"
-      :href="'https://etherscan.io/address/' + poll.polltaker_account">
+      Poll created by <a
+        class="primary-lightened-text anchor"
+        :href="'https://etherscan.io/address/' + poll.polltaker_account"
+      >
         {{ poll.polltaker_account }}
       </a>
     </div>
@@ -23,7 +25,7 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
+<style lang="scss" scoped>
   .anchor {
     text-decoration: none
   }

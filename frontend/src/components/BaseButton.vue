@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-btn
-      class="q-my-sm"
+      class="q-my-sm poap-btn"
       :class="{'full-width': fullWidth}"
       :color="color"
       :dense="dense"
@@ -9,8 +9,21 @@
       :label="label"
       :loading="loading"
       :outline="outline"
+      :unelevated="unelevated"
+      rounded
+      size="16px"
+      :style="{textTransform: 'none', background: background ? `${background}!important` : ''}"
       @click="handleClick"
-    />
+    >
+      <template
+        v-if="icon"
+      >
+        <img
+          :src="icon"
+          class="btn-icon"
+        >
+      </template>
+    </q-btn>
   </div>
 </template>
 
@@ -60,6 +73,24 @@ export default {
       required: false,
       default: false,
     },
+
+    unelevated: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    icon: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+
+    background: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
 
   methods: {
@@ -69,3 +100,15 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.poap-btn {
+  &.q-btn {
+    height: 56px;
+    @media(min-width: 768px) {
+      height: 45px;
+      min-width: 170px;
+    }
+  }
+}
+</style>

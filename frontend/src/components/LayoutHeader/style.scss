@@ -1,0 +1,221 @@
+body.poap-poll .header-wrapper {
+    @media (max-width: 767.98px) {
+        display: none;
+    }
+}
+
+body.home .header-wrapper {
+    @media (max-width: 767.98px) {
+        &.shadow {
+            box-shadow: unset !important;
+        }
+    }
+    @media (min-width: 768px) {
+        box-shadow: $secondary-shadow;
+    }
+}
+
+.header-wrapper {
+    background: white;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    position: fixed;
+    width: 100%;
+    z-index: 4;
+    transition: all 0.2s linear;
+    border-bottom: 1px solid $light-grey;
+
+    @media(max-width: 374.98px) {
+        padding: 0 8px;
+    }
+
+    @media (min-width: 768px) {
+        padding-left: 72px;
+        padding-right: 38px;
+        height: 70px;
+    }
+
+    &.shadow {
+        box-shadow: $secondary-shadow;
+    }
+
+    .poap-logo {
+      height: 39px;
+      width: 30px;        
+      @media(min-width: 768px) {
+        height: 82px;
+        width: 63px;
+        transform: translateY(26px);
+        cursor: pointer;
+      }
+    }
+
+    .navbar-brand {
+        @media(max-width: 767.98px) {
+            display: flex;
+            align-items: center;
+        }
+        h2 {
+            font-size: 16px;
+            line-height: 26px;
+            font-weight: 700;
+            font-family: $secondary-font;
+            color: $primary;
+            margin: 0;
+            margin-left: 8px;
+            @media(max-width: 374.98px) {
+                margin-left: 5px;
+            }
+            @media(min-width: 768px) {
+                display: none;
+            }
+        }
+    }
+
+    .navbar-nav {
+        flex: 1;
+        justify-content: flex-end;
+        display: flex;
+        align-items: center;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        @media (max-width: 767.98px) {
+            justify-content: flex-end;
+        }
+
+        .btn-container {
+            white-space: nowrap;
+            ::v-deep button {
+                background: transparent!important;
+                color: $dark-grey-text-2!important;
+                @media (max-width: 767.98px) {
+                    height: 40px !important;
+                }
+                .q-btn__wrapper::before {
+                    box-shadow: unset!important;
+                    border: 1px solid $dark-grey-text-2!important;
+                }
+            }
+        }
+
+        .faq {
+            a {
+                transition: all 0.2s linear;
+                &:hover {
+                    color: $secondary-light-grey
+                }
+            }
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 18px;
+            text-decoration: none;
+            margin-left: 10px;
+            @media(min-width: 768px) {
+                font-size: 16px;
+                line-height: 21px;
+                margin-left: 25px;
+            }
+        }
+
+        .nav-home {
+            font-weight: 500;
+            font-size: 20px;
+            line-height: 26px;
+        }
+
+        .user-content {
+            display: flex;
+            .address-content {
+                cursor: pointer;
+                border: 1px solid $light-grey!important;
+                border-radius: 40px;
+                display: flex;
+                flex-direction: row;
+                height: 40px;
+                padding: 8px 10px;
+                align-items: center;
+                color: $secondary-light-grey!important;
+                font-weight: 500;
+                font-size: 14px;
+                @media(min-width: 768px) {
+                    font-size: 16px;
+                }
+                > div {
+                  margin-left: 8px;
+                  margin-right: -6px;
+                }
+                .user-image {
+                    border-radius: 50%;
+                    margin-right: 5px; 
+                }
+            }
+        }
+    }
+    .poaps-container {
+        font-size: 16px;
+        line-height: 22px;
+        font-weight: 500;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding: 18px 20px;
+        width: 100%;
+        p.title-popover {
+            color: $primary;
+            text-align: left;
+            margin: 0;
+            font-weight: 700;
+        }
+        &::v-deep {
+            .q-btn {
+                min-width: 170px;
+                @media(max-width: 767.98px) {
+                    height: 40px !important;
+                }
+                color: $dark-grey-text-2!important;
+                .q-btn__wrapper::before {
+                    border: 1px solid $dark-grey-text-2!important;
+                }
+            }
+        }
+    }
+    .poaps-content {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        color: $secondary-light-grey;
+        .tokens-card-container {
+            display: grid;
+            grid-template-columns: repeat(3, 80px);
+            justify-content: space-between;
+            width: 100%;
+            padding: 23px 10px 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            .image-container {
+                width: 100%;
+                padding: 20px;
+                box-shadow: $secondary-shadow;
+                border-radius: 12px;
+                background: $white;
+                height: 80px;
+                margin-bottom: 10px;
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position: center;
+                    border-radius: 50%;
+                }
+            }
+        }
+    }
+}

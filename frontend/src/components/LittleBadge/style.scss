@@ -1,0 +1,15 @@
+.little-badge {
+    font-size: 11px;
+    line-height: 11px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 100px;
+    &.active {
+      color: $white;
+      background: $light-green !important;
+    }
+    &.finished {
+      background: $light-grey !important;
+      color: $dark-grey !important;
+    }
+}

@@ -1,0 +1,59 @@
+
+// --------------------------------------------------
+// To customize the look and feel of this app, you can override
+// the Stylus variables found in Quasar's source Stylus files.
+
+// Check documentation for full list of Quasar variables
+
+// Your own variables (that are declared here) and Quasar's own
+// ones will be available out of the box in your .vue/.styl files
+
+// It's highly recommended to change the default colors
+// to match your app's branding.
+// Tip: Use the "Theme Builder" on Quasar's documentation website.
+
+
+// Main theme definitions
+$primary: #6534FF;
+$secondary: #EA4C89;
+$accent: #FCCDD3;
+
+$white: #FFFFFF;
+$primary-black: #2E344D;
+$secondary-white: #C4CAE8;
+$light-grey: #EAEDF4;
+$secondary-light-grey: #94A0D4;
+$alternative-light-grey: #B8CAE0;
+$other-light-grey: #F4F7FD;
+$dark-grey: #4D5680;
+$secondary-dark-grey: #9D98A4;
+$alternative-dark-grey: #5a595b;
+$light-red: #E98D9B;
+$light-green: #79CFBD;
+$secondary-light-green: #29A598;
+$light-violet: #EDE7FD;
+$secondary-light-violet: #F8F8FE;
+$alternative-light-violet: #F4F2FA;
+$dark-grey-text: #6873A4;
+$dark-grey-text-2: #8492CE;
+
+$primary-lightened: lighten($primary, 92%);
+$primary-lightened-text: lighten($primary, 20%);
+
+// Font colors
+$dark: #1D1D1D;
+$light: #E2E2E2;
+
+// Notification colors
+$positive: #21BA45;
+$negative: #C10015;
+$info: #31CCEC;
+$warning: #F2C037;
+
+// Fonts
+$primary-font: "NowayRound";
+$secondary-font: "Comfortaa";
+
+// Shadows
+$shadow: 0px 6px 16px rgba(187, 196, 239, 0.26);
+$secondary-shadow: 0px 3px 6px rgba(187, 196, 239, 0.656687);

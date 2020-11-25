@@ -7,6 +7,8 @@
 <script>
 import helpers from 'src/mixins/helpers';
 
+const jsonFetch = (url) => fetch(url).then((res) => res.json());
+
 export default {
   name: 'App',
 
@@ -17,6 +19,16 @@ export default {
     const isDark = this.$q.localStorage.getItem('isDark');
     this.$q.dark.set(isDark);
     this.$store.commit('user/setDarkModeStatus', isDark);
+
+    const { userAddress } = window.localStorage;
+    let tokens = [];
+
+    // Get user's POAP tokens
+    if (userAddress && JSON.parse(userAddress)) {
+      const poapTokensUrl = `https://api.poap.xyz/actions/scan/${JSON.parse(userAddress)}`;
+      tokens = await jsonFetch(poapTokensUrl);
+    }
+    this.$store.commit('user/setTokens', tokens);
 
     // Get events
     try {

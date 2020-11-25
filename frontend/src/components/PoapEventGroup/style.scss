@@ -1,0 +1,33 @@
+.event-group-container {
+    display: flex;
+    justify-content: flex-end;
+    .token-item {
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid $light-grey;
+      background: $white;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      &.more {
+        border: 2px solid $white;
+        color: $white;
+        background: $dark-grey;
+      }
+      &:nth-child(n+2) {
+        margin-left: (-10px);
+      }
+      img {
+        border-radius: 50%;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+    }
+}

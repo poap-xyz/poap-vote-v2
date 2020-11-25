@@ -1,56 +1,38 @@
 <template>
-  <q-page padding>
-    <div style="margin:0 auto; max-width:600px;">
-      <poll-details-poll-header page-title="Cast Your Vote" />
-      <poll-details-poll-options
-        :is-for-voting="true"
-        @optionSelected="onOptionSelected"
+  <q-page>
+    <div class="layout-container">
+      <shape-background
+        v-if="!isMobile"
+        theme="secondary"
       />
-      <div class="q-my-xl">
-        <!-- Show valid events -->
-        <div>
-          <poll-details-valid-events :is-for-voting="true" />
-        </div>
-        <!-- Not logged in, so show login button -->
-        <div
-          v-if="!userAddress && isPollOngoing"
-          class="secondary text-bold text-center q-my-xl"
-        >
-          Voting requires a web3 connected wallet
-          <connect-wallet
-            :full-width="true"
-            label="Connect Wallet to Vote"
-          />
-        </div>
-        <div v-else>
-            <!-- Show button for results page if user cannot vote -->
-            <base-button
-              v-if="eligibleTokenCount === 0"
-              class="q-mt-xl"
-              :full-width="true"
-              label="View Current Results"
-              @click="$router.push({ name: 'results', params: {id: Number($route.params.id)} })"
+      <div class="poll-detail-wrapper">
+        <back-button />
+        <div class="poll-detail-container">
+          <white-container v-if="poll">
+            <poll-details-poll-options
+              :is-for-voting="true"
+              :show-results="showResults"
+              @optionSelected="onOptionSelected"
             />
+
+            <div v-if="poll && poll.polltaker_account">
+              <!-- Vote button  -->
+              <poll-details-poll-footer
+                :submit-vote="submitVote"
+                :is-vote-submission-loading="isVoteSubmissionLoading"
+                :option-selected="selectedOption ? true : false"
+                :show-results="showResults"
+                :toggle-show-results="toggleShowResults"
+              />
+            </div>
+          </white-container>
         </div>
-      </div>
-      <!-- Vote button -->
-      <div v-if="userAddress && eligibleTokenCount !== 0">
-        <base-button
-          id="submitVote"
-          color="primary"
-          class="q-mt-lg"
-          :disabled="!canUserVote"
-          :loading="isVoteSubmissionLoading"
-          :full-width="true"
-          label="Submit vote"
-          @click="submitVote"
+
+        <poll-valid-events-collapse
+          v-if="poll"
+          :is-for-voting="true"
+          :valid-event-count="poll.valid_event_ids && poll.valid_event_ids.length"
         />
-        <div
-          v-if="hasUserVoted"
-          class="text-center text-caption text-italic text-grey"
-        >
-          You have already voted in this poll
-        </div>
       </div>
     </div>
   </q-page>
@@ -62,19 +44,23 @@ import eip712 from 'src/mixins/eip712';
 import getPollData from 'src/mixins/getPollData';
 import helpers from 'src/mixins/helpers';
 import voting from 'src/mixins/voting';
-import ConnectWallet from 'components/ConnectWallet';
-import PollDetailsPollHeader from 'components/PollDetailsPollHeader';
 import PollDetailsPollOptions from 'components/PollDetailsPollOptions';
-import PollDetailsValidEvents from 'components/PollDetailsValidEvents';
+import ShapeBackground from 'components/ShapeBackground';
+import BackButton from 'components/BackButton';
+import WhiteContainer from 'components/WhiteContainer';
+import PollValidEventsCollapse from 'components/PollValidEventsCollapse';
+import PollDetailsPollFooter from 'components/PollDetailsPollFooter';
 
 export default {
   name: 'PollDetailsCast',
 
   components: {
-    ConnectWallet,
-    PollDetailsPollHeader,
     PollDetailsPollOptions,
-    PollDetailsValidEvents,
+    ShapeBackground,
+    BackButton,
+    WhiteContainer,
+    PollValidEventsCollapse,
+    PollDetailsPollFooter,
   },
 
   mixins: [eip712, getPollData, helpers, voting],
@@ -83,13 +69,29 @@ export default {
     return {
       selectedOption: undefined,
       isVoteSubmissionLoading: undefined,
+      showResults: false,
     };
   },
 
   computed: {
     ...mapState({
       userAddress: (state) => state.user.userAddress,
+      poll: (state) => state.poap.selectedPoll,
     }),
+  },
+
+  mounted() {
+    this.toggleBodyClass(true, 'poap-poll');
+  },
+
+  created() {
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
+  },
+
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
+    this.toggleBodyClass(false, 'poap-poll');
   },
 
   methods: {
@@ -151,7 +153,57 @@ export default {
       }
       this.isVoteSubmissionLoading = false;
     },
+
+    toggleShowResults() {
+      this.showResults = !this.showResults;
+    },
   },
 
 };
 </script>
+
+<style lang="scss" scoped>
+.poll-detail-wrapper {
+  .poll-detail-container {
+    @media(min-width: 768px) {
+      margin-top: 32px;
+    }
+  }
+
+  h3 {
+    @media(max-width: 767.98px) {
+      line-height: 19px;
+    }
+  }
+}
+
+.valid_events_container {
+  border-top: 1px solid $light-grey;
+  margin-top: 28px;
+  padding-top: 24px;
+  ::v-deep .q-expansion-item {
+    .q-expansion-item__container {
+      .q-item {
+        padding: 0 !important;
+        &:hover .q-focus-helper {
+          background: transparent;
+        }
+        .q-item__section {
+          flex: unset;
+        }
+        .q-item__section--main ~ .q-item__section--side {
+          padding-left: 9px;
+          i {
+            color: $light-red;
+            font-size: 14px;
+          }
+        }
+      }
+      .q-card__section {
+        padding: 0 !important;
+        margin-top: 20px;
+      }
+    }
+  }
+}
+</style>

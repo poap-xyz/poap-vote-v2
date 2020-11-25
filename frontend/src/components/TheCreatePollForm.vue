@@ -1,190 +1,198 @@
 <template>
-  <div style="max-width: 400px; margin: 0 auto;">
-    <q-form class="column content-stretch q-mb-xl">
-      <!------------------------------- POLL TITLE AND DESCRIPTION -------------------------------->
-      <h5 class="section-header">
-        Title and Description
-      </h5>
-      <!-- Poll title -->
-      <base-input
-        id="createPoll-title"
-        v-model="title"
-        :counter="true"
-        label="Title"
-        :maxlength="80"
-        :rules="isValidTitle"
-      />
-
-      <!-- Poll description -->
-      <base-input
-        id="createPoll-description"
-        v-model="description"
-        :counter="true"
-        label="Description"
-        :maxlength="4000"
-        :rules="isValidDescription"
-        type="textarea"
-      />
-
-      <!-------------------------------------- POLL OPTIONS --------------------------------------->
-      <h5 class="section-header">
-        Poll Options
-      </h5>
-      <div class="text-left">
-        Add as many poll options as you'd like.
-      </div>
-
-      <!-- Options list -->
-      <div
-        v-for="(option, index) in poll_options"
-        :key="index"
-      >
-        <!--
-        If there 3 or more options, user can remove the last option. We
-        do it this way instead of allowing user to remove any option
-        because it is much simpler to implement. Two-way binding breaks
-        if you remove an element from an array at an arbitrary index.
-        -->
+  <div>
+    <q-form class="column content-stretch">
+      <div class="create-poll-container">
+        <!--------------------- POLL TITLE AND DESCRIPTION ---------------------->
+        <h5 class="section-header big-section-header dark-grey text-bold q-mt-none q-mb-lg">
+          Title and Description
+        </h5>
+        <!-- Poll title -->
         <base-input
-          :id="`createPoll-option-${index+1}`"
-          v-model="poll_options[index].contents"
-          :icon-append="index === poll_options.length - 1 && index > 1
-            ? 'fas fa-minus-circle'
-            : undefined"
-          :label="`Option ${index + 1}`"
-          :rules="isValidOption"
-          @iconClicked="removeOption(index)"
+          id="createPoll-title"
+          v-model="title"
+          :counter="true"
+          label="Title"
+          :maxlength="80"
+          :rules="isValidTitle"
         />
-      </div>
 
-      <!-- Add new option -->
-      <div class="text-left">
-        <base-button
-          v-if="!isAtMaxOptions"
-          id="createPoll-addOption"
-          color="primary"
-          :dense="true"
-          label="Add option"
-          :flat="true"
-          @click="addOption"
+        <!-- Poll description -->
+        <base-input
+          id="createPoll-description"
+          v-model="description"
+          :counter="true"
+          label="Description"
+          :maxlength="4000"
+          :rules="isValidDescription"
+          type="textarea"
         />
+
+        <!----------------------------- POLL OPTIONS ------------------------------>
+        <h5
+          class="section-header option-title dark-grey text-bold"
+        >
+          Poll Options
+        </h5>
+        <p
+          class="section-header-description"
+        >
+          Add as many poll options as you'd like.
+        </p>
+
+        <!-- Options list -->
         <div
-          v-else
-          class="text-caption text-italic"
+          v-for="(option, index) in poll_options"
+          :key="index"
         >
-          You have reached the maximum number of poll options
+          <!--
+          If there 3 or more options, user can remove the last option. We
+          do it this way instead of allowing user to remove any option
+          because it is much simpler to implement. Two-way binding breaks
+          if you remove an element from an array at an arbitrary index.
+          -->
+          <base-input
+            :id="`createPoll-option-${index+1}`"
+            v-model="poll_options[index].contents"
+            :icon-append="index === poll_options.length - 1 && index > 1
+              ? 'fas fa-minus-circle'
+              : undefined"
+            :label="`Option ${index + 1}`"
+            :rules="isValidOption"
+            @iconClicked="removeOption(index)"
+          />
         </div>
-      </div>
 
-      <!--------------------------------- VALID EVENTS SELECTION ---------------------------------->
-      <h5 class="section-header">
-        Valid Events
-      </h5>
-      <div class="text-left">
-        A user will be able to vote only if they hold a POAP
-        token from at least one of the selected events.
-        <br>
-        Use the box below to search all events.
-        <q-select
-          id="createPoll-selectEvents"
-          v-model="valid_events"
-          class="q-my-sm"
-          filled
-          label="Events"
-          multiple
-          option-label="name"
-          :options="filteredEvents"
-          :rules="[val => isValidEventSelection(val)]"
-          use-input
-          @filter="eventsSearchFilter"
-        >
-          <!--
-          Customize option appearance in dropdown menu
-          -->
-          <template v-slot:option="event">
-            <q-item
-              v-bind="event.itemProps"
-              v-on="event.itemEvents"
-            >
-              <q-item-section avatar>
-                <img
-                  :src="event.opt.image_url"
-                  style="max-width:40px"
-                >
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>{{ event.opt.name }}</q-item-label>
-                <q-item-label caption>
-                  {{ event.opt.start_date }}
-                </q-item-label>
-                <q-item-label caption>
-                  <span v-if="event.opt.city === 'Virtual'">Virtual</span>
-                  <span v-else-if="!event.opt.city">Not specified</span>
-                  <span v-else>{{ event.opt.city }}, {{ event.opt.country }}</span>
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-          </template>
-
-          <!--
-          What to show when there's no search matches
-          -->
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-italic text-grey">
-                No events found
-              </q-item-section>
-            </q-item>
-          </template>
-
-          <!--
-          Custom option appearance for selected events
-          -->
-          <template v-slot:selected-item="event">
-            <q-chip
-              removable
-              :tabindex="event.tabindex"
-              @remove="event.removeAtIndex(event.index)"
-            >
-              <q-avatar>
-                <img
-                  :src="event.opt.image_url"
-                  style="max-width:40px"
-                >
-              </q-avatar>
-              {{ event.opt.name }}
-            </q-chip>
-          </template>
-        </q-select>
-      </div>
-
-      <!----------------------------------- POLL END DATE/TIME ------------------------------------>
-      <h5 class="section-header">
-        End Date and Time (Optional)
-      </h5>
-      <div class="text-left">
-        Enter the polling end date and time, specified in 24-hour
-        format using your local time zone
-      </div>
-      <div>
-        <div class="row justify-between">
-          <!--
-          End date
-          -->
+        <!-- Add new option -->
+        <div class="add-option-container">
+          <base-button
+            v-if="!isAtMaxOptions"
+            id="createPoll-addOption"
+            color="primary"
+            :dense="true"
+            label="Add option"
+            :flat="true"
+            :icon="require('../assets/icons/add-icon.svg')"
+            @click="addOption"
+          />
           <div
-            id="createPoll-endDay"
-            class="col-auto q-my-sm"
+            v-else
+            class="text-caption text-italic"
           >
+            You have reached the maximum number of poll options
+          </div>
+        </div>
+
+        <!-------------------- VALID EVENTS SELECTION --------------------->
+        <h5 class="section-header dark-grey text-bold q-mb-md q-mt-xl q-pt-sm">
+          Valid Events
+        </h5>
+        <div>
+          <p class="section-header-description">
+            A user will be able to vote on this poll only if they hold a valid POAP token from at
+            least one of the selected events. Use the box below to search all events.
+          </p>
+          <span class="text-subtitle2 text-weight-regular dark-grey">
+            Events
+          </span>
+          <q-select
+            id="createPoll-selectEvents"
+            v-model="valid_events"
+            class="q-my-sm poap-select"
+            outlined
+            multiple
+            option-label="name"
+            :options="filteredEvents"
+            :rules="[val => isValidEventSelection(val)]"
+            use-input
+            hide-dropdown-icon
+            @filter="eventsSearchFilter"
+          >
+            <template v-slot:append>
+              <span class="single-arrow-up custom-arrow" />
+            </template>
+            <!--
+            Customize option appearance in dropdown menu
+            -->
+            <template v-slot:option="event">
+              <q-item
+                style="max-width:573px"
+                v-bind="event.itemProps"
+                v-on="event.itemEvents"
+              >
+                <q-item-section avatar>
+                  <img
+                    :src="event.opt.image_url"
+                    class="event-image"
+                  >
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>{{ event.opt.name }}</q-item-label>
+                  <q-item-label caption>
+                    {{ event.opt.start_date }}
+                  </q-item-label>
+                  <q-item-label caption>
+                    <span v-if="event.opt.city === 'Virtual'">Virtual</span>
+                    <span v-else-if="!event.opt.city">Not specified</span>
+                    <span v-else>{{ event.opt.city }}, {{ event.opt.country }}</span>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+
+            <!--
+            What to show when there's no search matches
+            -->
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-italic text-grey">
+                  No events found
+                </q-item-section>
+              </q-item>
+            </template>
+
+            <!--
+            Custom option appearance for selected events
+            -->
+            <template v-slot:selected-item="event">
+              <q-chip
+                removable
+                :tabindex="event.tabindex"
+                @remove="event.removeAtIndex(event.index)"
+              >
+                <q-avatar>
+                  <img
+                    :src="event.opt.image_url"
+                    style="max-width:40px"
+                  >
+                </q-avatar>
+                {{ event.opt.name }}
+              </q-chip>
+            </template>
+          </q-select>
+        </div>
+
+        <!-------------------- POLL END DATE/TIME --------------------->
+        <h5 class="section-header dark-grey text-bold q-mb-md q-mt-xl">
+          End Date and Time
+        </h5>
+        <p class="section-header-description">
+          Enter the polling end date and time, specified in 24-hour
+          format using your local time zone
+        </p>
+        <div class="end-date-grid">
+          <!-- End date -->
+          <div id="createPoll-endDay">
+            <span class="text-subtitle2 text-weight-regular dark-grey">
+              End Date
+            </span>
             <q-input
               v-model="end_day"
-              filled
+              outlined
               :hide-bottom-space="true"
               :hide-dropdown-icon="true"
-              label="End date"
               mask="date"
-              placeholder="YYYY/MM/DD"
-              style="max-width: 175px;"
               :rules="['date']"
+              class="q-my-sm poap-select"
             >
               <template v-slot:append>
                 <q-icon
@@ -207,61 +215,70 @@
             </q-input>
           </div>
 
-          <!--
-          End time
-          -->
-          <div class="col-auto">
-            <div class="row justify-end">
-              <base-select
-                id="createPoll-endHour"
-                v-model="endHour"
-                class="col q-mr-xs"
-                label="HH"
-                :is-time-dropdown="true"
-                :options="endHourOptions"
-              />
+          <!-- End time Hour -->
+          <div>
+            <span class="text-subtitle2 text-weight-regular dark-grey">
+              Hour
+            </span>
+            <base-select
+              id="createPoll-endHour"
+              v-model="endHour"
+              :is-time-dropdown="true"
+              :options="endHourOptions"
+            />
+          </div>
+
+          <div class="flex">
+            <span class="text-subtitle1 text-secondary-light-grey">:</span>
+          </div>
+
+          <!-- End time Minute -->
+          <div>
+            <div>
+              <span class="text-subtitle2 text-weight-regular dark-grey">
+                Minute
+              </span>
               <base-select
                 id="createPoll-endMinute"
                 v-model="endMinute"
-                class="col q-mr-xs"
-                label="MM"
                 :is-time-dropdown="true"
                 :options="endMinuteOptions"
               />
-              <base-select
-                id="createPoll-endAmPm"
-                v-model="endAmPm"
-                class="col"
-                label="AM/PM"
-                :is-time-dropdown="true"
-                :options="endAmPmOptions"
-              />
             </div>
           </div>
+          <!-- <base-select
+            id="createPoll-endAmPm"
+            v-model="endAmPm"
+            class="col"
+            label="AM/PM"
+            :is-time-dropdown="true"
+            :options="endAmPmOptions"
+          /> -->
+        </div>
+
+        <!--
+        Since datetime is composed of multiple components, we manually show the
+        input validation error if it's invalid (i.e. if end date is in the past)
+        -->
+        <div
+          v-if="!isEndDateValid"
+          class="text-caption text-left negative"
+        >
+          &nbsp;&nbsp;&nbsp;&nbsp;End date must be in the future
         </div>
       </div>
-
-      <!--
-      Since datetime is composed of multiple components, we manually show the
-      input validation error if it's invalid (i.e. if end date is in the past)
-      -->
-      <div
-        v-if="!isEndDateValid"
-        class="text-caption text-left negative"
-      >
-        &nbsp;&nbsp;&nbsp;&nbsp;End date must be in the future
-      </div>
-
       <!-------------------------------------- SUBMIT BUTTON -------------------------------------->
-      <div>
+      <div class="create-button-container">
         <base-button
           id="createPoll-submit"
           color="primary"
           class="q-mt-xl"
           :disabled="!isFormValid"
           :loading="isLoading"
-          :full-width="true"
-          label="Create"
+          label="Create Poll"
+          outline
+          unelevated
+          :icon="require('../assets/icons/arrow-right-icon.svg')"
           @click="createPoll"
         />
       </div>
@@ -487,9 +504,173 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
-.section-header {
-  color: $secondary
-  text-align: left
+<style lang="scss" scoped>
+.create-poll-container {
+  padding: 0 16px;
+  @media(min-width: 768px) {
+    max-width: 573px;
+    padding: 0;
+    margin: 0 auto;
+  }
+  .section-header {
+    font-size: 16px;
+    line-height: 21px;
+    font-family: $secondary-font;
+
+    @media (min-width: 768px) {
+      font-size: 22px;
+      line-height: 27px;
+    }
+
+    &.big-section-header {
+      @media (max-width: 767.98px) {
+        font-size: 20px;
+        line-height: 27px;
+      }
+    }
+
+    &:first-child {
+      text-align: center;
+      @media(min-width: 768px) {
+        text-align: left;
+      }
+    }
+    &.option-title {
+      margin: 32px 0 8px;
+      @media(min-width: 768px) {
+        margin: 64px 0 12px;
+      }
+    }
+  }
+  .section-header-description {
+    font-size: 16px;
+    line-height: 22px;
+    margin-bottom: 19px;
+    font-weight: 400;
+    color: $dark-grey-text;
+    @media(min-width: 768px) {
+      font-size: 14px;
+      line-height: 21px;
+      margin-bottom: 32px;
+    }
+  }
+  .add-option-container {
+    ::v-deep button {
+      height: auto;
+      min-width: unset;
+      .q-btn__content {
+        display: flex;
+        flex-direction: row-reverse;
+        .btn-icon {
+          width: 14px;
+          height: 14px;
+          margin-right: 10px;
+        }
+      }
+      @media (max-width: 767.98px) {
+        font-size: 14px !important;
+        line-height: 18px;
+      }
+    }
+  }
+  .poap-select {
+    ::v-deep .q-field__control {
+      border-radius: 6px;
+      &::before {
+        border: 1px solid $secondary-white !important;
+      }
+    }
+  }
+  .end-date-grid {
+    display: grid;
+    row-gap: 12px;
+    column-gap: 4px;
+    align-items: center;
+    grid-template-columns: 1fr 8px 1fr;
+    @media (min-width: 768px) {
+      grid-template-columns: 210px 124px 8px 124px;
+      column-gap: 12px;
+    }
+    > div {
+      &:first-child {
+        grid-area: 1 / 1 / 2 / 4;
+        @media (min-width: 768px) {
+          padding-right: 28px;
+          grid-area: unset;
+        }
+      }
+      &:nth-child(3) {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 20px;
+      }
+    }
+  }
+  .end-time-minute-container {
+    display: flex;
+    align-items: center;
+    > div {
+      &:first-child {
+        padding: 0 22px;
+      }
+      &:last-child {
+        flex: 1;
+      }
+    }
+  }
+  .custom-arrow {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+.create-button-container {
+  display: flex;
+  justify-content: center;
+  @media (max-width: 767.98px) {
+    justify-content: center;
+    padding: 0 16px;
+  }
+  ::v-deep {
+    > div {
+      min-width: 184px;
+      @media (max-width: 767.98px) {
+        width: 100%;
+        max-width: 400px;
+      }
+      button {
+        width: 100%;
+        padding: 0 24px!important;
+        margin-bottom: 0!important;
+        .q-btn__wrapper {
+          padding: 0!important;
+          .q-btn__content {
+            justify-content: space-between;
+            .btn-icon {
+              width: 16px;
+              height: 14px;
+              margin-left: 18px;
+              filter: invert(86%) sepia(69%) saturate(4746%)
+                hue-rotate(253deg) brightness(103%) contrast(102%);
+            }
+            @media (max-width: 767.98px) {
+              display: flex;
+              justify-content: space-between;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.event-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
 }
 </style>

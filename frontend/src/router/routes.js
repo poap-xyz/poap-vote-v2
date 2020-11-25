@@ -5,8 +5,9 @@ const routes = [
     children: [
       { name: 'home', path: '', component: () => import('pages/Home.vue') },
       { name: 'create', path: '/create', component: () => import('pages/CreatePoll.vue') },
-      { name: 'results', path: '/:id/results', component: () => import('pages/PollDetailsResults.vue') },
-      { name: 'cast', path: '/:id/cast', component: () => import('pages/PollDetailsCast.vue') },
+      { name: 'results', path: '/results/:id', component: () => import('pages/PollDetailsResults.vue') },
+      { name: 'cast', path: '/poll/:id', component: () => import('pages/PollDetailsCast.vue') },
+      { name: 'faq', path: '/faq', component: () => import('pages/Faq.vue') },
     ],
   },
 ];

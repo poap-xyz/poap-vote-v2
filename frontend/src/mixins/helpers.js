@@ -3,12 +3,13 @@
  */
 import { date, Notify } from 'quasar';
 
-const { formatDate } = date;
+const { formatDate, getDateDiff } = date;
 
 export default {
   data() {
     return {
       now: undefined, // used for calculating time remaining
+      windowWidth: 0,
     };
   },
 
@@ -33,6 +34,41 @@ export default {
      */
     isPollOngoing() {
       return this.timeRemaining !== -1;
+    },
+
+    isMobile() {
+      return this.windowWidth < 768;
+    },
+
+    isFullDesktop() {
+      return this.windowWidth >= 1920;
+    },
+
+    getRandomImageHero() {
+      const imageArray = [
+        'POAP-IMG_City-01-London',
+        'POAP-IMG_City-02-Pittsburg',
+        'POAP-IMG_City-03-Gibraltar',
+        'POAP-IMG_City-04-Berlin',
+        'POAP-IMG_City-05-Buenos-Aires',
+        'POAP-IMG_City-06-Moscow',
+        'POAP-IMG_City-07-Shangai',
+        'POAP-IMG_City-08-San-Francisco',
+        'POAP-IMG_City-09-Sydney',
+        'POAP-IMG_City-10-Rio-de-Janeiro',
+        'POAP-IMG_City-11-Toronto',
+        'POAP-IMG_City-12-Paris',
+        'POAP-IMG_City-13-New-York',
+        'POAP-IMG_City-14-Hong-Kong',
+        'POAP-IMG_City-15-Valparaiso',
+        'POAP-IMG_City-16-Kuala-Lumpur',
+        'POAP-IMG_City-17-Rome',
+        'POAP-IMG_City-18-Chicago',
+        'POAP-IMG_City-19-Dubai',
+      ];
+
+      const num = Math.floor(Math.random() * imageArray.length);
+      return imageArray[num];
     },
   },
 
@@ -80,7 +116,7 @@ export default {
      */
     secondsToFormattedDate(seconds) {
       const ms = seconds; // TODO multiply seconds by 1000 once #23 is fixed
-      return `${formatDate(ms, 'DD MMM YYYY')} @ ${formatDate(ms, 'hh:mm A')}`;
+      return `${formatDate(ms, 'DD-MMM-YYYY').toUpperCase()} @ ${formatDate(ms, 'hh:mm A')}`;
     },
 
     /**
@@ -137,6 +173,33 @@ export default {
       else if (err.msg) this.notifyUser('negative', err.msg);
       else if (typeof err === 'string') this.notifyUser('negative', err);
       else this.notifyUser('negative', msg);
+    },
+
+    /**
+    * Gets percentage of days completed since the poll started.
+    */
+
+    getPercentagePollTime(startDate, endDate) {
+      let percentage = 0;
+      if (endDate > 0) {
+        const totalDays = getDateDiff(endDate, startDate);
+        const daysRemaning = getDateDiff(endDate, new Date());
+        percentage = Math.round((daysRemaning * 100) / totalDays) / 100;
+      }
+      return percentage;
+    },
+
+    handleResize() {
+      this.windowWidth = window.innerWidth;
+    },
+
+    toggleBodyClass(addClass, className) {
+      const element = document.body;
+      if (addClass) {
+        element.classList.add(className);
+      } else {
+        element.classList.remove(className);
+      }
     },
   },
 };

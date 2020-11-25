@@ -9,12 +9,12 @@ export default {
       // instead we call this function on each page's mounted hook
       let prefix;
       const pageName = this.$route.name;
-      if (pageName === 'home') prefix = 'All Polls';
+      if (pageName === 'home') prefix = 'POAP Vote';
       else if (pageName === 'create') prefix = 'Create Poll';
       else if (pageName === 'cast') prefix = `Vote: ${this.poll.title}`;
       else if (pageName === 'results') prefix = `Results: ${this.poll.title}`;
       else if (pageName === 'Error404') prefix = '404';
-      const title = `${prefix} | POAP Vote`;
+      const title = `${prefix} ${pageName !== 'home' ? '| POAP Vote' : ''} `;
       document.title = title;
     },
   },

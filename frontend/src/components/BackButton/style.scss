@@ -1,0 +1,38 @@
+.back-btn-wrapper {
+    @media (max-width: 767.98px) {
+        position: absolute;
+        top: 20px;
+        left: 15px;
+    }
+    @media (min-width: 768px) {
+        margin-top: 62px;
+    }
+    .back-button {
+        color: $white;
+        border: 0;
+        background: transparent;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 18px;
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 0;
+        .left-arrow {
+            background: url('../../assets/icons/arrow-right-icon.svg') center / contain no-repeat;
+            width: 16px;
+            height: 14px;
+            transform: rotate(180deg);
+            margin-right: 12px;
+            @media(max-width: 767.98px) {
+              filter: invert(83%) sepia(103%) saturate(5788%)
+                hue-rotate(252deg) brightness(100%) contrast(102%);
+            }
+        }
+        .back-text {
+            @media (max-width: 767.98px) {
+                display: none;
+            }
+        }
+    }
+}

@@ -1,0 +1,99 @@
+.footer-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  justify-content: center;
+  width: 100%;
+  z-index: 2;
+  min-height: 71px;
+  @media(min-width: 768px) {
+    height: 119px;
+    margin-top: 33px;
+    border-top: 1px solid $light-grey;
+  }
+  @media(max-width: 767.98px) {
+    background: linear-gradient(-180deg,
+      rgb(244, 247, 252) 20.74%, #ffffff 51.14%);
+  }
+
+  > div {
+    @media(max-width: 767.98px) {
+      width: 100%;
+      padding: 0 16px;
+    }
+  }
+
+  &::v-deep .primary-btn-with-arrow {
+    @media(max-width: 767.98px) {
+      width: 100%;
+      .q-btn {
+        width: 100%;
+      }
+    }
+    &[disabled=disabled] {
+      button {
+        min-width: 207px;
+        background: $light-grey !important;
+        color: $alternative-light-grey !important;
+        .q-btn__wrapper {
+          &::before {
+            box-shadow: unset !important;
+          }
+        }
+      }
+    }
+    button {
+      .q-btn__wrapper {
+        .q-btn__content {
+          & > div {
+            line-height: 48px;
+          }
+          .btn-icon {
+            filter: invert(86%) sepia(69%) saturate(4746%)
+              hue-rotate(253deg) brightness(103%) contrast(102%);
+          }
+        }
+      }
+    }
+  }
+
+  .user-vote {
+    font-weight: 500;
+    margin-left: 11px;
+  }
+
+  .poll-results {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    flex-direction: column;
+    justify-content: space-between;
+    display: none;
+
+    @media(min-width: 768px) {
+      display: flex;
+      right: 20px;
+    }
+
+    @media(min-width: 992px) {
+      right: 40px;
+    }
+
+    &-button {
+      border: 0;
+      background: 0;
+      padding: 0;
+      color: $primary;
+      cursor: pointer;
+      text-align: right;
+      outline: none;
+    }
+  }
+
+  .circle-check-icon {
+    &::after {
+      background: $primary;
+    }
+  }
+}

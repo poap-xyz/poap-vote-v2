@@ -26,7 +26,8 @@
       "vue$": [
         "node_modules/vue/dist/vue.esm.js"
       ]
-    }
+    },
+    "experimentalDecorators": true
   },
   "exclude": [
     "dist",

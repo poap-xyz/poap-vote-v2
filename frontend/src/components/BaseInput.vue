@@ -1,11 +1,13 @@
 <template>
-  <div>
+  <div class="input-wrapper">
+    <span class="text-subtitle2 text-weight-regular dark-grey">
+      {{ label }}
+    </span>
     <q-input
       v-model="content"
       class="q-my-sm"
       :counter="counter"
-      filled
-      :label="label"
+      outlined
       lazy-rules
       :maxlength="maxlength"
       :rules="[val => rules(val)]"
@@ -90,3 +92,23 @@ export default {
 
 };
 </script>
+
+<style lang="scss" scoped>
+.input-wrapper {
+  ::v-deep .q-field__control {
+    border-radius: 6px;
+    textarea {
+      resize: none;
+    }
+    &::before {
+      border: 1px solid $secondary-white !important;
+    }
+    & + .q-field__bottom .q-field__counter{
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 14px;
+      color: $secondary-light-grey;
+    }
+  }
+}
+</style>

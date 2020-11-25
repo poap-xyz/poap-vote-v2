@@ -1,0 +1,32 @@
+.popper  {
+    padding: 0;
+    padding-top: 10px!important;
+    background: transparent;
+    box-shadow: unset;
+    border: 0;
+    margin: 0;
+    .popover-content {
+        background-color: $white;
+        border-radius: 10px;
+        box-shadow: $secondary-shadow;
+        width: 320px;
+        min-height: 441px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        &.no-poaps {
+            min-height: 250px;
+            &::v-deep {
+                .poaps-content {
+                    align-items: center;
+                }
+            }
+        }
+        @media (max-width: 374.98px) {
+            width: 310px;
+        }
+    }
+    &::v-deep .popper__arrow {
+        display: none;
+    }
+}

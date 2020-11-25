@@ -4,10 +4,13 @@
     <div>
       <base-button
         id="button--connect-wallet"
-        color="primary"
+        class="primary-btn-with-arrow"
         :full-width="fullWidth"
         :label="label"
         :loading="isLoading"
+        outline
+        unelevated
+        background="white"
         @click="connectWallet"
       />
     </div>
@@ -36,6 +39,12 @@ export default {
       type: String,
       required: false,
       default: 'Connect Wallet (Optional)',
+    },
+
+    hideIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 

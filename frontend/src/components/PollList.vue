@@ -1,123 +1,131 @@
 <template>
   <div v-if="polls.length > 0">
-    <h5 class="secondary text-bold">
-      {{ prettyHeader }}
-    </h5>
-    <q-virtual-scroll
-      :items="polls"
-      virtual-scroll-horizontal
-      class="q-py-md q-pl-xs"
-    >
-      <template v-slot="{ item, index }">
-        <a
-          style="text-decoration: none; color: inherit;"
-          :href="'/' + item.id + destinationURL"
+    <div class="flex justify-between items-center poll-content">
+      <h5 class="dark-grey text-bold q-mt-none q-pb-sm">
+        {{ prettyHeader }}
+      </h5>
+      <div class="card-wrapper">
+        <div
+          v-for="(poll, index) in [...polls].slice(0, count)"
+          :key="index"
         >
-          <q-card
-            :key="index"
-            bordered
-            class="card-border cursor-pointer q-mr-md"
-            style="max-width: 400px; height: 100%"
+          <a
+            style="text-decoration: none; color: inherit;"
+            :href="destinationURL + '/' + poll.id "
           >
-            <!-- POLL TITLE AND DESCRIPTION-->
-            <q-card-section>
-              <div class="text-h6">
-                <span v-if="item.title.length < 101">{{ item.title }}</span>
-                <span v-else>{{ item.title.slice(0,100) }}...</span>
-              </div>
-              <div>
-                <span v-if="item.description.length < 101">{{ item.description }}</span>
-                <span v-else>{{ item.description.slice(0,100) }}...</span>
-              </div>
-            </q-card-section>
-
-            <!-- REMAINING METADATA -->
-            <q-card-section>
-              <!-- End Date -->
-              <div v-if="item.end_date > 0" class="text-caption text-uppercase text-grey">
-                End Date
-              </div>
-              <div>
-                <div v-if="item.end_date > 0">
-                  <div>
-                    {{ secondsToFormattedDate(item.end_date) }}
-                  </div>
-                  <div
-                    v-if="pollType === 'activePolls' && timeRemaining[index]"
-                    class="text-caption"
+            <q-card
+              :key="index"
+              bordered
+              :class="`card-border card-content
+              ${poll.end_date > 0 && pollType === 'activePolls' ? 'active' : 'finishedd'}`"
+            >
+              <div class="card-header">
+                <div class="flex justify-between items-center">
+                  <little-badge :poll-type="pollType" />
+                  <p
+                    v-if="timeRemaining[index]"
+                    class="no-margin dark-grey-text"
                   >
                     {{ timeRemaining[index] }} remaining
+                  </p>
+                </div>
+
+                <!-- REMAINING METADATA -->
+
+                <!-- Remaining time -->
+                <div class="progress-bar">
+                  <div
+                    v-if="poll.end_date > 0 && pollType === 'activePolls'"
+                    class="time-remaining"
+                  >
+                    <div
+                      v-if="timeRemaining[index]"
+                    >
+                      <q-linear-progress
+                        :value="getPercentagePollTime(poll.start_date, poll.end_date)"
+                        reverse
+                      />
+                    </div>
+                    <div v-else>
+                      <q-spinner color="primary" />
+                    </div>
                   </div>
                   <div
-                    v-else-if="pollType === 'activePolls'"
-                    class="text-caption"
-                  >
-                    <q-spinner color="primary" />
-                  </div>
+                    v-else
+                    class="progress-bar-finished"
+                  />
+                </div>
+              </div>
+
+              <div class="card-body">
+                <!-- POLL TITLE AND DESCRIPTION -->
+
+                <div class="primary text-ellipsis poll-title">
+                  <h3>{{ poll.title }}</h3>
+                </div>
+
+                <div
+                  class="text-subtitle2 dark-grey-text description text-ellipsis"
+                >
+                  <span>{{ poll.description }}</span>
+                </div>
+              </div>
+
+              <div class="card-footer">
+                <!-- End Date -->
+                <div
+                  v-if="poll.end_date > 0"
+                  class="text-caption end-date-container small-text"
+                >
+                  <p class="q-mb-sm q-ml-sm">End Date</p>
+                  <p class="date">
+                    {{ secondsToFormattedDate(poll.end_date).replace("@", " ") }}
+                  </p>
                 </div>
 
                 <!-- List of valid event tokens -->
-                <div class="q-mt-lg">
-                  <div class="text-caption text-uppercase text-grey">
-                    Valid Event Tokens
-                  </div>
-                  <div class="row justify-start">
-                    <div
-                      v-for="id in item.valid_event_ids"
-                      :key="id"
-                      class="q-mr-sm"
-                    >
-                      <img
-                        :src="events[id].image_url"
-                        style="max-width:40px"
-                      >
-                      <q-tooltip content-class="bg-white">
-                        <q-card>
-                          <!-- Layout copied and modified from CreatePollForm select component -->
-                          <q-item-section class="dark-toggle q-pa-md">
-                            <q-item-label class="event-title">
-                              {{ events[id].name }}
-                            </q-item-label>
-                            <q-item-label class="event-caption">
-                              {{ events[id].start_date }} &ndash; {{ events[id].end_date }}
-                            </q-item-label>
-                            <q-item-label class="event-caption">
-                              <span v-if="events[id].city === 'Virtual'">Virtual</span>
-                              <span v-else-if="!events[id].city">Not specified</span>
-                              <span v-else>{{ events[id].city }}, {{ events[id].country }}</span>
-                            </q-item-label>
-                          </q-item-section>
-                        </q-card>
-                      </q-tooltip>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Poll Creator -->
-                <div
-                  class="q-mt-lg"
-                  style="visibility: hidden"
-                >
-                  <div class="text-caption text-uppercase text-grey">
-                    Created By
-                  </div>
-                  <div>{{ item.polltaker_account }}</div>
+                <div class="events-container">
+                  <h5 class="small-text dark-grey">
+                    Valid event tokens
+                  </h5>
+                  <poap-event-group
+                    :event-group="allEvents.filter((event) =>
+                      poll.valid_event_ids.includes(event.id)).map((item) => ({event: item}))"
+                  />
                 </div>
               </div>
-            </q-card-section>
-          </q-card>
-        </a>
-      </template>
-    </q-virtual-scroll>
+            </q-card>
+          </a>
+        </div>
+      </div>
+      <div
+        v-if="(polls && count < polls.length)"
+        class="btn-container"
+      >
+        <button
+          class="btn-more primary"
+          @click="() => loadMorePolls()"
+        >
+          Load more
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 import helpers from 'src/mixins/helpers';
+import PoapEventGroup from 'components/PoapEventGroup';
+import LittleBadge from 'components/LittleBadge';
 
 export default {
   name: 'PollList',
+
+  components: {
+    PoapEventGroup,
+    LittleBadge,
+  },
 
   mixins: [helpers],
 
@@ -129,7 +137,9 @@ export default {
   },
 
   data() {
-    return {};
+    return {
+      count: 6,
+    };
   },
 
   computed: {
@@ -169,22 +179,226 @@ export default {
 
     prettyHeader() {
       if (this.pollType.toLowerCase().startsWith('active')) return 'Active Polls';
-      return 'Completed Polls';
+      return 'Finished Polls';
     },
     destinationURL() {
-      if (this.pollType.toLowerCase().startsWith('active')) return '/cast';
+      if (this.pollType.toLowerCase().startsWith('active')) return '/poll';
       return '/results';
+    },
+  },
+
+  created() {
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
+  },
+
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
+  },
+
+  methods: {
+    loadMorePolls() {
+      if (this.count < this.polls.length) {
+        if (this.count + 6 > this.polls.length) {
+          this.count = this.polls.length;
+        } else {
+          this.count += 6;
+        }
+      }
     },
   },
 };
 </script>
 
-<style lang="stylus" scoped>
+<style lang="scss" scoped>
 .event-title {
-  font-size: 1.5em
+  font-size: 1.5em;
 }
+
 .event-caption {
-  color: grey
-  font-size: 1.25em
+  color: grey;
+  font-size: 1.25em;
+}
+
+.poll-content {
+  .btn-container {
+    margin-top: 12px;
+    width: 100%;
+    text-align: center;
+    .btn-more {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 21px;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      text-align: center;
+      cursor: pointer;
+    }
+  }
+  > h5 {
+    font-family: $secondary-font;
+    font-size: 22px;
+    line-height: 27px;
+    letter-spacing: 0.01em;
+    @media (max-width: 767.98px) {
+      display: none;
+    }
+  }
+}
+
+.poll-title {
+  width: 100%;
+  height: 42px;
+  margin-bottom: 8px;
+  font-family: $secondary-font;
+  @media (min-width: 768px) {
+    height: 48px;
+    width: calc(100% - 55px);
+  }
+
+  h3 {
+    margin-bottom: 0;
+    margin-top: 0px;
+    font-size: 16px;
+    line-height: 21px;
+    font-weight: 700;
+    height: 100%;
+    @media (min-width: 768px) {
+      font-size: 20px;
+      line-height: 24px;
+    }
+  }
+}
+
+.text-subtitle2 {
+  line-height: 18.23px;
+  height: 36px;
+}
+.flex-1 {
+  flex: 1
+}
+
+.text-ellipsis {
+  span, h3 {
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+  }
+}
+
+.card-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 16px;
+  @media (min-width: 780px) {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 24px;
+    row-gap: 30px;
+    padding-bottom: 20px;
+  }
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .card-content {
+    width: 100%;
+    height: 252px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    @media (max-width: 767.98px) {
+      border: 0;
+    }
+    @media (min-width: 768px) {
+      height: 294px;
+    }
+
+    .card-header {
+      padding: 15px;
+      p {
+        font-size: 12px;
+        font-weight: 400;
+        @media (min-width: 768px) {
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+      .time-remaining {
+        margin-top: 11px;
+        width: calc(100% + 30px);
+        margin-left: -15px;
+        &::v-deep .q-linear-progress {
+          color: $light-green !important;
+        }
+      }
+      .progress-bar {
+        &-finished {
+          height: 4px;
+          width: calc(100% + 30px);
+          margin-left: -15px;
+          background: $light-grey;
+          margin-top: 8px;
+        }
+      }
+    }
+
+    .card-body {
+      padding: 0 16px;
+      @media (min-width: 768px) {
+        padding: 0 24px;
+      }
+    }
+
+    .card-footer {
+      margin-top: auto;
+      padding: 0 16px 16px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      @media (min-width: 768px) {
+        padding: 0 17px 17px;
+      }
+      .events-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        flex: 1;
+        h5 {
+          margin-top: 0;
+          margin-bottom: 4px;
+        }
+      }
+    }
+
+    .description {
+      font-weight: 400;
+      span {
+        overflow-wrap: anywhere;
+      }
+      @media (min-width: 768px) {
+        margin-top: 8px;
+        padding-right: 24px;
+      }
+    }
+  }
+
+  .end-date-container {
+    color: $dark-grey;
+    p {
+      &.date {
+        margin: 0;
+        color: $dark-grey;
+        background: $other-light-grey;
+        padding: 8px 12px;
+        border-radius: 100px;
+      }
+    }
+  }
+
 }
 </style>

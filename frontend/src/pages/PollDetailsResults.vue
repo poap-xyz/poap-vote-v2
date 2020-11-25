@@ -1,32 +1,30 @@
 <template>
-  <q-page padding>
-    <div style="margin:0 auto; max-width:600px;">
-      <poll-details-poll-header page-title="Poll Results" />
-      <poll-details-poll-options />
-      <!-- Event expansion item -->
-      <div v-if="poll">
-        <q-expansion-item
-          v-model="showEvents"
-          class="q-mt-lg"
-          icon="fas fa-calendar-alt"
-          :label="`Token holders from ${ poll.valid_event_ids.length }
-      different events are qualified to vote in this poll.`"
-          caption="Click to learn more and vote"
+  <q-page>
+    <div class="layout-container">
+      <shape-background
+        v-if="!isMobile"
+        theme="secondary"
+      />
+      <div>
+        <back-button />
+        <div
+          v-if="poll"
+          class="poll-result-container"
         >
-          <q-card>
-            <q-card-section>
-              <poll-details-valid-events />
-            </q-card-section>
-            <q-card-section>
-              <base-button
-                class="q-mt-lg"
-                label="Place Your Vote"
-                :full-width="true"
-                @click="$router.push({ name: 'cast', params: {id: Number($route.params.id)} })"
-              />
-            </q-card-section>
-          </q-card>
-        </q-expansion-item>
+          <white-container>
+            <poll-details-poll-options />
+
+            <poll-details-poll-footer
+              type-poll="finished"
+            />
+          </white-container>
+        </div>
+
+        <!-- Show valid events -->
+        <poll-valid-events-collapse
+          v-if="poll"
+          :valid-event-count="poll.valid_event_ids && poll.valid_event_ids.length"
+        />
       </div>
     </div>
   </q-page>
@@ -34,25 +32,55 @@
 
 <script>
 import getPollData from 'src/mixins/getPollData';
-import PollDetailsPollHeader from 'components/PollDetailsPollHeader';
+import helpers from 'src/mixins/helpers';
 import PollDetailsPollOptions from 'components/PollDetailsPollOptions';
-import PollDetailsValidEvents from 'components/PollDetailsValidEvents';
+import ShapeBackground from 'components/ShapeBackground';
+import BackButton from 'components/BackButton';
+import WhiteContainer from 'components/WhiteContainer';
+import PollValidEventsCollapse from 'components/PollValidEventsCollapse';
+import PollDetailsPollFooter from 'components/PollDetailsPollFooter';
 
 export default {
   name: 'PollDetailsResults',
 
   components: {
-    PollDetailsPollHeader,
     PollDetailsPollOptions,
-    PollDetailsValidEvents,
+    ShapeBackground,
+    BackButton,
+    WhiteContainer,
+    PollValidEventsCollapse,
+    PollDetailsPollFooter,
   },
 
-  mixins: [getPollData],
+  mixins: [getPollData, helpers],
 
   data() {
     return {
       showEvents: undefined,
     };
   },
+
+  mounted() {
+    this.toggleBodyClass(true, 'poap-poll');
+  },
+
+  created() {
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
+  },
+
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
+    this.toggleBodyClass(false, 'poap-poll');
+  },
+
 };
 </script>
+
+<style lang="scss" scoped>
+.poll-result-container {
+  @media(min-width: 768px) {
+    margin-top: 48px;
+  }
+}
+</style>

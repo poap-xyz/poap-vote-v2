@@ -1,70 +1,62 @@
 <template>
   <div v-if="poll">
-    <div
-      v-if="!isPollOngoing"
-      class="secondary text-caption text-bold"
-    >
-      The voting period for this poll has ended and results are final.
-    </div>
-    <q-card
-      v-for="option in options"
-      :key="option.id"
-      class="option q-my-md"
-      :class="{ 'user-cannot-vote': isForVoting && !canUserVote }"
-    >
-      <q-item
-        clickable
-        class="q-py-md"
-        @click="selectOption(option.id)"
+    <poll-details-poll-header />
+    <div class="poll-options-container">
+      <q-card
+        v-for="(option, index) in options"
+        :key="option.id"
+        class="option"
+        :class="{ 'user-cannot-vote': isForVoting && !canUserVote }"
       >
-        <q-item-section
-          v-if="isForVoting && canUserVote"
-          avatar
+        <q-item
+          :clickable="!isForVoting || !canUserVote ? false : true"
+          :class="`items-center option-content
+            ${!isForVoting && votePercentages ? '' : 'is-for-voting'}
+            ${selectedOption === option.id ? 'selected' : ''}
+            ${!isForVoting && getOptionHighestPercentage() === votePercentages[option.id]
+          ? 'highestPercentage' : ''}
+          `"
+          @click="selectOption(option.id)"
         >
-          <q-icon
-            color="primary"
-            :name="option.id === selectedOption ? 'far fa-dot-circle' : 'far fa-circle'"
-          />
-        </q-item-section>
+          <span
+            v-if="index < alphabetArray.length"
+            class="letter primary text-weight-regular"
+          >
+            {{ alphabetArray[index] }}
+          </span>
 
-        <q-item-section>
-          <q-item-label>{{ option.contents }}</q-item-label>
-        </q-item-section>
+          <div class="option-result-info">
+            <q-item-section class="relative-position q-pl-md">
+              <q-item-label>
+                <p class="text-subtitle2 text-weight-bold option-text">
+                  {{ option.contents }}
+                </p>
+                <span
+                  v-if="!isForVoting || showResults && votePercentages"
+                  class="progress-line"
+                  :style="{width: formatPercent(votePercentages[option.id], 2)}"
+                />
+              </q-item-label>
+            </q-item-section>
 
-        <q-item-section
-          v-if="!isForVoting && votePercentages"
-          avatar
-          class="text-caption text-grey"
-        >
-          <q-item-label>
-            {{ voteCounts[option.id] }}
-            vote<span v-if="voteCounts[option.id]!==1">s</span>
-          </q-item-label>
-          <q-item-label>{{ formatPercent(votePercentages[option.id], 2) }}</q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-card>
-    <div
-      v-if="!isForVoting"
-      class="row justify-between"
-    >
-      <div class="col-auto text-caption text-grey">
-        <span v-if="showVotesByAddress">
-          {{ totalVotes }} <span>unique account</span><span v-if="totalVotes !== 1">s</span>
-          voted
-        </span>
-        <span v-else>
-          {{ totalVotes }} <span>total vote</span><span v-if="totalVotes !== 1">s</span>
-        </span>
-      </div>
-      <div
-        class="col-auto text-caption hyperlink"
-        @click="changeVoteDisplay"
-      >
-        Show results by
-        <span v-if="showVotesByAddress">token counts</span>
-        <span v-else>address</span>
-      </div>
+            <q-item-section
+              v-if="!isForVoting || showResults && votePercentages"
+              avatar
+              class="text-caption text-grey vote-percentages-container"
+            >
+              <q-item-label>
+                <p class="text-subtitle2 primary q-mb-none">
+                  {{ voteCounts[option.id] }}
+                  vote<span v-if="voteCounts[option.id]!==1">s</span>
+                </p>
+              </q-item-label>
+              <q-item-label class="percent-text">
+                {{ formatPercent(votePercentages[option.id], 2) }}
+              </q-item-label>
+            </q-item-section>
+          </div>
+        </q-item>
+      </q-card>
     </div>
   </div>
 </template>
@@ -73,14 +65,24 @@
 import { mapGetters, mapState } from 'vuex';
 import helpers from 'src/mixins/helpers';
 import voting from 'src/mixins/voting';
+import PollDetailsPollHeader from 'components/PollDetailsPollHeader';
 
 export default {
   name: 'PollDetailsPollOptions',
+
+  components: {
+    PollDetailsPollHeader,
+  },
 
   mixins: [helpers, voting],
 
   props: {
     isForVoting: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showResults: {
       type: Boolean,
       required: false,
       default: false,
@@ -91,6 +93,7 @@ export default {
     return {
       selectedOption: undefined,
       showVotesByAddress: false, // true to show votes by account, false to show by token
+      alphabetArray: [...Array(26)].map((_, i) => String.fromCharCode('A'.charCodeAt(0) + i)),
     };
   },
 
@@ -164,18 +167,156 @@ export default {
         query: { byAddress: this.showVotesByAddress ? 1 : 0 }, // Convert Boolean to 0 or 1
       });
     },
+
+    getOptionHighestPercentage() {
+      let highestNumber = 0;
+      highestNumber = Math.max(...Object.values(this.votePercentages));
+      return highestNumber;
+    },
   },
 };
 </script>
 
-<style lang="stylus" scoped>
-.body--light {
-  .option {
-    background-color: $primary-lightened;
+<style lang="scss" scoped>
+.option {
+  background: $white;
+  box-shadow: $shadow;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  z-index: 2;
+
+  &::v-deep .q-item {
+    .q-focus-helper {
+      background: rgba(101, 52, 255, 0.7) !important;
+    }
+  }
+
+  .progress-line {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    height: calc(100% - 10px);
+    background: $primary;
+    opacity: 0.1;
+    transition: all 0.2s linear;
+    border-radius: 10px;
+    @media(max-width: 767.98px) {
+      opacity: 0.15;
+      z-index: 1;
+    }
+  }
+
+  .option-content {
+    height: 50px;
+    padding: 5px 10px;
+    border: 1px solid transparent !important;
+    @media (min-width: 768px) {
+      padding-right: 24px;
+    }
+    &.selected {
+      border: 1px solid $primary !important;
+    }
+    &.highestPercentage {
+      .progress-line {
+        background: $light-green !important;
+        opacity: 0.35;
+      }
+      .letter {
+        background: #D1F4ED !important;
+      }
+    }
+  }
+
+  .option-content:not(.is-for-voting) {
+    @media (max-width: 767.98px) {
+      display: grid;
+      grid-template-columns: 30px 1fr;
+      grid-template-rows: 1fr;
+      column-gap: 15px;
+    }
+  }
+
+  &:not(:last-child) {
+    margin-bottom: 8px;
+    @media(min-width: 768px) {
+      margin-bottom: 16px;
+    }
+  }
+}
+
+.letter {
+  width: 30px;
+  height: 30px;
+  background: $light-violet;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  flex-shrink: 0;
+  font-size: 20px;
+  line-height: 30px;
+  padding-top: 3px;
+  @media (max-width: 767.98px) {
+    grid-area: 1 / 1 / 3 / 2;
+    & + div {
+      grid-area: 1 / 2 / 2 / 3;
+      & + div {
+        grid-area: 2 / 2 / 3 / 3;
+        justify-content: flex-start;
+      }
+    }
   }
 }
 
 .user-cannot-vote {
   opacity: 0.6;
+}
+
+.vote-percentages-container {
+  @media(max-width: 767.98px) {
+    position: relative;
+    padding: 0 5px;
+    border-radius: 8px;
+    overflow: hidden;
+    .q-item__label {
+      margin: 0;
+      z-index: 2;
+    }
+  }
+
+  .percent-text {
+    opacity: 0.7;
+    color: $primary-black;
+  }
+}
+
+.option-result-info {
+  width: 100%;
+  display: flex;
+  position: relative;
+  height: 40px;
+  .option-text {
+    margin: 0;
+    z-index: 2;
+    position: relative;
+    color: $primary-black;
+    font-weight: 400;
+    @media(max-width: 767.98px) {
+      font-size: 16px;
+      line-height: 22px;
+      color: $dark-grey;
+    }
+  }
+}
+
+.poll-options-container {
+  padding: 24px 40px 0;
+  @media(max-width: 767.98px) {
+    background: $other-light-grey;
+    position: relative;
+    padding: 8px 16px 15px;
+  }
 }
 </style>
