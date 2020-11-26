@@ -246,14 +246,6 @@
               />
             </div>
           </div>
-          <!-- <base-select
-            id="createPoll-endAmPm"
-            v-model="endAmPm"
-            class="col"
-            label="AM/PM"
-            :is-time-dropdown="true"
-            :options="endAmPmOptions"
-          /> -->
         </div>
 
         <!--
@@ -315,11 +307,12 @@ export default {
       ],
       // Parameters for computing end_time
       endHour: undefined,
-      endHourOptions: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+      endHourOptions: [
+        '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11',
+        '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23',
+      ],
       endMinute: undefined,
       endMinuteOptions: ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'],
-      endAmPm: undefined,
-      endAmPmOptions: ['AM', 'PM'],
       // Parameters and options for fuse.js fuzzy-search generated with https://fusejs.io/,
       // used for event search/filtering
       filteredEvents: [],
@@ -355,7 +348,7 @@ export default {
     end_date() {
       if (!this.end_day) return undefined;
       const [year, month, day] = this.end_day.split('/');
-      const hours = this.endAmPm === 'AM' ? this.endHour : String(Number(this.endHour) + 12);
+      const hours = this.endHour;
       const minutes = this.endMinute;
       const lastDay = buildDate({
         year, month, date: day, hours, minutes,
@@ -371,7 +364,6 @@ export default {
       if (!this.end_date) return true;
       if (!this.endHour) return true;
       if (!this.endMinute) return true;
-      if (!this.endAmPm) return true;
       return this.end_date * 1000 > (new Date()).getTime();
     },
 
