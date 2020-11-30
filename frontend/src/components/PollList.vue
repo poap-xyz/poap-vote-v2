@@ -330,18 +330,22 @@ export default {
       }
       .time-remaining {
         margin-top: 11px;
-        width: calc(100% + 30px);
-        margin-left: -15px;
+        width: calc(100% + 36px);
+        margin-left: -18px;
         &::v-deep .q-linear-progress {
           color: $light-green !important;
+        }
+        &::v-deep .q-linear-progress__track {
+          background: $alternative-medium-grey !important;
+          opacity: 1;
         }
       }
       .progress-bar {
         &-finished {
           height: 4px;
-          width: calc(100% + 30px);
-          margin-left: -15px;
-          background: $light-grey;
+          width: calc(100% + 34px);
+          margin-left: -17px;
+          background: $alternative-medium-grey;
           margin-top: 8px;
         }
       }
@@ -356,7 +360,7 @@ export default {
 
     .card-footer {
       margin-top: auto;
-      padding: 0 16px 16px;
+      padding: 0 15px 9px 9px;
       display: flex;
       align-items: flex-end;
       justify-content: space-between;

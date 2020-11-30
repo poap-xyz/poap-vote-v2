@@ -17,7 +17,7 @@
             <h1 class="purple-title home-title">
               POAP Vote
             </h1>
-            <h3 class="description text-secondary-light-grey">
+            <h3 class="description dark-grey-text-2">
               A sybil-resistant voting engine for anyone
               to run polls using Ethereum and POAP
             </h3>
@@ -29,7 +29,7 @@
               :label="isMobile ? '' : 'Create Poll'"
               :outline="isMobile ? false : true"
               :unelevated="isMobile ? false : true"
-              :background="isMobile ? '' : 'white'"
+              :background="isMobile ? '' : 'transparent'"
               :icon="isMobile ? require('../assets/icons/add-icon.svg') : ''"
               @click="$router.push({name: 'create'})"
             />
