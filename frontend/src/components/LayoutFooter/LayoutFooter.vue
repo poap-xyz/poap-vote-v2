@@ -19,17 +19,6 @@
             src="../../assets/icons/poap-logo.svg"
           >
         </div>
-        <div class="made-by-xivis text-subtitle2">
-          <span>Made by
-            <a
-              href="https://www.xivis.com/"
-              target="_blank"
-            >
-              Xivis
-            </a>
-          </span>
-          <span class="heart-icon" />
-        </div>
       </div>
       <div class="about-container">
         <p class="title text-subtitle1 primary text-bold">

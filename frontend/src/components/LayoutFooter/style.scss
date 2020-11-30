@@ -49,30 +49,6 @@
                     height: 65px;
                 }
             }
-            .made-by-xivis {
-                display: flex;
-                align-items: center;
-                color: $dark-grey-text-2;
-                margin-top: 10px;
-                @media (max-width: 767.98px) {
-                    margin-top: 47px;
-                }
-                a {
-                    color: $dark-grey-text-2;
-                    text-decoration: none;
-                    font-weight: 700;
-                    transition: all 0.2s linear;
-                    &:hover {
-                        color: $primary;
-                    }
-                }
-                .heart-icon {
-                    background: url('../../assets/icons/heart-icon.svg') center / contain no-repeat;
-                    height: 14px;
-                    width: 14px;
-                    margin-left: 6px;
-                }
-            }
         }
         .about-container {
             grid-area: 1 / 1 / 2 / 2;
