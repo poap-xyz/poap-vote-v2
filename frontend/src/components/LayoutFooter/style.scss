@@ -75,8 +75,11 @@
                     }
                 }
                 a {
-                    text-decoration: none;
-                    color: $dark-grey-text-2;
+                  text-decoration: none;
+                  color: $dark-grey-text-2;
+                  &:hover {
+                    color: $primary;
+                  }
                 }
             }
         }
@@ -113,18 +116,33 @@
                     width: 100%;
                     &.twitter {
                         background: url("../../assets/icons/twitter-logo.svg") center / contain no-repeat;
+                        &:hover{
+                          background: url("../../assets/icons/twitter-logo-hover.svg") center / contain no-repeat;
+                        }
                     }
                     &.github {
                         background: url("../../assets/icons/github-logo.svg") center / contain no-repeat;
+                        &:hover{
+                          background: url("../../assets/icons/github-logo-hover.svg") center / contain no-repeat;
+                        }
                     }
                     &.telegram {
                         background: url("../../assets/icons/telegram-logo.svg") center / contain no-repeat;
+                      &:hover{
+                        background: url("../../assets/icons/telegram-logo-hover.svg") center / contain no-repeat;
+                      }
                     }
                     &.reddit {
                         background: url("../../assets/icons/reddit-logo.svg") center / contain no-repeat;
+                      &:hover{
+                        background: url("../../assets/icons/reddit-logo-hover.svg") center / contain no-repeat;
+                      }
                     }
                     &.discord {
                         background: url("../../assets/icons/discord-logo.svg") center / contain no-repeat;
+                      &:hover{
+                        background: url("../../assets/icons/discord-logo-hover.svg") center / contain no-repeat;
+                      }
                     }
                 }
             }
