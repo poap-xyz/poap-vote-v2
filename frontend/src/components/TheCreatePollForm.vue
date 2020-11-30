@@ -641,10 +641,13 @@ export default {
           padding: 0!important;
           .q-btn__content {
             justify-content: space-between;
+            & > div {
+              line-height: 48px;
+            }
             .btn-icon {
               width: 16px;
               height: 14px;
-              margin-left: 18px;
+              margin: -2px 0 0 18px;
               filter: invert(86%) sepia(69%) saturate(4746%)
                 hue-rotate(253deg) brightness(103%) contrast(102%);
             }

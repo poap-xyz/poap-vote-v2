@@ -176,6 +176,11 @@ export default class Home extends mixins(title, helpers) {
         }
         .q-btn__wrapper {
           padding: 10px 41px;
+          .q-btn__content {
+            & > div {
+              line-height: 29px;
+            }
+          }
           @media (max-width: 767.98px) {
             padding: 0;
             .q-btn__content {

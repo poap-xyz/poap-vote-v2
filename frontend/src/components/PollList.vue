@@ -398,7 +398,7 @@ export default {
         margin: 0;
         color: $dark-grey;
         background: $other-light-grey;
-        padding: 8px 12px;
+        padding: 8px 12px 6px;
         border-radius: 100px;
       }
     }

@@ -58,20 +58,23 @@
                 </div>
                 <div
                   v-else
-                  class="tokens-card-container"
+                  class="tokens-scroller"
                 >
-                  <a
-                    v-for="item in $store.state.user.tokens"
-                    :key="item.tokenId"
-                    :href="'https://app.poap.xyz/token/'+item.tokenId"
-                    class="image-container"
-                    target="_blank"
-                  >
-                    <img
-                      :src="item.event.image_url"
-                      alt=""
+                  <div class="tokens-card-container">
+                    <a
+                      v-for="item in $store.state.user.tokens"
+                      :key="item.tokenId"
+                      :href="'https://app.poap.xyz/token/'+item.tokenId"
+                      class="image-container"
+                      target="_blank"
                     >
-                  </a>
+                      <img
+                        :src="item.event.image_url"
+                        alt=""
+                      >
+                    </a>
+                  </div>
+                  <div class="spacer" />
                 </div>
               </div>
               <base-button
