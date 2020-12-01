@@ -108,6 +108,9 @@
         >
           Load more
         </button>
+        <div>
+          <img src="~assets/icons/down-chevron.svg" class="chevron" />
+        </div>
       </div>
     </div>
   </div>
@@ -234,6 +237,17 @@ export default {
       padding: 0;
       text-align: center;
       cursor: pointer;
+      &:focus {
+        outline: 0;
+      }
+    }
+    &:hover {
+      .btn-more {
+        font-weight: bold;
+      }
+      img {
+        transform: scale(1.2);
+      }
     }
   }
   > h5 {
