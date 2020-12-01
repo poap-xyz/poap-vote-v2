@@ -82,6 +82,11 @@ export default {
 
         await this.$store.dispatch('user/setEthereumData', provider);
       } catch (err) {
+        if (typeof err === 'string') {
+          if (err.toLowerCase().indexOf('modal closed by user') > -1) {
+            return;
+          }
+        }
         this.showError(err, 'Unable to connect wallet. Please try again.');
       } finally {
         this.isLoading = false;

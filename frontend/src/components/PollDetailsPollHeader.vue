@@ -169,6 +169,10 @@ export default {
     .q-linear-progress {
       color: $light-green !important;
     }
+    .q-linear-progress__track {
+      background: $alternative-medium-grey !important;
+      opacity: 1;
+    }
   }
 }
 .poll-completed {

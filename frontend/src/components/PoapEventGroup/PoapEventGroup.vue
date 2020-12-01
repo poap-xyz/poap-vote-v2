@@ -1,8 +1,10 @@
 <template>
-  <div class="event-group-container">
+  <div class="event-group-container"
+       v-bind:class="siteHeader ? 'header' : ''"
+  >
     <div
-      v-for="item in (eventGroup.length > (isMobile ? 3 : 5)
-        ? [...eventGroup].slice(0, (isMobile ? 3 : 5))
+      v-for="item in (eventGroup.length > (isMobile || siteHeader ? 3 : 5)
+        ? [...eventGroup].slice(0, (isMobile || siteHeader ? 3 : 5))
         : eventGroup)"
       :key="item.tokenId"
       class="token-item"
@@ -14,10 +16,10 @@
       />
     </div>
     <div
-      v-if="eventGroup.length > (isMobile ? 3 : 5)"
-      class="token-item more"
+      v-if="eventGroup.length > (isMobile || siteHeader ? 3 : 5)"
+      v-bind:class="siteHeader ? 'header-more' : 'token-item more'"
     >
-      <span>+{{ eventGroup.length - (isMobile ? 3 : 5) }}</span>
+      <span>+{{ eventGroup.length - (isMobile || siteHeader ? 3 : 5) }}</span>
       <q-tooltip
         v-if="!withoutTooltip"
         content-class="poap-tooltip"

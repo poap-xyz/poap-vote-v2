@@ -43,7 +43,7 @@ body.home .header-wrapper {
 
     .poap-logo {
       height: 39px;
-      width: 30px;        
+      width: 30px;
       @media(min-width: 768px) {
         height: 82px;
         width: 63px;
@@ -99,6 +99,13 @@ body.home .header-wrapper {
                     box-shadow: unset!important;
                     border: 1px solid $dark-grey-text-2!important;
                 }
+                .q-btn__wrapper {
+                  .q-btn__content {
+                    & > div {
+                      line-height: 48px;
+                    }
+                  }
+                }
             }
         }
 
@@ -110,7 +117,7 @@ body.home .header-wrapper {
                 }
             }
         }
-        
+
         .nav-link {
             font-weight: 500;
             font-size: 14px;
@@ -134,18 +141,21 @@ body.home .header-wrapper {
             display: flex;
             .address-content {
                 cursor: pointer;
-                border: 1px solid $light-grey!important;
+                border: 1px solid $light-grey !important;
                 border-radius: 40px;
                 display: flex;
                 flex-direction: row;
                 height: 40px;
                 padding: 8px 10px;
                 align-items: center;
-                color: $secondary-light-grey!important;
+                color: $secondary-light-grey !important;
                 font-weight: 500;
                 font-size: 14px;
                 @media(min-width: 768px) {
                     font-size: 16px;
+                }
+                > span {
+                  margin-top: 5px;
                 }
                 > div {
                   margin-left: 8px;
@@ -153,7 +163,21 @@ body.home .header-wrapper {
                 }
                 .user-image {
                     border-radius: 50%;
-                    margin-right: 5px; 
+                    margin-right: 5px;
+                }
+                .event-group-container{
+                  background: $light-grey;
+                  border-radius: 40px;
+                  padding: 2px 10px;
+                  margin-right: -10px;
+                  div {
+                    border: 1px solid red;
+                  }
+                }
+                .token-item {
+                  &:nth-child(n+2) {
+                    margin-left: (-100px) !important;
+                  }
                 }
             }
         }
@@ -177,12 +201,27 @@ body.home .header-wrapper {
         &::v-deep {
             .q-btn {
                 min-width: 170px;
+                margin: 0;
                 @media(max-width: 767.98px) {
-                    height: 40px !important;
+                  height: 40px !important;
+                  .q-btn__wrapper {
+                    .q-btn__content {
+                      & > div {
+                        line-height: 18px !important;
+                      }
+                    }
+                  }
                 }
                 color: $dark-grey-text-2!important;
                 .q-btn__wrapper::before {
                     border: 1px solid $dark-grey-text-2!important;
+                }
+                .q-btn__wrapper {
+                  .q-btn__content {
+                    & > div {
+                      line-height: 40px;
+                    }
+                  }
                 }
             }
         }
@@ -192,30 +231,38 @@ body.home .header-wrapper {
         display: flex;
         justify-content: center;
         color: $secondary-light-grey;
+      .tokens-scroller {
+        width: 100%;
+        max-height: 320px;
+        overflow: auto;
+        overscroll-behavior: none;
         .tokens-card-container {
-            display: grid;
-            grid-template-columns: repeat(3, 80px);
-            justify-content: space-between;
-            width: 100%;
-            padding: 23px 10px 10px;
-            max-height: 300px;
-            overflow-y: auto;
-            .image-container {
-                width: 100%;
-                padding: 20px;
-                box-shadow: $secondary-shadow;
-                border-radius: 12px;
-                background: $white;
-                height: 80px;
-                margin-bottom: 10px;
-                img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    object-position: center;
-                    border-radius: 50%;
-                }
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          justify-content: space-between;
+          width: 100%;
+          padding: 23px 10px 10px;
+          .image-container {
+            padding: 10px;
+            box-shadow: $secondary-shadow;
+            border-radius: 12px;
+            background: $white;
+            height: 80px;
+            width: 80px;
+            margin: 0 auto 10px;
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              object-position: center;
+              border-radius: 50%;
             }
+          }
         }
+        .spacer{
+          height: 1px;
+          width: 100%;
+        }
+      }
     }
 }

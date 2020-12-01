@@ -27,7 +27,7 @@
         }
         @media (max-width: 767.98px) {
             padding: 30px 24px 0;
-            grid-template-columns: auto 1fr;
+            grid-template-columns: 1fr;
             grid-template-rows: 1fr auto;
             row-gap: 52px;
             column-gap: 10px;
@@ -35,7 +35,7 @@
         .logo-container {
             grid-area: 1 / 1 / 2 / 2;
             @media (max-width: 767.98px) {
-                grid-area: 2 / 1 / 3 / 3;
+                grid-area: 3 / 1 / 3 / 1;
                 align-items: center;
                 display: flex;
                 flex-direction: column;
@@ -49,68 +49,58 @@
                     height: 65px;
                 }
             }
-            .made-by-xivis {
-                display: flex;
-                align-items: center;
-                color: $dark-grey-text-2;
-                margin-top: 10px;
-                @media (max-width: 767.98px) {
-                    margin-top: 47px;
-                }
-                a {
-                    color: $dark-grey-text-2;
-                    text-decoration: none;
-                    font-weight: 700;
-                    transition: all 0.2s linear;
-                    &:hover {
-                        color: $primary;
-                    }
-                }
-                .heart-icon {
-                    background: url('../../assets/icons/heart-icon.svg') center / contain no-repeat;
-                    height: 14px;
-                    width: 14px;
-                    margin-left: 6px;
-                }
-            }
         }
         .about-container {
-            grid-area: 1 / 1 / 2 / 2;
+            .title {
+              @media (max-width: 768px) {
+                text-align: center;
+                margin-bottom: 20px;
+              }
+            }
+            grid-area: 1 / 1 / 1 / 1;
             @media (min-width: 768px) {
                 grid-area: 1 / 2 / 2 / 3;
             }
             .about-list {
-                padding: 0;
+                max-width: 400px;
                 list-style: none;
-                margin: 0;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
                 @media (min-width: 768px) {
-                    display: grid;
                     grid-template-columns: repeat(3, auto);
                     grid-template-rows: repeat(2, 1fr);
                     column-gap: 48px;
                     row-gap: 5px;
+                    padding: 0;
+                    max-width: none;
                 }
                 li {
                     width: max-content;
                     @media (max-width: 767.98px) {
+                        padding: 0 20px;
                         &:not(:last-child) {
                             margin-bottom: 10px;
                         }
                     }
                 }
                 a {
-                    text-decoration: none;
-                    color: $dark-grey-text-2;
+                  text-decoration: none;
+                  color: $dark-grey-text-2;
+                  &:hover {
+                    color: $primary;
+                  }
                 }
             }
         }
         .join-container {
-            grid-area: 1 / 2 / 2 / 3;
+            grid-area: 2 / 1 / 2 / 1;
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
+            align-items: center;
             @media (min-width: 768px) {
                 grid-area: 1 / 3 / 2 / 4;
+                align-items: flex-end;
             }
             min-width: 160px;
             .social-container {
@@ -121,6 +111,7 @@
                     height: 28px;
                     width: 28px;
                     display: inline-flex;
+                    margin: 8px;
                     &:not(:last-child) {
                         margin-right: 4px;
                         @media (min-width: 768px) {
@@ -128,6 +119,7 @@
                         }
                     }
                     @media (min-width: 768px) {
+                        margin: 0px;
                         height: 24px;
                         width: 24px;
                     }
@@ -137,18 +129,33 @@
                     width: 100%;
                     &.twitter {
                         background: url("../../assets/icons/twitter-logo.svg") center / contain no-repeat;
+                        &:hover{
+                          background: url("../../assets/icons/twitter-logo-hover.svg") center / contain no-repeat;
+                        }
                     }
                     &.github {
                         background: url("../../assets/icons/github-logo.svg") center / contain no-repeat;
+                        &:hover{
+                          background: url("../../assets/icons/github-logo-hover.svg") center / contain no-repeat;
+                        }
                     }
                     &.telegram {
                         background: url("../../assets/icons/telegram-logo.svg") center / contain no-repeat;
+                      &:hover{
+                        background: url("../../assets/icons/telegram-logo-hover.svg") center / contain no-repeat;
+                      }
                     }
                     &.reddit {
                         background: url("../../assets/icons/reddit-logo.svg") center / contain no-repeat;
+                      &:hover{
+                        background: url("../../assets/icons/reddit-logo-hover.svg") center / contain no-repeat;
+                      }
                     }
                     &.discord {
                         background: url("../../assets/icons/discord-logo.svg") center / contain no-repeat;
+                      &:hover{
+                        background: url("../../assets/icons/discord-logo-hover.svg") center / contain no-repeat;
+                      }
                     }
                 }
             }

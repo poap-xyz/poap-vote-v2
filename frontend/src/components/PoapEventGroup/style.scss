@@ -18,6 +18,10 @@
         border: 2px solid $white;
         color: $white;
         background: $dark-grey;
+        span {
+          margin-top: 2px;
+          margin-left: -2px;
+        }
       }
       &:nth-child(n+2) {
         margin-left: (-10px);
@@ -28,6 +32,16 @@
         height: 100%;
         object-fit: cover;
         object-position: center;
+      }
+    }
+    &.header {
+      .token-item {
+        &:nth-child(n+2) {
+          margin-left: (-20px);
+        }
+      }
+      .header-more {
+        padding: 6px 3px 0;
       }
     }
 }

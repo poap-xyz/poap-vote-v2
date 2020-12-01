@@ -21,7 +21,7 @@ body:not(.create-poll) {
   }
 }
 
-h1 {  
+h1 {
   color: $primary;
   font-weight: bold;
   margin-bottom: 0rem;
@@ -80,13 +80,15 @@ h2, h5 {
 }
 
 .card-border {
-  border: 2px solid transparent;
+  border: 0;
   box-shadow: 0px 6px 16px rgba(187, 196, 239, 0.41);
   border-radius: 12px;
+  padding: 2px;
 }
 
 .card-border:hover {
   border: 2px solid $primary-lightened-text;
+  padding: 0;
 }
 
 .body--light, .dark-toggle {
@@ -121,6 +123,9 @@ h2, h5 {
   font-size: 12px;
   font-weight: 400;
   line-height: 17px;
+  @media (max-width: 768px) {
+    font-size: 13px;
+  }
 }
 
 .big-title {
@@ -246,6 +251,6 @@ h2, h5 {
   font-family: $secondary-font;
 }
 
-.web3modal-modal-lightbox{      
+.web3modal-modal-lightbox{
   z-index: 9999!important;
 }

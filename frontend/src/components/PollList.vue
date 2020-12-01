@@ -24,7 +24,7 @@
                   <little-badge :poll-type="pollType" />
                   <p
                     v-if="timeRemaining[index]"
-                    class="no-margin dark-grey-text"
+                    class="no-margin dark-grey-text remaining"
                   >
                     {{ timeRemaining[index] }} remaining
                   </p>
@@ -108,6 +108,9 @@
         >
           Load more
         </button>
+        <div>
+          <img src="~assets/icons/down-chevron.svg" class="chevron" />
+        </div>
       </div>
     </div>
   </div>
@@ -234,6 +237,17 @@ export default {
       padding: 0;
       text-align: center;
       cursor: pointer;
+      &:focus {
+        outline: 0;
+      }
+    }
+    &:hover {
+      .btn-more {
+        font-weight: bold;
+      }
+      img {
+        transform: scale(1.2);
+      }
     }
   }
   > h5 {
@@ -328,20 +342,29 @@ export default {
           line-height: 21px;
         }
       }
+      .remaining {
+        @media (max-width: 768px) {
+          font-size: 13px;
+        }
+      }
       .time-remaining {
         margin-top: 11px;
-        width: calc(100% + 30px);
-        margin-left: -15px;
+        width: calc(100% + 36px);
+        margin-left: -18px;
         &::v-deep .q-linear-progress {
           color: $light-green !important;
+        }
+        &::v-deep .q-linear-progress__track {
+          background: $alternative-medium-grey !important;
+          opacity: 1;
         }
       }
       .progress-bar {
         &-finished {
           height: 4px;
-          width: calc(100% + 30px);
-          margin-left: -15px;
-          background: $light-grey;
+          width: calc(100% + 34px);
+          margin-left: -17px;
+          background: $alternative-medium-grey;
           margin-top: 8px;
         }
       }
@@ -356,7 +379,7 @@ export default {
 
     .card-footer {
       margin-top: auto;
-      padding: 0 16px 16px;
+      padding: 0 15px 9px 9px;
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
@@ -394,7 +417,7 @@ export default {
         margin: 0;
         color: $dark-grey;
         background: $other-light-grey;
-        padding: 8px 12px;
+        padding: 8px 12px 6px;
         border-radius: 100px;
       }
     }
