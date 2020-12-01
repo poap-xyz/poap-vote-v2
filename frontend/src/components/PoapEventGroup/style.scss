@@ -34,4 +34,14 @@
         object-position: center;
       }
     }
+    &.header {
+      .token-item {
+        &:nth-child(n+2) {
+          margin-left: (-20px);
+        }
+      }
+      .header-more {
+        padding: 6px 3px 0;
+      }
+    }
 }

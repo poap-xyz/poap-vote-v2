@@ -24,7 +24,7 @@
                   <little-badge :poll-type="pollType" />
                   <p
                     v-if="timeRemaining[index]"
-                    class="no-margin dark-grey-text"
+                    class="no-margin dark-grey-text remaining"
                   >
                     {{ timeRemaining[index] }} remaining
                   </p>
@@ -340,6 +340,11 @@ export default {
         @media (min-width: 768px) {
           font-size: 14px;
           line-height: 21px;
+        }
+      }
+      .remaining {
+        @media (max-width: 768px) {
+          font-size: 13px;
         }
       }
       .time-remaining {

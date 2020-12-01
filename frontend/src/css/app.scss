@@ -123,6 +123,9 @@ h2, h5 {
   font-size: 12px;
   font-weight: 400;
   line-height: 17px;
+  @media (max-width: 768px) {
+    font-size: 13px;
+  }
 }
 
 .big-title {

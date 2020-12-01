@@ -16,6 +16,8 @@ export default class PoapEventGroup extends mixins(helpers) {
 
     @Prop(Boolean) withoutTooltip;
 
+    @Prop(Boolean) siteHeader;
+
     created() {
       window.addEventListener('resize', this.handleResize);
       this.handleResize();

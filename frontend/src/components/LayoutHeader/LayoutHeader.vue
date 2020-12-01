@@ -35,7 +35,9 @@
                   }}
                 </span>
                 <poap-event-group
-                  v-if="!isMobile"
+                  v-if="!isMobile &&
+                    $store.state.user.tokens && $store.state.user.tokens.length > 0"
+                  :site-header="true"
                   :without-tooltip="true"
                   :event-group="$store.state.user.tokens && $store.state.user.tokens.length
                     ? $store.state.user.tokens : []"
