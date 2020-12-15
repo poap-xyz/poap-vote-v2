@@ -165,7 +165,7 @@
                     style="max-width:40px"
                   >
                 </q-avatar>
-                {{ event.opt.name }}
+                <span>{{ event.opt.name }}</span>
               </q-chip>
             </template>
           </q-select>
@@ -324,7 +324,7 @@ export default {
       },
       // UI helpers
       isLoading: false,
-      maxOptions: 20, // maximum number of poll options
+      maxOptions: 52, // maximum number of poll options
     };
   },
 

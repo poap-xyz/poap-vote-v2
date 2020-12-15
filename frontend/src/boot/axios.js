@@ -3,8 +3,8 @@ import axios from 'axios';
 
 const ENVIRONMENT_URLS = {
   production: 'https://poap.vote',
-  // development: 'http://localhost:3000',
-  development: 'https://api-poap-vote.xivis.com',
+  development: 'http://localhost:3000',
+  // development: 'https://api-poap-vote.xivis.com',
   staging: 'https://api-poap-vote.xivis.com',
 };
 

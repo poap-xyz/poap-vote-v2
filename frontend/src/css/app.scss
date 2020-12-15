@@ -254,3 +254,15 @@ h2, h5 {
 .web3modal-modal-lightbox{
   z-index: 9999!important;
 }
+
+.q-chip {
+  z-index: 1;
+
+  span {
+    overflow: hidden;
+  }
+
+  &__icon--remove {
+    z-index: 10;
+  }
+}

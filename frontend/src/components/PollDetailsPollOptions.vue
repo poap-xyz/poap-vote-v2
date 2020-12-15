@@ -93,7 +93,13 @@ export default {
     return {
       selectedOption: undefined,
       showVotesByAddress: false, // true to show votes by account, false to show by token
-      alphabetArray: [...Array(26)].map((_, i) => String.fromCharCode('A'.charCodeAt(0) + i)),
+      alphabetArray: [...Array(55)].map((_, i) => {
+        if (i > 25) {
+          const dif = i - 26 < 26 ? i - 26 : i - 51;
+          return `A${String.fromCharCode('A'.charCodeAt(0) + dif)}`;
+        }
+        return String.fromCharCode('A'.charCodeAt(0) + i);
+      }),
     };
   },
 

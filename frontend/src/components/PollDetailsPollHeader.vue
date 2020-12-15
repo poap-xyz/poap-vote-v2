@@ -10,26 +10,30 @@
           v-if="!isMobile"
           :poll-type="timeRemaining !== 0 ? 'activePolls' : 'completedPolls'"
         />
-        <p
-          v-if="timeRemaining !== 0"
-          class="small-text dark-grey-text no-margin"
+        <span
+          v-if="poll && poll.end_date !== 0"
         >
-          <span v-if="!isMobile">
-            This voting ends on
-          </span>
-          <span v-if="!isMobile">
-            {{ secondsToFormattedDate(poll.end_date) }} -
-          </span>
-          <span>
-            {{ timeRemaining }} remaining
-          </span>
-        </p>
-        <p
-          v-else
-          class="small-text dark-grey-text no-margin font"
-        >
-          This voting ended on {{ secondsToFormattedDate(poll.end_date) }}
-        </p>
+          <p
+            v-if="timeRemaining !== 0"
+            class="small-text dark-grey-text no-margin"
+          >
+            <span v-if="!isMobile">
+              This voting ends on
+            </span>
+            <span v-if="!isMobile">
+              {{ secondsToFormattedDate(poll.end_date) }} -
+            </span>
+            <span>
+              {{ timeRemaining }} remaining
+            </span>
+          </p>
+          <p
+            v-else
+            class="small-text dark-grey-text no-margin font"
+          >
+            This voting ended on {{ secondsToFormattedDate(poll.end_date) }}
+          </p>
+        </span>
         <div class="progress-container">
           <q-linear-progress
             :value="getPercentagePollTime(poll.start_date, poll.end_date)"
@@ -94,6 +98,7 @@ export default {
      */
     timeRemaining() {
       // If poll has ended, time remaining is zero
+      if (this.poll.end_date === 0) return 1;
       const end = (new Date(this.poll.end_date)).getTime();
       if (this.now >= end) return 0;
       // Otherwise, convert to days/hours/minutes
