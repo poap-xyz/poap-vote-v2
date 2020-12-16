@@ -20,6 +20,7 @@ export async function getPolls({ commit }) {
 
   // Then we split polls between active and completed
   const activePolls = [];
+  const activePollsUnsorted = [];
   const completedPolls = [];
   allPolls.forEach((poll) => {
     // Convert timestamps from seconds to milliseconds to simplify use with JS Date object
@@ -28,8 +29,17 @@ export async function getPolls({ commit }) {
     // Check if this poll is active or complete
     const now = (new Date()).getTime();
     if (now >= poll.end_date && poll.end_date > 0) completedPolls.push(poll);
-    else activePolls.push(poll);
+    else activePollsUnsorted.push(poll);
   });
+
+  activePollsUnsorted
+    .filter((poll) => poll.end_date !== 0)
+    .sort((a, b) => a.end_date - b.end_date)
+    .forEach((poll) => activePolls.push(poll));
+  activePollsUnsorted
+    .filter((poll) => poll.end_date === 0)
+    .forEach((poll) => activePolls.push(poll));
+  completedPolls.sort((a, b) => b.end_date - a.end_date);
 
   commit('setPolls', { activePolls, completedPolls });
 }
