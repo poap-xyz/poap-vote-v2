@@ -1,8 +1,17 @@
 <template>
   <div class="poll-valid-events">
     <!-- Wording for voting page -->
-    <p class="text-subtitle2 dark-grey text-weight-regular">
+    <p
+      v-if="!isPollOngoing"
+      class="text-subtitle2 dark-grey text-weight-regular"
+    >
       Users were eligible to vote in this poll if they held any of the following POAP tokens.
+    </p>
+    <p
+      v-if="isPollOngoing"
+      class="text-subtitle2 dark-grey text-weight-regular"
+    >
+      Users are eligible to vote in this poll if they hold any of the following POAP tokens.
     </p>
     <!-- Event cards -->
     <div
