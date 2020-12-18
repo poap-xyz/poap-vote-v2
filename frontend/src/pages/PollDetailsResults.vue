@@ -12,7 +12,9 @@
           class="poll-result-container"
         >
           <white-container>
-            <poll-details-poll-options />
+            <poll-details-poll-options
+              :show-results="true"
+            />
 
             <poll-details-poll-footer
               type-poll="finished"

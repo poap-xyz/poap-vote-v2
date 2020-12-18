@@ -57,6 +57,19 @@
           </div>
         </q-item>
       </q-card>
+      <div
+        v-if="showResults"
+        class="caption-container"
+      >
+        <div
+          class="text-caption hyperlink"
+          @click="changeVoteDisplay"
+        >
+          Show results by
+          <span v-if="showVotesByAddress">token counts</span>
+          <span v-else>address</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -167,11 +180,6 @@ export default {
 
     changeVoteDisplay() {
       this.showVotesByAddress = !this.showVotesByAddress;
-      this.$router.replace({
-        name: 'results',
-        params: { id: this.$route.params.id },
-        query: { byAddress: this.showVotesByAddress ? 1 : 0 }, // Convert Boolean to 0 or 1
-      });
     },
 
     getOptionHighestPercentage() {
@@ -324,5 +332,11 @@ export default {
     position: relative;
     padding: 8px 16px 15px;
   }
+}
+
+.caption-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 5px;
 }
 </style>
