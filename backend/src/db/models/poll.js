@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     end_date: DataTypes.DATE,
     valid_event_ids: DataTypes.ARRAY(DataTypes.BIGINT),
     attestation: DataTypes.STRING(130),
+    image_poll: DataTypes.BOOLEAN(),
   }, { });
 
   Poll.associate = (models) => {
