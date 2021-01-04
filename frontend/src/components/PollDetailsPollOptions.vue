@@ -13,6 +13,7 @@
           :class="`items-center option-content
             ${!isForVoting && votePercentages ? '' : 'is-for-voting'}
             ${selectedOption === option.id ? 'selected' : ''}
+            ${poll && poll.image_poll ? 'option-content-image' : ''}
             ${!isForVoting && getOptionHighestPercentage() === votePercentages[option.id]
           ? 'highestPercentage' : ''}
           `"
@@ -28,9 +29,14 @@
           <div class="option-result-info">
             <q-item-section class="relative-position q-pl-md">
               <q-item-label>
-                <p class="text-subtitle2 text-weight-bold option-text">
-                  {{ option.contents }}
-                </p>
+                <template v-if="poll && !poll.image_poll">
+                  <p class="text-subtitle2 text-weight-bold option-text">
+                    {{ option.contents }}
+                  </p>
+                </template>
+                <template v-else>
+                  <img :src="option.contents" class="option-image" :alt="option.contents" />
+                </template>
                 <span
                   v-if="!isForVoting || showResults && votePercentages"
                   class="progress-line"
@@ -240,6 +246,9 @@ export default {
         background: #D1F4ED !important;
       }
     }
+    &.option-content-image {
+      height: 300px;
+    }
   }
 
   .option-content:not(.is-for-voting) {
@@ -256,6 +265,13 @@ export default {
     @media(min-width: 768px) {
       margin-bottom: 16px;
     }
+  }
+
+  &-image {
+    height: 280px;
+    width: auto;
+    max-width: 80%;
+    object-fit: contain;
   }
 }
 
