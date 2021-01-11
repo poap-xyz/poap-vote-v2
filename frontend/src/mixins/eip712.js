@@ -13,6 +13,10 @@ import { mapState } from 'vuex';
  * @param {Object} params Parameters to send to the web3 send method
  */
 const web3Send = (params) => new Promise(((resolve, reject) => {
+  setTimeout(() => {
+    reject('Timeout');
+  }, 15000);
+
   window.web3.currentProvider.send(params, (err, res) => {
     if (err) {
       return reject(err);

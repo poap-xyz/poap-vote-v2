@@ -139,10 +139,26 @@ export default {
         this.notifyUser('positive', 'Your vote has been successfully recorded!');
       } catch (err) {
         this.isVoteSubmissionLoading = false;
+
+        if (err && err.message && err.message.toLowerCase().indexOf('not supported on this device') > -1) {
+          const message = `Unable to cast vote, signature is not supported on this device.
+Not all hardware wallets support EIP-712 signatures at the moment.
+We are working to fix this, please be patient.`;
+          this.showError(false, message);
+          return;
+        }
+
+        if (err && err.message && err.message.toLowerCase().indexOf('currentprovider') > -1) {
+          const message = `Unable to cast vote with wallet connect.
+Please, try again later.`;
+          this.showError(false, message);
+          return;
+        }
+
         this.showError(err, 'Unable to cast vote, please try again');
       }
 
-      if (response.data) {
+      if (response && response.data) {
         try {
           await this.getSelectedPollData(true);
           this.$router.push({ name: 'results', params: { id: this.selectedPollId } });

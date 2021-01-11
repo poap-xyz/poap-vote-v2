@@ -20,8 +20,9 @@
 <script>
 import { mapState } from 'vuex';
 import Web3Modal from 'web3modal';
-import WalletConnectProvider from '@walletconnect/web3-provider';
 import helpers from 'src/mixins/helpers';
+import { ethers } from 'ethers';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 
 export default {
   name: 'ConnectWallet',
@@ -70,7 +71,7 @@ export default {
           walletconnect: {
             package: WalletConnectProvider, // required
             options: {
-              infuraId: process.env.INFURA_ID, // required
+              infuraId: '7945cc1b8dc54f778f2ef9b8172bfbe7', // required
             },
           },
         };
@@ -80,7 +81,11 @@ export default {
         });
         const provider = await web3Modal.connect();
 
-        await this.$store.dispatch('user/setEthereumData', provider);
+        const ethersProvider = new ethers.providers.Web3Provider(provider);
+        const signer = ethersProvider.getSigner();
+        const userAddress = await signer.getAddress();
+
+        await this.$store.dispatch('user/setEthereumData', userAddress);
       } catch (err) {
         if (typeof err === 'string') {
           if (err.toLowerCase().indexOf('modal closed by user') > -1) {
