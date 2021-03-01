@@ -60,9 +60,8 @@
     <h3
       v-if="poll && poll.description"
       class="text-subtitle2 dark-grey-text q-mb-lg text-center q-px-lg text-weight-regular"
-    >
-      {{ poll.description }}
-    </h3>
+      v-html="linkify(poll.description)"
+    />
   </div>
 </template>
 
@@ -70,12 +69,17 @@
 import { mapState } from 'vuex';
 import helpers from 'src/mixins/helpers';
 import LittleBadge from 'components/LittleBadge';
+import linkify from 'linkifyjs/lib/linkify-string';
 
 export default {
   name: 'PollDetailsPollHeader',
 
   components: {
     LittleBadge,
+  },
+
+  methods: {
+    linkify,
   },
 
   mixins: [helpers],
@@ -138,6 +142,13 @@ export default {
         font-size: 16px;
         line-height: 21px;
       }
+    }
+  }
+
+  h3 {
+    a {
+      text-decoration: none !important;
+      color: $primary;
     }
   }
 }
