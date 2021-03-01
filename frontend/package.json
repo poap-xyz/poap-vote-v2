@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "dev": "source .env.dev && npx quasar dev",
-    "build-prod": "npx quasar build",
+    "build-prod": "quasar build",
     "build-staging": "source .env.staging && npx quasar build",
     "lint": "eslint --ext .js,.vue src",
     "test": "cypress run",
