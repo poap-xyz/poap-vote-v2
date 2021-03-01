@@ -82,10 +82,10 @@ class PollValidator {
     }
 
     static validatePollOptions(pollOptions) {
-        if (!pollOptions.length || pollOptions.length < 2 || pollOptions.length > 52) {
+        if (!pollOptions.length || pollOptions.length < 2) {
             return {
                 isValid: false,
-                errorMessage: "Poll must have between 2 and 52 options",
+                errorMessage: "Poll must have at least 2 options",
             };
         }
 

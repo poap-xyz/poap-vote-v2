@@ -20,10 +20,9 @@
           @click="selectOption(option.id)"
         >
           <span
-            v-if="index < alphabetArray.length"
             class="letter primary text-weight-regular"
           >
-            {{ alphabetArray[index] }}
+            {{ convertToNumberingScheme(index + 1) }}
           </span>
 
           <div class="option-result-info">
@@ -192,6 +191,20 @@ export default {
       let highestNumber = 0;
       highestNumber = Math.max(...Object.values(this.votePercentages));
       return highestNumber;
+    },
+
+    convertToNumberingScheme(number) {
+      const baseChar = ('A').charCodeAt(0);
+      let letters = '';
+
+      do {
+        number -= 1;
+        letters = String.fromCharCode(baseChar + (number % 26)) + letters;
+        // eslint-disable-next-line no-bitwise
+        number = (number / 26) >> 0; // quick `floor`
+      } while (number > 0);
+
+      return letters;
     },
   },
 };

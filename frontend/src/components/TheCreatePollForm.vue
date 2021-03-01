@@ -65,7 +65,6 @@
         <!-- Add new option -->
         <div class="add-option-container">
           <base-button
-            v-if="!isAtMaxOptions"
             id="createPoll-addOption"
             color="primary"
             :dense="true"
@@ -74,12 +73,6 @@
             :icon="require('../assets/icons/add-icon.svg')"
             @click="addOption"
           />
-          <div
-            v-else
-            class="text-caption text-italic"
-          >
-            You have reached the maximum number of poll options
-          </div>
         </div>
 
         <!-------------------- VALID EVENTS SELECTION --------------------->
@@ -324,7 +317,6 @@ export default {
       },
       // UI helpers
       isLoading: false,
-      maxOptions: 52, // maximum number of poll options
     };
   },
 
@@ -333,13 +325,6 @@ export default {
       userAddress: (state) => state.user.userAddress,
       events: (state) => state.poap.events,
     }),
-
-    /**
-     * @notice Returns true if the user is at the limit of poll options
-     */
-    isAtMaxOptions() {
-      return this.poll_options.length === this.maxOptions;
-    },
 
     /**
      * @notice Takes the entered date and time provided by the user and
