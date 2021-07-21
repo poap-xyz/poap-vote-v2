@@ -27,7 +27,6 @@ export default {
     script.src = '//gc.zgo.at/count.js';
     script.setAttribute('data-goatcounter', process.env.VUE_APP_GOAT_COUNTER);
     document.getElementsByTagName('head')[0].appendChild(script);
-    console.log('GOAT', process.env.VUE_APP_GOAT_COUNTER, script, script['data-goatcounter']);
 
     // Get user's POAP tokens
     if (userAddress && JSON.parse(userAddress)) {
