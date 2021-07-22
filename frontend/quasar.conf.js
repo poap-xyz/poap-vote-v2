@@ -86,7 +86,7 @@ module.exports = function (ctx) {
       env: {
         INFURA_ID: JSON.stringify(process.env.INFURA_ID),
         BUILD_ENV: JSON.stringify(process.env.NODE_ENV),
-        VUE_APP_GOAT_COUNTER:  '"https://poap-vote.goatcounter.com/count"',
+        VUE_APP_GOAT_COUNTER:  JSON.stringify(process.env.VUE_APP_GOAT_COUNTER),
       },
     },
 
