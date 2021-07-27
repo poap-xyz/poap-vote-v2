@@ -1,4 +1,3 @@
-
 <template>
   <!-- Show valid events -->
   <div class="valid-events-container">
