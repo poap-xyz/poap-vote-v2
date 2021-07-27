@@ -58,7 +58,6 @@ export default {
 };
 </script>
 
-
 <style lang="scss" scoped>
 .create-poll-wrapper {
   @media (min-width: 768px) {

@@ -23,6 +23,12 @@ export default {
     const { userAddress } = window.localStorage;
     let tokens = [];
 
+    const script = document.createElement('script');
+    script.src = '//gc.zgo.at/count.js';
+    script.async = true;
+    script.setAttribute('data-goatcounter', process.env.VUE_APP_GOAT_COUNTER);
+    document.getElementsByTagName('head')[0].appendChild(script);
+
     // Get user's POAP tokens
     if (userAddress && JSON.parse(userAddress)) {
       const poapTokensUrl = `https://api.poap.xyz/actions/scan/${JSON.parse(userAddress)}`;
