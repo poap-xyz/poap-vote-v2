@@ -7,6 +7,7 @@ const jsonFetch = (url) => fetch(url).then((res) => res.json());
  */
 export async function getEvents({ commit }) {
   const events = await jsonFetch('https://api-event.poap.xyz');
+
   commit('setEvents', events);
 }
 
