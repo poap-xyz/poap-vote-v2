@@ -31,7 +31,7 @@ export default {
 
     // Get user's POAP tokens
     if (userAddress && JSON.parse(userAddress)) {
-      const poapTokensUrl = `https://api.poap.xyz/actions/scan/${JSON.parse(userAddress)}`;
+      const poapTokensUrl = `https://api.poap.tech/actions/scan/${JSON.parse(userAddress)}`;
       tokens = await jsonFetch(poapTokensUrl);
     }
     this.$store.commit('user/setTokens', tokens);

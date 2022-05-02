@@ -6,7 +6,7 @@ const jsonFetch = (url) => fetch(url).then((res) => res.json());
  * @notice GET list of all POAP events from the POAP API
  */
 export async function getEvents({ commit }) {
-  const events = await jsonFetch('https://api.poap.xyz/events');
+  const events = await jsonFetch('https://api.poap.tech/events');
   commit('setEvents', events);
 }
 
