@@ -5,6 +5,11 @@ import POAP from '../poap';
 import smartLog from '../utils/smartLog';
 
 class VoteController {
+    poapService;
+
+    constructor(poapService) {
+        this.poapService = poapService;
+    }
 
     static async fetchVotes(request, response) {
         let votes = null;
@@ -29,7 +34,7 @@ class VoteController {
         response.status(200).send(votesJSON);
     }
 
-    static async createVote(request, response) {
+    async createVote(request, response) {
         let poll = null;
         let tokens = null;
         let vote = null;
@@ -71,7 +76,7 @@ class VoteController {
         }
 
         try {
-            tokens = await POAP.fetchTokens(request.body.voter_account);
+            tokens = await this.poapService.fetchTokens(request.body.voter_account);
         } catch (error) {
             smartLog("[VoteController] ", error.description)
             response.status(503).send({
@@ -116,7 +121,7 @@ class VoteController {
         response.status(201).send(convertVoteToJSON(vote));
     }
 
-    static async createVoteDelegated(request, response) {
+    async createVoteDelegated(request, response) {
         let poll = null;
         let tokens = null;
         let vote = null;
@@ -159,7 +164,7 @@ class VoteController {
         }
 
         try {
-            tokens = await POAP.fetchTokens(request.body.voter_account);
+            tokens = await this.poapService.fetchTokens(request.body.voter_account);
         } catch (error) {
             smartLog("[VoteController] ", error.description)
             response.status(503).send({
