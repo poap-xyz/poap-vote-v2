@@ -7,7 +7,10 @@
 <script>
 import helpers from 'src/mixins/helpers';
 
-const jsonFetch = (url) => fetch(url).then((res) => res.json());
+const poapApiUrl = 'https://api.poap.tech';
+const poapApiApiKey = 'hVWzovj27w9NmjN6Vzw1Wp8rysVSnQYV06WGfMSBWRkZvSlVbadmtwSroHk4wfq9iS1J3R7rF5FxshKYEa1016XElaC6OHquA5JgYLrAwN21K1emQ1VCf08sEOR1YqLG';
+const jsonFetch = (path) => fetch(`${poapApiUrl}${path}`, { headers: { 'x-api-key': poapApiApiKey } })
+  .then((res) => res.json());
 
 export default {
   name: 'App',
@@ -25,7 +28,7 @@ export default {
 
     // Get user's POAP tokens
     if (userAddress && JSON.parse(userAddress)) {
-      const poapTokensUrl = `https://api.poap.tech/actions/scan/${JSON.parse(userAddress)}`;
+      const poapTokensUrl = `/actions/scan/${JSON.parse(userAddress)}`;
       tokens = await jsonFetch(poapTokensUrl);
     }
     this.$store.commit('user/setTokens', tokens);
