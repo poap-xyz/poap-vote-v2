@@ -6,7 +6,7 @@
         v-if="!userAddress && isPollOngoing"
       >
         <connect-wallet
-          label="Connect you wallet to vote"
+          label="Connect your wallet to vote"
         />
       </div>
 
